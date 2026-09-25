@@ -412,6 +412,13 @@ a{color:var(--primary);}
 }
 .pcard{display:flex; flex-direction:column; gap:var(--spacing-12); cursor:pointer;}
 .pcard:hover{box-shadow:var(--elevation-04);}
+.pcard .project-name{font:var(--title-medium); letter-spacing:.15px; color:var(--neutral-900); min-height:32px; display:flex; align-items:center;}
+.client-card .card-logo{height:44px;}
+.client-bar{display:flex; align-items:center; gap:var(--spacing-16); flex-wrap:wrap; margin-bottom:var(--spacing-16);}
+.client-bar .client-bar-title{display:flex; flex-direction:column; gap:var(--spacing-4); margin-right:auto;}
+.client-bar .client-bar-title .sub{font:var(--label-small); letter-spacing:.5px; color:var(--neutral-600);}
+.detail-project-name{font:var(--title-medium); letter-spacing:.15px; color:var(--neutral-900);}
+.weekly-project-name{font:var(--label-large); color:var(--neutral-700);}
 .pcard hr{border:0; border-top:1px solid var(--neutral-200); margin:0;}
 .pcard .status-row{display:flex; justify-content:space-between; align-items:center; gap:var(--spacing-8);}
 .pcard .avatars{display:flex;}
@@ -627,6 +634,7 @@ a{color:var(--primary);}
         </div>
       </section>
 
+      <div class="client-bar" id="client-bar" hidden></div>
       <main class="card-grid" id="card-grid"></main>
       <div class="empty-state" id="empty-state" hidden>
         <h3>No accounts match your filters</h3>
@@ -665,11 +673,15 @@ a{color:var(--primary);}
 
 <div class="modal-overlay" id="add-overlay" hidden>
   <div class="modal" role="dialog" aria-modal="true" aria-label="Add account">
-    <h2>New account</h2>
+    <h2 id="add-modal-title">New account</h2>
     <form id="add-form" class="form-grid">
-      <label class="field form-wide">
-        <span class="label">Account / brand name</span>
+      <label class="field form-wide" id="add-client-name-field">
+        <span class="label">Client / brand name</span>
         <div class="field-wrap"><input name="name" required placeholder="e.g. Regeneron"></div>
+      </label>
+      <label class="field form-wide">
+        <span class="label">Project name</span>
+        <div class="field-wrap"><input name="projectName" required value="GEO Engagement" placeholder="e.g. AI Listening Report"></div>
       </label>
       <label class="field">
         <span class="label">RAG status</span>
@@ -1141,33 +1153,71 @@ a{color:var(--primary);}
     });
   }
 
+  // Storage is client docs, each holding a list of projects. The rest of the app
+  // works on a flat list of projects ("accounts"), so flatten after every load.
+  var clients = [];
+  var currentClientId = null;
+  var addContextClientId = null;
+
+  function flattenClients(list){
+    var out = [];
+    list.forEach(function(c){
+      var projs = c.projects || [];
+      projs.forEach(function(p){
+        var flat = Object.assign({}, p, {
+          clientId: c.id,
+          clientName: c.name,
+          projectName: p.name || "GEO Engagement",
+          projectCount: projs.length,
+          logoSvg: c.logoSvg || "",
+          logoImg: c.logoImg || "",
+          order: c.order
+        });
+        flat.name = projs.length > 1 ? c.name + " · " + flat.projectName : c.name;
+        out.push(flat);
+      });
+    });
+    return out;
+  }
+
   function loadAccounts(){
     return apiFetch("/api/accounts").then(function(list){
-      accounts = list;
+      clients = list;
+      accounts = flattenClients(list);
       renderAll();
     }).catch(function(err){
       showToast("Load failed: " + err.message, "error");
     });
   }
 
+  function jsonReq(method, body){
+    return {method: method, headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)};
+  }
+
   function updateAccount(id, patch){
-    return apiFetch("/api/accounts/" + encodeURIComponent(id), {
-      method: "PATCH",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(patch)
-    }).then(function(updated){
-      var a = accounts.find(function(x){ return x.id === id; });
-      if (a) Object.assign(a, updated);
+    var a = getAccount(id);
+    if (!a) return Promise.resolve();
+    var clientPatch = {}, projPatch = {};
+    Object.keys(patch).forEach(function(k){
+      if (k === "logoSvg" || k === "logoImg") clientPatch[k] = patch[k];
+      else if (k === "clientName") clientPatch.name = patch[k];
+      else projPatch[k] = patch[k];
+    });
+    var base = "/api/accounts/" + encodeURIComponent(a.clientId);
+    var calls = [];
+    if (Object.keys(projPatch).length) calls.push(apiFetch(base + "/projects/" + encodeURIComponent(id), jsonReq("PATCH", projPatch)));
+    if (Object.keys(clientPatch).length) calls.push(apiFetch(base, jsonReq("PATCH", clientPatch)));
+    return Promise.all(calls).then(function(){
+      return loadAccounts();
+    }).then(function(){
       showToast("Saved", "success");
     }).catch(function(err){
       showToast("Save failed: " + err.message, "error");
     });
   }
 
-  function createAccount(data){
-    var id = uniqueId(data.name);
-    var full = Object.assign({
-      order: Date.now(),
+  function newProjectFields(){
+    return {
       rag: "Amber",
       sowStatus: "N/A",
       projectStatus: "Yet to Start",
@@ -1182,27 +1232,58 @@ a{color:var(--primary);}
       roles: DEFAULT_ROLES.map(function(r){ return {role: r, value: ""}; }),
       engagementStartDate: null,
       engagementEndDate: null,
-      logoSvg: "",
-      logoImg: "",
       weeks: {}
-    }, data);
-    return apiFetch("/api/accounts/" + encodeURIComponent(id), {
-      method: "PUT",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify(full)
-    }).then(function(created){
-      accounts.push(created);
+    };
+  }
+
+  // New client with its first project. Returns the project id.
+  function createAccount(data){
+    var clientId = uniqueClientId(data.clientName);
+    var projectId = clientId + "-1";
+    var project = Object.assign(newProjectFields(), data.project, {id: projectId});
+    var doc = {name: data.clientName, order: Date.now(), logoSvg: "", logoImg: "", projects: [project]};
+    return apiFetch("/api/accounts/" + encodeURIComponent(clientId), jsonReq("PUT", doc)).then(function(){
+      return loadAccounts();
+    }).then(function(){
       showToast("Account created", "success");
-      return id;
+      return projectId;
     }).catch(function(err){
       showToast("Create failed: " + err.message, "error");
     });
   }
 
+  function addProject(clientId, data){
+    var project = Object.assign(newProjectFields(), data);
+    return apiFetch("/api/accounts/" + encodeURIComponent(clientId) + "/projects", jsonReq("POST", project)).then(function(created){
+      return loadAccounts().then(function(){
+        showToast("Project added", "success");
+        return created.id;
+      });
+    }).catch(function(err){
+      showToast("Add failed: " + err.message, "error");
+    });
+  }
+
+  function uniqueClientId(name){
+    var base = slugify(name);
+    var existing = new Set(clients.map(function(c){ return c.id; }));
+    if (!existing.has(base)) return base;
+    var n = 2;
+    while (existing.has(base + "-" + n)) n++;
+    return base + "-" + n;
+  }
+
+  // Deletes one project; removes the client too when it was the last one.
   function deleteAccount(id){
-    return apiFetch("/api/accounts/" + encodeURIComponent(id), {method: "DELETE"}).then(function(){
-      accounts = accounts.filter(function(a){ return a.id !== id; });
-      showToast("Account deleted", "success");
+    var a = getAccount(id);
+    if (!a) return Promise.resolve();
+    var last = a.projectCount <= 1;
+    var url = last ? "/api/accounts/" + encodeURIComponent(a.clientId)
+                   : "/api/accounts/" + encodeURIComponent(a.clientId) + "/projects/" + encodeURIComponent(id);
+    return apiFetch(url, {method: "DELETE"}).then(function(){
+      return loadAccounts();
+    }).then(function(){
+      showToast(last ? "Account deleted" : "Project deleted", "success");
     }).catch(function(err){
       showToast("Delete failed: " + err.message, "error");
     });
@@ -1222,7 +1303,7 @@ a{color:var(--primary);}
     var pct = totalRevenue ? Math.round((totalInvoiced / totalRevenue) * 100) : 0;
 
     $("#kpi-strip").innerHTML =
-      '<div class="kpi-tile"><div class="kpi-label">Contracted revenue</div><div class="kpi-value mono">' + money(totalRevenue) + '</div><div class="kpi-sub">' + accounts.length + ' active account' + (accounts.length === 1 ? "" : "s") + '</div></div>' +
+      '<div class="kpi-tile"><div class="kpi-label">Contracted revenue</div><div class="kpi-value mono">' + money(totalRevenue) + '</div><div class="kpi-sub">' + accounts.length + ' active project' + (accounts.length === 1 ? "" : "s") + ' across ' + clients.length + ' client' + (clients.length === 1 ? "" : "s") + '</div></div>' +
       '<div class="kpi-tile"><div class="kpi-label">Invoiced to date</div><div class="kpi-value mono">' + money(totalInvoiced) + '</div><div class="kpi-sub">' + pct + '% invoiced</div></div>' +
       '<div class="kpi-tile"><div class="kpi-label">Outstanding</div><div class="kpi-value mono">' + money(outstanding) + '</div><div class="kpi-sub">not yet invoiced</div></div>' +
       '<div class="kpi-tile"><div class="kpi-label">Delivery health</div><div class="kpi-rag-row">' +
@@ -1298,7 +1379,7 @@ a{color:var(--primary);}
   }
 
   var VIEW_META = {
-    accounts: {title:"GEO Delivery Tracker", sub: function(){ return accounts.length + " active account" + (accounts.length===1?"":"s") + " · source of truth"; }},
+    accounts: {title:"GEO Delivery Tracker", sub: function(){ return clients.length + " client" + (clients.length===1?"":"s") + " · " + accounts.length + " project" + (accounts.length===1?"":"s") + " · source of truth"; }},
     weekly: {title:"Weekly Report", sub: function(){ return "Every account's status for " + weekLabel(weeklyWeekKey || currentWeekKey()); }},
     utilization: {title:"Team Utilization", sub: function(){ return computeUtilization().length + " people allocated across " + accounts.length + " accounts"; }},
     risks: {title:"Risk Watch", sub: function(){ return computeRiskWatch().length + " account" + (computeRiskWatch().length===1?"":"s") + " with an open risk"; }},
@@ -1389,6 +1470,7 @@ a{color:var(--primary);}
         '<div class="weekly-account">' +
           '<div class="weekly-account-head" data-open-id="' + esc(a.id) + '" title="Open full account detail">' +
             logoHtml(a, "card-logo") +
+            (a.projectCount > 1 ? '<span class="weekly-project-name">' + esc(a.projectName) + '</span>' : '') +
             '<span class="tag ' + RAG_TAG_CLASS[rag] + '">' + rag + '</span>' +
           '</div>' +
           '<form data-form="weekly-week" data-account-id="' + esc(a.id) + '" class="week-fields">' +
@@ -1526,7 +1608,7 @@ a{color:var(--primary);}
     var list = accounts.filter(function(a){
       if (filterRag !== "All" && ragClass(a.rag) !== filterRag) return false;
       if (!term) return true;
-      var hay = [a.name, a.sowStatus, a.projectStatus].join(" ").toLowerCase();
+      var hay = [a.clientName, a.projectName, a.sowStatus, a.projectStatus].join(" ").toLowerCase();
       return hay.indexOf(term) > -1;
     });
     list.sort(function(x, y){
@@ -1560,7 +1642,7 @@ a{color:var(--primary);}
     var progress = engagementProgress(a);
     return (
       '<article class="card pcard ring-focus" data-open-id="' + esc(a.id) + '" tabindex="0" role="button" aria-label="Open ' + esc(a.name) + '">' +
-        logoHtml(a, "card-logo") +
+        '<div class="project-name">' + esc(a.projectName) + '</div>' +
         '<hr>' +
         '<div class="status-row">' +
           '<span class="tag ' + RAG_TAG_CLASS[rag] + '">' + rag + '</span>' +
@@ -1586,10 +1668,67 @@ a{color:var(--primary);}
     );
   }
 
+  var WORST_RAG_ORDER = ["Red", "Amber", "Green"];
+  function worstRag(projs){
+    for (var i = 0; i < WORST_RAG_ORDER.length; i++) {
+      if (projs.some(function(p){ return ragClass(p.rag) === WORST_RAG_ORDER[i]; })) return WORST_RAG_ORDER[i];
+    }
+    return "Green";
+  }
+
+  function clientCardHtml(c){
+    var projs = accounts.filter(function(p){ return p.clientId === c.id; });
+    var n = (c.projects || []).length;
+    var rag = worstRag(projs);
+    var logoSrc = {id: c.id, name: c.name, logoSvg: c.logoSvg, logoImg: c.logoImg};
+    return (
+      '<article class="card pcard client-card ring-focus" data-client-id="' + esc(c.id) + '" tabindex="0" role="button" aria-label="Open ' + esc(c.name) + ' projects">' +
+        logoHtml(logoSrc, "card-logo") +
+        '<hr>' +
+        '<div class="status-row">' +
+          '<span class="tag ' + RAG_TAG_CLASS[rag] + '">' + (n ? rag : "No projects") + '</span>' +
+        '</div>' +
+        '<div class="meta"><div class="meta-row"><span class="k">Projects</span><span class="v mono">' + n + '</span></div></div>' +
+      '</article>'
+    );
+  }
+
+  function renderClientBar(c){
+    var bar = $("#client-bar");
+    if (!c) { bar.hidden = true; bar.innerHTML = ""; return; }
+    var logoSrc = {id: c.id, name: c.name, logoSvg: c.logoSvg, logoImg: c.logoImg};
+    var n = (c.projects || []).length;
+    bar.hidden = false;
+    bar.innerHTML =
+      '<button type="button" class="btn btn-sm btn-outlined ring-focus" data-action="client-back">&larr; All accounts</button>' +
+      logoHtml(logoSrc, "card-logo") +
+      '<div class="client-bar-title"><span class="detail-project-name">' + esc(c.name) + '</span><span class="sub">' + n + ' project' + (n === 1 ? "" : "s") + '</span></div>' +
+      '<button type="button" class="btn btn-sm btn-filled ring-focus" data-action="add-project">+ Add project</button>';
+  }
+
   function renderGrid(){
+    var c = currentClientId ? clients.find(function(x){ return x.id === currentClientId; }) : null;
+    if (currentClientId && !c) currentClientId = null;
+    renderClientBar(c);
     var list = visibleAccounts();
-    $("#card-grid").innerHTML = list.map(cardHtml).join("");
-    $("#empty-state").hidden = list.length > 0;
+    if (c) {
+      list = list.filter(function(p){ return p.clientId === c.id; });
+      $("#card-grid").innerHTML = list.map(cardHtml).join("");
+      $("#empty-state").hidden = list.length > 0;
+      return;
+    }
+    var seen = {}, ordered = [];
+    list.forEach(function(p){
+      if (seen[p.clientId]) return;
+      seen[p.clientId] = true;
+      var cl = clients.find(function(x){ return x.id === p.clientId; });
+      if (cl) ordered.push(cl);
+    });
+    if (filterRag === "All" && !searchTerm.trim()) {
+      clients.forEach(function(cl){ if (!seen[cl.id]) { seen[cl.id] = true; ordered.push(cl); } });
+    }
+    $("#card-grid").innerHTML = ordered.map(clientCardHtml).join("");
+    $("#empty-state").hidden = ordered.length > 0;
   }
 
   // ---------------- rendering: detail panel ----------------
@@ -1623,7 +1762,7 @@ a{color:var(--primary);}
 
     $("#detail-header").innerHTML =
       '<div class="detail-header-top">' +
-        '<div class="detail-name-row">' + logoHtml(a, "detail-logo") + '<span class="tag ' + RAG_TAG_CLASS[rag] + '">' + rag + '</span></div>' +
+        '<div class="detail-name-row">' + logoHtml(a, "detail-logo") + '<span class="detail-project-name">' + esc(a.projectName) + '</span><span class="tag ' + RAG_TAG_CLASS[rag] + '">' + rag + '</span></div>' +
         '<button type="button" class="btn btn-icon btn-md btn-text ring-focus" data-action="close-detail" aria-label="Close">' + ICON_CLOSE + '</button>' +
       '</div>' +
       '<div class="detail-meta-row">' +
@@ -1659,7 +1798,8 @@ a{color:var(--primary);}
   function renderOverviewTab(a){
     return (
       '<form data-form="overview" class="form-grid">' +
-        '<label class="field form-wide">' + fieldLabel("Account / brand name") + fieldInput("name", a.name, "required") + '</label>' +
+        '<label class="field">' + fieldLabel("Project name") + fieldInput("name", a.projectName, "required") + '</label>' +
+        '<label class="field">' + fieldLabel("Client / brand name") + fieldInput("clientName", a.clientName, "required") + '</label>' +
         '<label class="field">' + fieldLabel("RAG status") + fieldSelect("rag", ["Green","Amber","Red"], a.rag) + '</label>' +
         '<label class="field">' + fieldLabel("Invoice status") + fieldInput("invoiceStatus", a.invoiceStatus||"", 'list="invoice-status-options"') + '</label>' +
         '<label class="field">' + fieldLabel("SOW status") + fieldSelect("sowStatus", SOW_STATUS_OPTIONS, a.sowStatus) + '</label>' +
@@ -1832,7 +1972,16 @@ a{color:var(--primary);}
     }
 
     var addBtn = e.target.closest && e.target.closest("#btn-add-account");
-    if (addBtn) { $("#add-overlay").hidden = false; return; }
+    if (addBtn) { openAddModal(null); return; }
+
+    var addProjBtn = e.target.closest && e.target.closest('[data-action="add-project"]');
+    if (addProjBtn) { openAddModal(currentClientId); return; }
+
+    var clientCard = e.target.closest && e.target.closest("[data-client-id]");
+    if (clientCard) { currentClientId = clientCard.getAttribute("data-client-id"); renderGrid(); window.scrollTo(0, 0); return; }
+
+    var backBtn = e.target.closest && e.target.closest('[data-action="client-back"]');
+    if (backBtn) { currentClientId = null; renderGrid(); return; }
 
     var closeAdd = e.target.closest && e.target.closest('[data-action="close-add"]');
     if (closeAdd) { $("#add-overlay").hidden = true; return; }
@@ -1852,7 +2001,7 @@ a{color:var(--primary);}
     var deleteAcctBtn = e.target.closest && e.target.closest('[data-action="delete-account"]');
     if (deleteAcctBtn) {
       var a = getAccount(currentDetailId);
-      if (a && confirm('Delete "' + a.name + '" permanently? This cannot be undone.')) {
+      if (a && confirm('Delete ' + (a.projectCount > 1 ? 'project "' + a.projectName + '" of ' + a.clientName : 'account "' + a.clientName + '" and its only project') + ' permanently? This cannot be undone.')) {
         deleteAccount(currentDetailId);
         closeDetail();
       }
@@ -1922,6 +2071,7 @@ a{color:var(--primary);}
       var fd = new FormData(form);
       var patch = {
         name: fd.get("name").trim(),
+        clientName: fd.get("clientName").trim(),
         rag: fd.get("rag"),
         sowStatus: fd.get("sowStatus"),
         projectStatus: fd.get("projectStatus"),
@@ -1984,10 +2134,11 @@ a{color:var(--primary);}
     if (form.id === "add-form") {
       e.preventDefault();
       var fd3 = new FormData(form);
-      var name = fd3.get("name").trim();
-      if (!name) return;
-      createAccount({
-        name: name,
+      var name = (fd3.get("name") || "").trim();
+      var projectName = (fd3.get("projectName") || "").trim() || "GEO Engagement";
+      if (!addContextClientId && !name) return;
+      var fields = {
+        name: projectName,
         rag: fd3.get("rag"),
         sowStatus: fd3.get("sowStatus"),
         projectStatus: fd3.get("projectStatus"),
@@ -1997,14 +2148,30 @@ a{color:var(--primary);}
         revenue: Number(fd3.get("revenue")) || 0,
         invoicedToDate: Number(fd3.get("invoicedToDate")) || 0,
         scopeText: fd3.get("scopeText").trim()
-      }).then(function(id){
+      };
+      var done = addContextClientId
+        ? addProject(addContextClientId, fields)
+        : createAccount({clientName: name, project: fields});
+      done.then(function(id){
         form.reset();
         $("#add-overlay").hidden = true;
+        populateAddFormSelects();
         if (id) openDetail(id);
       });
       return;
     }
   });
+
+  function openAddModal(clientId){
+    addContextClientId = clientId;
+    var c = clientId ? clients.find(function(x){ return x.id === clientId; }) : null;
+    $("#add-modal-title").textContent = c ? "Add project to " + c.name : "New account";
+    var nameField = $("#add-client-name-field");
+    nameField.hidden = !!c;
+    nameField.querySelector("input").required = !c;
+    $('#add-form input[name="projectName"]').value = "GEO Engagement";
+    $("#add-overlay").hidden = false;
+  }
 
   // ---------------- boot ----------------
   function populateAddFormSelects(){

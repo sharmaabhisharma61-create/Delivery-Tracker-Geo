@@ -522,8 +522,13 @@ a{color:var(--primary);}
 .roles-table{width:100%; border-collapse:collapse; margin-bottom:var(--spacing-12);}
 .roles-table th{text-align:left; font:var(--label-medium); letter-spacing:.5px; color:var(--neutral-600); text-transform:uppercase; padding:0 var(--spacing-8) var(--spacing-8) 0;}
 .roles-table td{padding:var(--spacing-4) var(--spacing-8) var(--spacing-4) 0; vertical-align:middle;}
-.roles-table td:first-child{width:38%;}
-.roles-table td:last-child{width:36px;}
+.roles-table td:first-child{width:32%;}
+.roles-table td.pct-cell{width:130px;}
+.roles-table td:last-child{width:76px; white-space:nowrap;}
+.status-cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:var(--spacing-16); margin-bottom:var(--spacing-16);}
+.status-card{background:var(--base-white); border-radius:var(--radius-sm); box-shadow:var(--elevation-02); padding:var(--spacing-16); display:flex; flex-direction:column; gap:var(--spacing-8);}
+.status-card .status-card-title{font:var(--label-large); letter-spacing:.1px; color:var(--neutral-900); display:flex; align-items:center; gap:var(--spacing-8);}
+.status-card .status-dot{width:8px; height:8px; border-radius:var(--radius-full); flex-shrink:0;}
 .roles-table .field-wrap{height:36px; padding:0 var(--spacing-12);}
 
 /* ---------- add-account modal ---------- */
@@ -1165,6 +1170,28 @@ a{color:var(--primary);}
   var currentClientId = null;
   var addContextClientId = null;
 
+  // Roles are one row per person: {role, name, pct}. Older data stored
+  // {role, value: "Name — 50%"}, possibly with several names in one value.
+  function normalizeRoles(list){
+    var out = [];
+    (list || []).forEach(function(r){
+      if (!r) return;
+      if (r.name !== undefined || r.pct !== undefined) {
+        out.push({role: r.role || "", name: r.name || "", pct: (r.pct === null || r.pct === undefined || r.pct === "") ? "" : Number(r.pct)});
+        return;
+      }
+      var role = r.role || "", value = String(r.value || "").trim();
+      if (!value) { out.push({role: role, name: "", pct: ""}); return; }
+      var m = value.match(/^([\s\S]*?)[\s\u2014\u2013-]+(\d+(?:\.\d+)?)\s*%\s*$/);
+      var namesPart = m ? m[1] : value;
+      var pct = m ? parseFloat(m[2]) : "";
+      var names = namesPart.split(/,|\/|\n/).map(function(x){ return x.trim(); }).filter(Boolean);
+      if (!names.length) names = [namesPart.trim()];
+      names.forEach(function(n){ out.push({role: role, name: n, pct: pct}); });
+    });
+    return out;
+  }
+
   function flattenClients(list){
     var out = [];
     list.forEach(function(c){
@@ -1175,6 +1202,7 @@ a{color:var(--primary);}
           clientName: c.name,
           projectName: p.name || "GEO Engagement",
           projectCount: projs.length,
+          roles: normalizeRoles(p.roles),
           logoSvg: c.logoSvg || "",
           logoImg: c.logoImg || "",
           order: c.order
@@ -1235,7 +1263,7 @@ a{color:var(--primary);}
       notes: "",
       ownerOnshore: "",
       ownerOffshore: "",
-      roles: DEFAULT_ROLES.map(function(r){ return {role: r, value: ""}; }),
+      roles: DEFAULT_ROLES.map(function(r){ return {role: r, name: "", pct: ""}; }),
       engagementStartDate: null,
       engagementEndDate: null,
       weeks: {}
@@ -1330,17 +1358,6 @@ a{color:var(--primary);}
 
 
   // ---- utilization: parsed live from each account's Team tab, not a static import ----
-  function parseRoleAssignment(value){
-    if (!value) return [];
-    var m = String(value).match(/^(.*?)[\s—-]+(\d+(?:\.\d+)?)\s*%\s*$/);
-    if (!m) return [];
-    var pct = parseFloat(m[2]) / 100;
-    if (isNaN(pct)) return [];
-    return m[1].split(/,|\/|\n/).map(function(s){ return s.trim(); }).filter(Boolean).map(function(name){
-      return {name: name, pct: pct};
-    });
-  }
-
   function utilStatus(pct){
     if (pct <= 0) return {label:"Unallocated", tag:"tag-neutral"};
     if (pct > 1) return {label:"Overbooked", tag:"tag-error"};
@@ -1353,11 +1370,11 @@ a{color:var(--primary);}
     var byPerson = {};
     accounts.forEach(function(a){
       (a.roles || []).forEach(function(r){
-        parseRoleAssignment(r.value).forEach(function(asg){
-          if (!byPerson[asg.name]) byPerson[asg.name] = {name: asg.name, totalPct: 0, accounts: []};
-          byPerson[asg.name].totalPct += asg.pct;
-          byPerson[asg.name].accounts.push({id: a.id, account: a.name, role: r.role, pct: asg.pct});
-        });
+        var pname = (r.name || "").trim(), ppct = (Number(r.pct) || 0) / 100;
+        if (!pname || ppct <= 0) return;
+        if (!byPerson[pname]) byPerson[pname] = {name: pname, totalPct: 0, accounts: []};
+        byPerson[pname].totalPct += ppct;
+        byPerson[pname].accounts.push({id: a.id, account: a.name, role: r.role, pct: ppct});
       });
     });
     var list = Object.keys(byPerson).map(function(k){ return byPerson[k]; });
@@ -1856,7 +1873,7 @@ a{color:var(--primary);}
     var pct = revenue ? Math.round((invoiced / revenue) * 100) : 0;
     var outstanding = revenue - invoiced;
     var rag = ragClass(a.rag);
-    var tabs = [["overview","Overview"],["scope","Scope of Work"],["activity","Activity &amp; Risks"],["team","Team"]];
+    var tabs = [["overview","Overview"],["scope","Scope of Work"],["status","Current Status"],["risks","Risks"],["team","Team"]];
 
     var progress = engagementProgress(a);
 
@@ -1938,7 +1955,7 @@ a{color:var(--primary);}
     );
   }
 
-  function renderActivityTab(a){
+  function renderWeekJump(a){
     if (!selectedWeekKey) selectedWeekKey = currentWeekKey();
     var cur = currentWeekKey();
     var wd = weekData(a, selectedWeekKey);
@@ -1963,43 +1980,65 @@ a{color:var(--primary);}
       '</label>' +
       (chipsHtml ? '<div class="week-chips quick-weeks">' + chipsHtml + '</div>' : "");
 
-    var subtabsHtml = '<div class="tabs" role="tablist">' + WEEK_SUBTABS.map(function(t){
-      return '<button type="button" role="tab" aria-selected="' + (weekSubTab === t[0]) + '" class="tab' + (weekSubTab === t[0] ? " is-active" : "") + '" data-week-subtab="' + t[0] + '">' + t[1] + '</button>';
-    }).join("") + '</div>';
+    return jumpHtml;
+  }
 
-    var subtabBodies = WEEK_SUBTABS.map(function(t){
-      return '<div' + (weekSubTab === t[0] ? "" : " hidden") + '><div class="field-wrap"><textarea name="' + t[0] + '" rows="5" placeholder="' + esc(t[1]) + ' this week&hellip;">' + esc(wd[t[0]] || "") + '</textarea></div></div>';
+  var STATUS_CARDS = [
+    ["completed", "Completed", "var(--success-foreground)"],
+    ["inProgress", "In Progress", "var(--warning-foreground)"],
+    ["nextSteps", "Next Steps", "var(--primary)"]
+  ];
+
+  function renderStatusTab(a){
+    var wd = weekData(a, selectedWeekKey || currentWeekKey());
+    var cards = STATUS_CARDS.map(function(c){
+      return '<div class="status-card">' +
+        '<div class="status-card-title"><span class="status-dot" style="background:' + c[2] + '"></span>' + c[1] + '</div>' +
+        '<div class="field-wrap"><textarea name="' + c[0] + '" rows="8" placeholder="' + c[1] + ' for this period&hellip;">' + esc(wd[c[0]] || "") + '</textarea></div>' +
+      '</div>';
     }).join("");
-
     return (
-      jumpHtml +
+      renderWeekJump(a) +
       '<form data-form="week" class="week-fields">' +
         '<input type="hidden" name="weekKey" value="' + esc(selectedWeekKey) + '">' +
-        '<label class="field">' + fieldLabel("Risk") + '<div class="field-wrap"><textarea name="risk" rows="2" placeholder="What is at risk this week&hellip;">' + esc(wd.risk || "") + '</textarea></div></label>' +
-        '<label class="field">' + fieldLabel("Risk mitigation actions (next steps)") + '<div class="field-wrap"><textarea name="mitigationActions" rows="2" placeholder="What is being done to address the risk&hellip;">' + esc(wd.mitigationActions || "") + '</textarea></div></label>' +
+        '<div class="status-cards">' + cards + '</div>' +
+        '<div class="form-actions"><button type="submit" class="btn btn-md btn-filled ring-focus">Save status</button></div>' +
+      '</form>'
+    );
+  }
+
+  function renderRisksTab(a){
+    var wd = weekData(a, selectedWeekKey || currentWeekKey());
+    return (
+      renderWeekJump(a) +
+      '<form data-form="week" class="week-fields">' +
+        '<input type="hidden" name="weekKey" value="' + esc(selectedWeekKey) + '">' +
+        '<label class="field">' + fieldLabel("Risk") + '<div class="field-wrap"><textarea name="risk" rows="3" placeholder="What is at risk in this period&hellip;">' + esc(wd.risk || "") + '</textarea></div></label>' +
+        '<label class="field">' + fieldLabel("Risk mitigation actions (next steps)") + '<div class="field-wrap"><textarea name="mitigationActions" rows="3" placeholder="What is being done to address the risk&hellip;">' + esc(wd.mitigationActions || "") + '</textarea></div></label>' +
         '<label class="field" style="max-width:220px;">' + fieldLabel("Mitigation deadline") + fieldInput("mitigationDeadline", wd.mitigationDeadline || "", 'type="date"') + '</label>' +
-        '<label class="field">' + fieldLabel("Scope creep") + '<div class="field-wrap"><textarea name="scopeCreep" rows="2" placeholder="Any work happening outside the agreed SOW&hellip;">' + esc(wd.scopeCreep || "") + '</textarea></div></label>' +
-        '<div class="group-title">This week&#39;s activity</div>' +
-        subtabsHtml +
-        subtabBodies +
-        '<div class="form-actions"><button type="submit" class="btn btn-md btn-filled ring-focus">Save week</button></div>' +
+        '<label class="field">' + fieldLabel("Scope creep") + '<div class="field-wrap"><textarea name="scopeCreep" rows="3" placeholder="Any work happening outside the agreed SOW&hellip;">' + esc(wd.scopeCreep || "") + '</textarea></div></label>' +
+        '<div class="form-actions"><button type="submit" class="btn btn-md btn-filled ring-focus">Save risks</button></div>' +
       '</form>'
     );
   }
 
   function renderTeamTab(a){
-    if (!draftRoles) draftRoles = (a.roles && a.roles.length ? a.roles : DEFAULT_ROLES.map(function(r){ return {role:r, value:""}; })).map(function(r){ return Object.assign({}, r); });
+    if (!draftRoles) draftRoles = (a.roles && a.roles.length ? a.roles : DEFAULT_ROLES.map(function(r){ return {role: r, name: "", pct: ""}; })).map(function(r){ return Object.assign({}, r); });
     var rows = draftRoles.map(function(r, i){
       return (
         '<tr data-role-index="' + i + '">' +
-          '<td><div class="field-wrap"><input data-role-field="role" data-role-index="' + i + '" value="' + esc(r.role) + '"></div></td>' +
-          '<td><div class="field-wrap"><input data-role-field="value" data-role-index="' + i + '" value="' + esc(r.value) + '" placeholder="Name — % allocation"></div></td>' +
-          '<td><button type="button" class="btn btn-icon btn-sm btn-text ring-focus" data-action="remove-role" data-role-index="' + i + '" aria-label="Remove role" title="Remove role">' + ICON_CLOSE + '</button></td>' +
+          '<td><div class="field-wrap"><input data-role-field="role" data-role-index="' + i + '" value="' + esc(r.role) + '" placeholder="Role"></div></td>' +
+          '<td><div class="field-wrap"><input data-role-field="name" data-role-index="' + i + '" value="' + esc(r.name) + '" placeholder="Name"></div></td>' +
+          '<td class="pct-cell"><div class="field-wrap"><input type="number" min="0" max="100" step="5" data-role-field="pct" data-role-index="' + i + '" value="' + esc(r.pct) + '" placeholder="%"></div></td>' +
+          '<td>' +
+            '<button type="button" class="btn btn-icon btn-sm btn-text ring-focus" data-action="add-role-person" data-role-index="' + i + '" aria-label="Add another person to this role" title="Add another person to this role">' + ICON_ADD + '</button>' +
+            '<button type="button" class="btn btn-icon btn-sm btn-text ring-focus" data-action="remove-role" data-role-index="' + i + '" aria-label="Remove row" title="Remove row">' + ICON_CLOSE + '</button>' +
+          '</td>' +
         '</tr>'
       );
     }).join("");
     return (
-      '<table class="roles-table"><thead><tr><th>Role</th><th>Assigned</th><th></th></tr></thead><tbody id="roles-body">' + rows + '</tbody></table>' +
+      '<table class="roles-table"><thead><tr><th>Role</th><th>Name</th><th>Allocation %</th><th></th></tr></thead><tbody id="roles-body">' + rows + '</tbody></table>' +
       '<button type="button" class="btn btn-sm btn-outlined ring-focus" data-action="add-role">' + ICON_ADD + ' Add role</button>' +
       '<div class="form-actions"><button type="button" class="btn btn-md btn-filled ring-focus" data-action="save-roles">Save team</button></div>'
     );
@@ -2012,7 +2051,8 @@ a{color:var(--primary);}
     var body = $("#detail-body");
     if (activeTab === "overview") body.innerHTML = renderOverviewTab(a);
     else if (activeTab === "scope") body.innerHTML = renderScopeTab(a);
-    else if (activeTab === "activity") body.innerHTML = renderActivityTab(a);
+    else if (activeTab === "status") body.innerHTML = renderStatusTab(a);
+    else if (activeTab === "risks") body.innerHTML = renderRisksTab(a);
     else if (activeTab === "team") body.innerHTML = renderTeamTab(a);
   }
 
@@ -2132,7 +2172,15 @@ a{color:var(--primary);}
     if (weekSubtabBtn) { weekSubTab = weekSubtabBtn.getAttribute("data-week-subtab"); renderDetail(); return; }
 
     var addRoleBtn = e.target.closest && e.target.closest('[data-action="add-role"]');
-    if (addRoleBtn) { draftRoles.push({role:"", value:""}); renderDetail(); return; }
+    if (addRoleBtn) { draftRoles.push({role:"", name:"", pct:""}); renderDetail(); return; }
+
+    var addPersonBtn = e.target.closest && e.target.closest('[data-action="add-role-person"]');
+    if (addPersonBtn) {
+      var pi = Number(addPersonBtn.getAttribute("data-role-index"));
+      draftRoles.splice(pi + 1, 0, {role: draftRoles[pi].role, name: "", pct: ""});
+      renderDetail();
+      return;
+    }
 
     var removeRoleBtn = e.target.closest && e.target.closest('[data-action="remove-role"]');
     if (removeRoleBtn) {
@@ -2144,7 +2192,10 @@ a{color:var(--primary);}
 
     var saveRolesBtn = e.target.closest && e.target.closest('[data-action="save-roles"]');
     if (saveRolesBtn) {
-      var cleanRoles = draftRoles.filter(function(r){ return r.role.trim() || r.value.trim(); });
+      var cleanRoles = draftRoles.filter(function(r){ return String(r.role).trim() || String(r.name).trim(); }).map(function(r){
+        var n = r.pct === "" || r.pct === null || r.pct === undefined ? null : Number(r.pct);
+        return {role: String(r.role).trim(), name: String(r.name).trim(), pct: (n === null || isNaN(n)) ? null : n};
+      });
       updateAccount(currentDetailId, {roles: cleanRoles}).then(function(){ draftRoles = null; renderDetail(); });
       return;
     }
@@ -2196,15 +2247,11 @@ a{color:var(--primary);}
       var acc = getAccount(currentDetailId);
       if (!acc) return;
       var wk = fd2.get("weekKey");
-      var newWeek = {
-        completed: fd2.get("completed").trim(),
-        inProgress: fd2.get("inProgress").trim(),
-        nextSteps: fd2.get("nextSteps").trim(),
-        risk: fd2.get("risk").trim(),
-        mitigationActions: fd2.get("mitigationActions").trim(),
-        mitigationDeadline: fd2.get("mitigationDeadline") || null,
-        scopeCreep: fd2.get("scopeCreep").trim()
-      };
+      var newWeek = Object.assign({}, weekData(acc, wk));
+      ["completed", "inProgress", "nextSteps", "risk", "mitigationActions", "scopeCreep"].forEach(function(f){
+        if (fd2.has(f)) newWeek[f] = String(fd2.get(f)).trim();
+      });
+      if (fd2.has("mitigationDeadline")) newWeek.mitigationDeadline = fd2.get("mitigationDeadline") || null;
       var newWeeks = Object.assign({}, acc.weeks || {});
       newWeeks[wk] = newWeek;
       updateAccount(currentDetailId, {weeks: newWeeks}).then(renderDetail);

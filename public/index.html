@@ -503,6 +503,26 @@ a{color:var(--primary);}
 .quick-weeks{margin-bottom:var(--spacing-16);}
 
 /* weekly report (all accounts, one week, on the main dashboard) */
+.weekly-toolbar{display:flex; align-items:flex-end; justify-content:space-between; gap:var(--spacing-16); flex-wrap:wrap;}
+.print-only{display:none;}
+.weekly-account-head .head-left{display:flex; align-items:center; gap:var(--spacing-12); flex-wrap:wrap; min-width:0;}
+.report-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:var(--spacing-16);}
+.report-section{display:flex; flex-direction:column; gap:var(--spacing-8); min-width:0; break-inside:avoid;}
+.report-section-title{font:var(--label-medium); letter-spacing:.5px; color:var(--neutral-600); text-transform:uppercase;}
+.report-deadline{margin-top:var(--spacing-8); font:var(--label-large); color:var(--neutral-900);}
+@media print{
+  @page{margin:14mm;}
+  html,body{background:#fff !important;}
+  .rail, .app-header, .alert-banner, .no-print, .week-jump, .week-chips, .toast, .calendar-popup, .overlay, .modal-overlay{display:none !important;}
+  .shell{display:block; padding:0; min-height:0;}
+  .page-content{border:0; padding:0; border-radius:0; display:block;}
+  .print-only{display:block;}
+  .print-title{font:var(--headline-small); margin-bottom:var(--spacing-4);}
+  .print-sub{font:var(--body-medium); color:var(--neutral-700); margin-bottom:var(--spacing-16);}
+  .weekly-account{box-shadow:none; border:1px solid var(--neutral-300); break-inside:avoid; margin-bottom:var(--spacing-12);}
+  .weekly-account-head{cursor:default;}
+  *{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+}
 .weekly-account-list{display:flex; flex-direction:column; gap:var(--spacing-16);}
 .weekly-account{background:var(--base-white); border-radius:var(--radius-sm); box-shadow:var(--elevation-02); padding:var(--spacing-20); display:flex; flex-direction:column; gap:var(--spacing-16);}
 .weekly-account-head{display:flex; align-items:center; justify-content:space-between; gap:var(--spacing-12); cursor:pointer; padding-bottom:var(--spacing-16); border-bottom:1px solid var(--neutral-200);}
@@ -1486,32 +1506,49 @@ a{color:var(--primary);}
       '<div class="week-chips quick-weeks">' + chipsHtml + '</div>';
 
     var ordered = accounts.slice().sort(function(x, y){ return (Number(x.order)||0) - (Number(y.order)||0); });
+    function reportSection(title, raw, extra){
+      return '<div class="report-section"><div class="report-section-title">' + title + '</div><div>' + formatRichText(raw) + (extra || "") + '</div></div>';
+    }
     var accountsHtml = ordered.map(function(a){
       var wd = weekData(a, weeklyWeekKey);
       var rag = ragClass(a.rag);
       return (
         '<div class="weekly-account">' +
-          '<div class="weekly-account-head" data-open-id="' + esc(a.id) + '" title="Open full account detail">' +
-            logoHtml(a, "card-logo") +
-            (a.projectCount > 1 ? '<span class="weekly-project-name">' + esc(a.projectName) + '</span>' : '') +
-            '<span class="tag ' + RAG_TAG_CLASS[rag] + '">' + rag + '</span>' +
+          '<div class="weekly-account-head">' +
+            '<div class="head-left">' +
+              logoHtml(a, "card-logo") +
+              (a.projectCount > 1 ? '<span class="weekly-project-name">' + esc(a.projectName) + '</span>' : '') +
+              '<span class="tag ' + RAG_TAG_CLASS[rag] + '">' + rag + '</span>' +
+            '</div>' +
+            '<button type="button" class="btn btn-sm btn-outlined ring-focus no-print" data-open-id="' + esc(a.id) + '" data-open-week="' + esc(weeklyWeekKey) + '">Review &amp; Edit</button>' +
           '</div>' +
-          '<form data-form="weekly-week" data-account-id="' + esc(a.id) + '" class="week-fields">' +
-            '<input type="hidden" name="weekKey" value="' + esc(weeklyWeekKey) + '">' +
-            '<label class="field">' + fieldLabel("Completed") + '<div class="field-wrap"><textarea name="completed" rows="3" placeholder="Completed this week&hellip;">' + esc(wd.completed || "") + '</textarea></div></label>' +
-            '<label class="field">' + fieldLabel("In progress") + '<div class="field-wrap"><textarea name="inProgress" rows="3" placeholder="In progress this week&hellip;">' + esc(wd.inProgress || "") + '</textarea></div></label>' +
-            '<label class="field">' + fieldLabel("Next steps") + '<div class="field-wrap"><textarea name="nextSteps" rows="2" placeholder="Next steps&hellip;">' + esc(wd.nextSteps || "") + '</textarea></div></label>' +
-            '<label class="field">' + fieldLabel("Risk") + '<div class="field-wrap"><textarea name="risk" rows="2" placeholder="What is at risk this week&hellip;">' + esc(wd.risk || "") + '</textarea></div></label>' +
-            '<label class="field">' + fieldLabel("Risk mitigation actions (next steps)") + '<div class="field-wrap"><textarea name="mitigationActions" rows="2" placeholder="What is being done to address the risk&hellip;">' + esc(wd.mitigationActions || "") + '</textarea></div></label>' +
-            '<label class="field" style="max-width:220px;">' + fieldLabel("Mitigation deadline") + fieldInput("mitigationDeadline", wd.mitigationDeadline || "", 'type="date"') + '</label>' +
-            '<label class="field">' + fieldLabel("Scope creep") + '<div class="field-wrap"><textarea name="scopeCreep" rows="2" placeholder="Any work happening outside the agreed SOW&hellip;">' + esc(wd.scopeCreep || "") + '</textarea></div></label>' +
-            '<div class="form-actions"><button type="submit" class="btn btn-sm btn-filled ring-focus">Save ' + esc(a.name) + '</button></div>' +
-          '</form>' +
+          '<div class="report-grid">' +
+            reportSection("Completed", wd.completed) +
+            reportSection("In progress", wd.inProgress) +
+            reportSection("Next steps", wd.nextSteps) +
+            reportSection("Risk", wd.risk) +
+            reportSection("Risk mitigation actions", wd.mitigationActions, wd.mitigationDeadline ? '<div class="report-deadline">Deadline: ' + fmtDate(wd.mitigationDeadline) + '</div>' : "") +
+            reportSection("Scope creep", wd.scopeCreep) +
+            reportSection("Change requests", wd.changeRequests) +
+          '</div>' +
         '</div>'
       );
     }).join("");
 
-    $("#view-weekly-body").innerHTML = jumpHtml + '<div class="weekly-account-list">' + accountsHtml + '</div>';
+    var printHead = '<div class="print-only"><div class="print-title">GEO Weekly Report</div><div class="print-sub">Period: ' + esc(weekLabel(weeklyWeekKey)) + ' &middot; Generated ' + esc(fmtDate(todayIso())) + '</div></div>';
+    var toolbar = '<div class="weekly-toolbar no-print"><div>' + jumpHtml + '</div>' +
+      '<button type="button" class="btn btn-md btn-filled ring-focus" data-action="download-weekly-pdf">Download PDF</button></div>';
+
+    $("#view-weekly-body").innerHTML = printHead + toolbar + '<div class="weekly-account-list">' + accountsHtml + '</div>';
+  }
+
+  // PDF = the browser's print dialog with a print-only layout (choose "Save as PDF").
+  function downloadWeeklyPdf(){
+    var prevTitle = document.title;
+    document.title = "GEO Weekly Report " + weekLabel(weeklyWeekKey || currentWeekKey());
+    var restore = function(){ document.title = prevTitle; window.removeEventListener("afterprint", restore); };
+    window.addEventListener("afterprint", restore);
+    window.print();
   }
 
   function renderUtilizationView(){
@@ -2139,8 +2176,16 @@ a{color:var(--primary);}
     var closeAdd = e.target.closest && e.target.closest('[data-action="close-add"]');
     if (closeAdd) { $("#add-overlay").hidden = true; return; }
 
+    var pdfBtn = e.target.closest && e.target.closest('[data-action="download-weekly-pdf"]');
+    if (pdfBtn) { downloadWeeklyPdf(); return; }
+
     var card = e.target.closest && e.target.closest("[data-open-id]");
-    if (card) { openDetail(card.getAttribute("data-open-id")); return; }
+    if (card) {
+      openDetail(card.getAttribute("data-open-id"));
+      var openWeek = card.getAttribute("data-open-week");
+      if (openWeek) { selectedWeekKey = openWeek; renderDetail(); }
+      return;
+    }
 
     var ragChip = e.target.closest && e.target.closest("[data-rag-filter]");
     if (ragChip) { filterRag = ragChip.getAttribute("data-rag-filter"); renderAll(); return; }

@@ -1710,6 +1710,9 @@ a{color:var(--primary);}
     var c = currentClientId ? clients.find(function(x){ return x.id === currentClientId; }) : null;
     if (currentClientId && !c) currentClientId = null;
     renderClientBar(c);
+    var mainOnly = c ? "none" : "";
+    $("#kpi-strip").style.display = mainOnly;
+    document.querySelector("#view-accounts .toolbar").style.display = mainOnly;
     var list = visibleAccounts();
     if (c) {
       list = list.filter(function(p){ return p.clientId === c.id; });

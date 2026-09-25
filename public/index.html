@@ -1,0 +1,2034 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>GEO Delivery Tracker</title>
+
+<style>
+/* ==========================================================================
+   Indegene DS 4.Ai — tokens (subset relevant to this surface)
+   Values per INDEGENE-DS-4AI-DESIGN-GUIDELINES.md, Section 4 / 15 / 16.2.
+   Font delivery deviates from spec (Google Fonts CDN, not local @font-face)
+   for simplicity of a single-file frontend — see the closing note for this trade-off.
+   ========================================================================== */
+:root{
+  /* brand */
+  --primary:#5D2CC9;
+  --primary-light-background:#F5F0FF;
+  --primary-background-hover:#421F8F;
+  --primary-background-pressed:#271254;
+
+  /* semantic */
+  --success-foreground:#1D5F02;
+  --success-light-background:#EAF3E6;
+  --error-foreground:#BF1724;
+  --error-light-background:#FFE8E8;
+  --warning-foreground:#946119;
+  --warning-light-background:#FFF4E1;
+  --info-foreground:#0E5FB7;
+  --info-light-background:#E1EEFB;
+
+  /* neutral ramp */
+  --neutral-50:#FAFAFA;
+  --neutral-100:#F2F2F2;
+  --neutral-200:#E5E5E5;
+  --neutral-300:#D1D5DB;
+  --neutral-400:#B5B3B3;
+  --neutral-500:#9A9A9C;
+  --neutral-600:#6D6E71;
+  --neutral-700:#4A4647;
+  --neutral-800:#332F30;
+  --neutral-900:#231F20;
+  --neutral-black:var(--neutral-900);
+  --neutral-disabled-text:var(--neutral-600);
+  --neutral-disabled-graphic:var(--neutral-400);
+  --neutral-disabled-background:var(--neutral-300);
+  --neutral-light-hover:var(--neutral-100);
+  --base-white:#FFFFFF;
+
+  /* surfaces */
+  --surface-app-header:#F8F8FC;
+  --surface-app-shell-nav:#FBFBFB;
+  --surface-page-content:#F7F8FA;
+
+  /* type */
+  --font-family:"DM Sans";
+  --display-large:  600 57px/64px var(--font-family);
+  --display-medium: 600 45px/52px var(--font-family);
+  --display-small:  600 36px/44px var(--font-family);
+  --headline-large:  600 32px/40px var(--font-family);
+  --headline-medium: 600 28px/36px var(--font-family);
+  --headline-small:  600 24px/32px var(--font-family);
+  --title-large:  500 22px/28px var(--font-family);
+  --title-medium: 500 16px/24px var(--font-family);
+  --title-small:  500 14px/20px var(--font-family);
+  --body-large:  400 16px/24px var(--font-family);
+  --body-medium: 400 14px/20px var(--font-family);
+  --body-small:  400 12px/16px var(--font-family);
+  --label-large:  600 14px/20px var(--font-family);
+  --label-medium: 600 12px/16px var(--font-family);
+  --label-small:  500 11px/16px var(--font-family);
+
+  /* spacing */
+  --spacing-0:0; --spacing-2:2px; --spacing-4:4px; --spacing-6:6px; --spacing-8:8px;
+  --spacing-10:10px; --spacing-12:12px; --spacing-16:16px; --spacing-20:20px;
+  --spacing-24:24px; --spacing-28:28px; --spacing-32:32px; --spacing-36:36px;
+  --spacing-40:40px; --spacing-48:48px; --spacing-52:52px; --spacing-56:56px; --spacing-96:96px;
+
+  /* radius */
+  --radius-none:0; --radius-2xs:2px; --radius-xs:4px; --radius-sm:8px;
+  --radius-md:16px; --radius-lg:24px; --radius-xl:32px; --radius-full:999px;
+
+  /* elevation */
+  --elevation-0:none;
+  --elevation-02:0 1px 2px rgba(0,0,0,.14), 0 0 2px rgba(0,0,0,.12);
+  --elevation-04:0 2px 4px rgba(0,0,0,.14), 0 0 2px rgba(0,0,0,.12);
+  --elevation-tooltip:0 4px 6px rgba(0,0,0,.25);
+  --elevation-toast:0 8px 16px rgba(0,0,0,.25), 0 10px 15px rgba(0,0,0,.10), 0 4px 6px rgba(0,0,0,.10);
+  --elevation-modal:0 32px 64px rgba(0,0,0,.24), 0 0 8px rgba(0,0,0,.20);
+
+  --border-1:1px; --border-2:2px; --border-4:4px;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font:var(--body-medium); letter-spacing:.25px;
+  color:var(--neutral-900);
+  background:var(--surface-app-shell-nav);
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+h1,h2,h3,h4{margin:0;}
+button{font-family:var(--font-family);}
+.mono{font-variant-numeric:tabular-nums;}
+a{color:var(--primary);}
+
+/* focus ring (buttons, chips, cards — anything button-like) */
+.ring-focus:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 2px var(--base-white), 0 0 0 4px var(--primary);
+}
+
+/* ---------- shell ---------- */
+.shell{display:flex; gap:var(--spacing-8); padding:var(--spacing-12); min-height:100vh;}
+.page-content{
+  flex:1; min-width:0;
+  background:var(--base-white);
+  border-radius:var(--radius-md);
+  border:1px solid var(--neutral-200);
+  padding:var(--spacing-24);
+  display:flex; flex-direction:column; gap:var(--spacing-16);
+}
+
+/* ---------- app shell nav rail (collapsible) ---------- */
+.rail{
+  background:var(--surface-app-shell-nav);
+  border:1px solid var(--neutral-200);
+  border-radius:var(--radius-md);
+  display:flex; flex-direction:column;
+  padding:var(--spacing-12) var(--spacing-8);
+  gap:var(--spacing-4);
+  flex-shrink:0;
+  position:sticky; top:var(--spacing-12);
+  height:calc(100vh - var(--spacing-24));
+  transition:width 200ms ease-out;
+}
+.rail.expanded{width:260px;}
+.rail.is-collapsed{width:64px; align-items:center;}
+.brand-row{display:flex; align-items:center; gap:var(--spacing-10); height:40px; padding:0 var(--spacing-8); margin-bottom:var(--spacing-8); flex:0 0 auto;}
+.brand-row .name{font:var(--title-medium); letter-spacing:.15px; color:var(--neutral-900); white-space:nowrap; overflow:hidden;}
+.new-btn{
+  display:flex; align-items:center; gap:var(--spacing-10); height:40px; padding:0 var(--spacing-12);
+  margin:0 0 var(--spacing-8); border:0; border-radius:var(--radius-sm);
+  background:var(--primary); color:var(--base-white); font:var(--label-large); letter-spacing:.1px; cursor:pointer; flex:0 0 auto; white-space:nowrap;
+}
+.new-btn:hover{background:var(--primary-background-hover);}
+.section-label{font:var(--label-small); letter-spacing:.5px; color:var(--neutral-500); text-transform:uppercase; padding:var(--spacing-12) var(--spacing-12) var(--spacing-4); flex:0 0 auto;}
+.nav-item{
+  display:flex; align-items:center; gap:var(--spacing-12); height:40px; padding:0 var(--spacing-12);
+  border:0; border-radius:var(--radius-sm); background:transparent; color:var(--neutral-700);
+  font:var(--label-large); letter-spacing:.1px; cursor:pointer; flex:0 0 auto; white-space:nowrap; width:100%;
+}
+.nav-item .icon{display:flex; flex-shrink:0;}
+.nav-item:hover{background:var(--neutral-100); color:var(--neutral-900);}
+.nav-item.is-active{background:var(--primary-light-background); color:var(--primary); font-weight:600;}
+.footer-row{margin-top:auto; border-top:1px solid var(--neutral-200); padding-top:var(--spacing-8); flex:0 0 auto; width:100%;}
+.rail.is-collapsed .brand-row .name, .rail.is-collapsed .nav-item .label,
+.rail.is-collapsed .new-btn .label, .rail.is-collapsed .section-label{display:none;}
+.rail.is-collapsed .nav-item, .rail.is-collapsed .new-btn{width:40px; padding:0; justify-content:center;}
+.rail.is-collapsed .footer-row .icon svg{transform:rotate(180deg);}
+
+/* ---------- views (main content pages, switched by the rail nav) ---------- */
+.view{display:flex; flex-direction:column; gap:var(--spacing-16);}
+.view[hidden]{display:none;}
+.empty-note{font:var(--body-small); letter-spacing:.4px; color:var(--neutral-500); font-style:italic; padding:var(--spacing-8) 0;}
+.group-title{font:var(--label-small); letter-spacing:.5px; color:var(--neutral-500); text-transform:uppercase;
+  padding-bottom:var(--spacing-4); border-bottom:1px solid var(--neutral-200); margin-bottom:var(--spacing-4);}
+
+/* full-page list cards (Risks, Invoices) */
+.list-card{background:var(--base-white); border-radius:var(--radius-sm); box-shadow:var(--elevation-02); padding:var(--spacing-16); cursor:pointer; transition:box-shadow 150ms ease-out;}
+.list-card:hover{box-shadow:var(--elevation-04);}
+.list-card-top{display:flex; align-items:center; justify-content:space-between; gap:var(--spacing-12); margin-bottom:var(--spacing-8);}
+.list-card-name{font:var(--title-small); letter-spacing:.1px; color:var(--primary); font-weight:600;}
+.list-card-body{font:var(--body-medium); letter-spacing:.25px; color:var(--neutral-900);}
+.list-card-body .rt-p:last-child{margin-bottom:0;}
+.list-card-foot{font:var(--label-small); letter-spacing:.5px; color:var(--neutral-600); margin-top:var(--spacing-8);}
+.list-card-grid{display:flex; flex-direction:column; gap:var(--spacing-12);}
+
+/* donut charts (hand-drawn SVG, no chart library) */
+.donut-wrap{position:relative; display:inline-flex; flex-shrink:0;}
+.donut-center{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;}
+.donut-center-value{font:var(--title-large); letter-spacing:0; color:var(--neutral-900);}
+.donut-center-label{font:var(--label-small); letter-spacing:.5px; color:var(--neutral-600); text-transform:uppercase;}
+.legend{display:flex; flex-direction:column; gap:var(--spacing-6);}
+.legend-row{display:flex; align-items:center; gap:var(--spacing-8); font:var(--body-small); letter-spacing:.4px; color:var(--neutral-700);}
+.legend-dot{width:9px; height:9px; border-radius:var(--radius-full); flex-shrink:0;}
+.legend-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.legend-pct{font-weight:600; color:var(--neutral-900); flex-shrink:0;}
+
+/* utilization: one card per resource */
+.util-card-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:var(--spacing-16);}
+.util-card{background:var(--base-white); border-radius:var(--radius-sm); box-shadow:var(--elevation-02); padding:var(--spacing-16);
+  display:flex; flex-direction:column; align-items:center; gap:var(--spacing-12); text-align:center;}
+.util-card-top{display:flex; flex-direction:column; align-items:center; gap:var(--spacing-6);}
+.util-card-name{font:var(--title-small); letter-spacing:.1px; color:var(--neutral-900);}
+.util-card .legend{width:100%; text-align:left;}
+
+/* revenue: donut + ranked bars */
+.revenue-grid{display:grid; grid-template-columns:minmax(220px,320px) 1fr; gap:var(--spacing-24); align-items:start;}
+.donut-panel{background:var(--base-white); border-radius:var(--radius-sm); box-shadow:var(--elevation-02); padding:var(--spacing-20);
+  display:flex; flex-direction:column; align-items:center; gap:var(--spacing-16);}
+.donut-panel .legend{width:100%;}
+.bar-panel{display:flex; flex-direction:column; gap:var(--spacing-12);}
+.bar-row{cursor:pointer; padding:var(--spacing-4) 0;}
+.bar-row-top{display:flex; justify-content:space-between; gap:var(--spacing-8); margin-bottom:var(--spacing-4);}
+.bar-row-name{font:var(--body-medium); letter-spacing:.25px; color:var(--neutral-900); font-weight:600;}
+.bar-row-value{font:var(--label-small); letter-spacing:.5px; color:var(--neutral-600);}
+.bar-track{height:8px; border-radius:var(--radius-full); background:var(--neutral-100); overflow:hidden;}
+.bar-fill{height:100%; border-radius:var(--radius-full);}
+@media (max-width:900px){ .revenue-grid{grid-template-columns:1fr;} }
+
+/* ---------- app header ---------- */
+.app-header{
+  height:56px; flex:0 0 auto;
+  display:flex; align-items:center; gap:var(--spacing-16);
+  padding:0 var(--spacing-20);
+  background:var(--surface-app-header);
+  border:1px solid var(--neutral-200);
+  border-radius:var(--radius-md);
+}
+.app-header .zone-l{display:flex; align-items:center; gap:var(--spacing-12); min-width:0;}
+.app-header .zone-c{flex:1;}
+.app-header .zone-r{display:flex; align-items:center; gap:var(--spacing-8); flex:0 0 auto;}
+.app-header .title{font:var(--title-medium); letter-spacing:.15px; color:var(--neutral-900);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.app-header .sub{font:var(--body-small); letter-spacing:.4px; color:var(--neutral-600);}
+
+.ai-mark{display:inline-flex; align-items:center; justify-content:center; color:var(--primary); flex-shrink:0;}
+.ai-mark svg{display:block;}
+
+/* ---------- alert banner (local-only mode) ---------- */
+.alert-banner{
+  display:flex; align-items:center; gap:var(--spacing-8);
+  background:var(--warning-light-background); color:var(--warning-foreground);
+  border-radius:var(--radius-sm); padding:var(--spacing-12) var(--spacing-16);
+  font:var(--body-medium); letter-spacing:.25px;
+}
+.alert-banner svg{flex-shrink:0;}
+
+/* ---------- kpi row ---------- */
+.kpi-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:var(--spacing-16);}
+.kpi-tile{background:var(--base-white); border-radius:var(--radius-sm); box-shadow:var(--elevation-02);
+  padding:var(--spacing-16); min-width:0;}
+.kpi-label{font:var(--label-medium); letter-spacing:.5px; color:var(--neutral-600); text-transform:uppercase; margin-bottom:var(--spacing-6);}
+.kpi-value{font:var(--headline-small); letter-spacing:0; color:var(--neutral-900);}
+.kpi-sub{font:var(--body-small); letter-spacing:.4px; color:var(--neutral-600); margin-top:var(--spacing-2);}
+.kpi-rag-row{display:flex; gap:var(--spacing-12); align-items:baseline; flex-wrap:wrap;}
+.kpi-rag-dot{display:inline-block; width:8px; height:8px; border-radius:var(--radius-full); margin-right:var(--spacing-4); vertical-align:middle;}
+
+/* ---------- buttons ---------- */
+.btn{
+  font:var(--label-large); letter-spacing:.1px;
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:var(--spacing-4);
+  border:1px solid transparent;
+  border-radius:var(--radius-sm);
+  cursor:pointer; user-select:none;
+  transition:background 120ms ease-out, color 120ms ease-out, box-shadow 120ms ease-out;
+}
+.btn-sm{height:32px; padding:0 var(--spacing-16);}
+.btn-md{height:36px; padding:0 18px;}
+.btn-lg{height:40px; padding:0 var(--spacing-20);}
+
+.btn-filled{background:var(--primary); color:var(--base-white);}
+.btn-filled:hover{background:var(--primary-background-hover);}
+.btn-filled:active{background:var(--primary-background-pressed);}
+
+.btn-outlined{background:var(--base-white); color:var(--primary); border-color:var(--primary);}
+.btn-outlined:hover{background:var(--primary-light-background); color:var(--primary-background-hover); border-color:var(--primary-background-hover); box-shadow:inset 0 0 0 1px var(--primary-background-hover);}
+.btn-outlined:active{background:var(--primary-background-pressed); color:var(--base-white); border-color:var(--primary-background-pressed);}
+
+.btn-text{background:transparent; color:var(--primary); padding-left:var(--spacing-12); padding-right:var(--spacing-12);}
+.btn-text:hover{background:var(--neutral-100); color:var(--primary-background-hover);}
+.btn-text:active{background:transparent; color:var(--primary-background-pressed);}
+
+.btn-destructive{background:var(--error-foreground); color:var(--base-white);}
+.btn-destructive:hover{background:#A01320;}
+.btn-destructive:active{background:#7F0F19;}
+
+.btn-icon{width:36px; padding:0;}
+.btn-icon.btn-sm{width:32px;}
+.btn-icon.btn-lg{width:40px;}
+.btn[disabled]{opacity:.5; pointer-events:none;}
+
+/* ---------- text field ---------- */
+.field{display:flex; flex-direction:column; gap:var(--spacing-4); width:100%;}
+.field>.label{font:var(--label-medium); letter-spacing:.5px; color:var(--neutral-900);}
+.field-wrap{
+  display:flex; align-items:center; gap:var(--spacing-8);
+  background:var(--base-white);
+  border:1px solid var(--neutral-600);
+  border-radius:var(--radius-sm);
+  padding:10px var(--spacing-16);
+  height:40px;
+}
+.field-wrap svg{flex-shrink:0; color:var(--neutral-600);}
+.field-wrap input, .field-wrap select, .field-wrap textarea{
+  flex:1; border:0; outline:0; background:transparent;
+  font:500 14px/20px var(--font-family); letter-spacing:.1px;
+  color:var(--neutral-900); width:100%; padding:0;
+}
+.field-wrap select{appearance:none; cursor:pointer;}
+.field-wrap textarea{resize:vertical; font-weight:400; padding:8px 0;}
+.field-wrap input::placeholder, .field-wrap textarea::placeholder{color:var(--neutral-600); font-weight:500;}
+.field-wrap:has(textarea){height:auto; align-items:flex-start;}
+.field-wrap:focus-within{border-color:var(--primary);}
+.field .helper{display:flex; align-items:center; gap:var(--spacing-6); font:var(--label-small); letter-spacing:.5px; color:var(--neutral-600);}
+
+/* ---------- week-jump trigger (opens calendar-popup) + the popup itself ---------- */
+.week-jump-trigger{
+  display:flex; align-items:center; gap:var(--spacing-8);
+  background:var(--base-white);
+  border:1px solid var(--neutral-600);
+  border-radius:var(--radius-sm);
+  padding:0 var(--spacing-16);
+  height:40px; width:100%;
+  font:500 14px/20px var(--font-family); letter-spacing:.1px; color:var(--neutral-900);
+  cursor:pointer; text-align:left;
+}
+.week-jump-trigger:hover{background:var(--neutral-100);}
+.week-jump-trigger svg{flex-shrink:0; color:var(--neutral-600);}
+.week-jump-trigger span{flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+
+.calendar-popup{
+  position:fixed; z-index:80; width:280px;
+  background:var(--base-white);
+  border:1px solid var(--neutral-200);
+  border-radius:var(--radius-md);
+  box-shadow:var(--elevation-modal);
+  padding:var(--spacing-16);
+}
+.calendar-popup[hidden]{display:none;}
+.calendar-popup-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--spacing-12);}
+.calendar-popup-title{font:var(--title-small); letter-spacing:.1px; color:var(--neutral-900);}
+.cal-nav-btn{
+  display:flex; align-items:center; justify-content:center;
+  width:28px; height:28px; border:0; border-radius:var(--radius-full);
+  background:transparent; color:var(--neutral-700); cursor:pointer;
+}
+.cal-nav-btn:hover{background:var(--neutral-100); color:var(--neutral-900);}
+.calendar-popup-weekdays{display:grid; grid-template-columns:repeat(7, 1fr); text-align:center; margin-bottom:var(--spacing-4);}
+.calendar-popup-weekdays span{font:var(--label-small); letter-spacing:.5px; color:var(--neutral-500); text-transform:uppercase;}
+.calendar-popup-grid{display:grid; grid-template-columns:repeat(7, 1fr); gap:2px;}
+.cal-day{
+  height:32px; border:0; background:transparent; border-radius:var(--radius-xs);
+  font:var(--body-small); font-size:13px; letter-spacing:.2px; color:var(--neutral-900); cursor:pointer;
+}
+.cal-day:hover{background:var(--neutral-100);}
+.cal-day.is-outside{color:var(--neutral-400);}
+.cal-day.is-in-range{background:var(--primary-light-background); color:var(--primary); font-weight:600; border-radius:0;}
+.cal-day.is-in-range:hover{background:var(--primary-light-background);}
+.cal-day.is-range-edge-l{border-radius:var(--radius-full) 0 0 var(--radius-full);}
+.cal-day.is-range-edge-r{border-radius:0 var(--radius-full) var(--radius-full) 0;}
+.cal-day.is-range-single{border-radius:var(--radius-full);}
+.cal-day.is-today{box-shadow:inset 0 0 0 1.5px var(--primary);}
+.calendar-popup-range-row{padding-top:var(--spacing-8); text-align:center;}
+.calendar-popup-foot{display:flex; align-items:center; justify-content:space-between; gap:var(--spacing-8); margin-top:var(--spacing-4); padding-top:var(--spacing-8); border-top:1px solid var(--neutral-200);}
+.calendar-popup-hint{font:var(--label-small); letter-spacing:.3px; color:var(--neutral-500);}
+#calendar-popup-apply:disabled{opacity:.5; cursor:not-allowed;}
+
+/* ---------- tags (read-only status) ---------- */
+.tag{
+  display:inline-flex; align-items:center; gap:var(--spacing-4);
+  height:24px; padding:0 var(--spacing-8);
+  border-radius:var(--radius-full);
+  font:var(--label-large); font-weight:500; letter-spacing:.1px;
+  border:1px solid transparent; white-space:nowrap;
+}
+.tag-neutral{background:var(--neutral-100); color:var(--neutral-900);}
+.tag-primary{background:var(--primary-light-background); color:var(--primary);}
+.tag-success{background:var(--success-light-background); color:var(--success-foreground);}
+.tag-error{background:var(--error-light-background); color:var(--error-foreground);}
+.tag-warning{background:var(--warning-light-background); color:var(--warning-foreground);}
+.tag-info{background:var(--info-light-background); color:var(--info-foreground);}
+
+/* ---------- chips (interactive) ---------- */
+.chip{
+  display:inline-flex; align-items:center; gap:var(--spacing-6);
+  height:32px; padding:0 var(--spacing-12);
+  border-radius:var(--radius-full);
+  font:var(--label-large); letter-spacing:.1px;
+  background:var(--base-white);
+  border:1px solid var(--neutral-300);
+  color:var(--neutral-900);
+  cursor:pointer;
+}
+.chip:hover{background:var(--neutral-100);}
+.chip.is-selected{background:var(--primary-light-background); border-color:var(--primary); color:var(--primary);}
+
+/* ---------- toolbar ---------- */
+.toolbar{display:flex; align-items:center; gap:var(--spacing-12); flex-wrap:wrap;}
+.toolbar .field{max-width:280px;}
+.chip-filter-group{display:flex; gap:var(--spacing-6); flex-wrap:wrap;}
+.week-jump-toolbar{max-width:190px;}
+.sort-field{margin-left:auto; min-width:200px;}
+.sort-field .field-wrap{position:relative;}
+.sort-field select{padding-right:var(--spacing-16);}
+.caret-wrap{display:flex; align-items:center; pointer-events:none;}
+
+/* ---------- card grid + project card ---------- */
+.card-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:var(--spacing-16);}
+.card{
+  background:var(--base-white);
+  border-radius:var(--radius-sm);
+  box-shadow:var(--elevation-02);
+  padding:var(--spacing-16);
+  transition:box-shadow 150ms ease-out;
+}
+.pcard{display:flex; flex-direction:column; gap:var(--spacing-12); cursor:pointer;}
+.pcard:hover{box-shadow:var(--elevation-04);}
+.pcard hr{border:0; border-top:1px solid var(--neutral-200); margin:0;}
+.pcard .status-row{display:flex; justify-content:space-between; align-items:center; gap:var(--spacing-8);}
+.pcard .avatars{display:flex;}
+.pcard .avatars span{
+  width:24px; height:24px; border-radius:var(--radius-full); border:2px solid var(--base-white);
+  margin-left:-8px; display:flex; align-items:center; justify-content:center;
+  font:var(--label-small); letter-spacing:0; color:var(--base-white);
+}
+.pcard .avatars span:first-child{margin-left:0;}
+.pcard .meta{display:flex; flex-direction:column; gap:var(--spacing-10);}
+.pcard .meta-row{display:flex; gap:var(--spacing-8); align-items:baseline;}
+.pcard .meta-row .k{font:var(--body-small); letter-spacing:.4px; color:var(--neutral-600); width:78px; flex-shrink:0;}
+.pcard .meta-row .v{font:700 12px/16px var(--font-family); letter-spacing:0; color:var(--neutral-900); flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.pcard .footer{display:flex; justify-content:space-between; align-items:center; margin-top:auto; gap:var(--spacing-8);}
+.pcard .ts{font:var(--label-small); letter-spacing:.5px; color:var(--neutral-600); display:flex; align-items:center; gap:var(--spacing-4); min-width:0;}
+.pcard .ts span{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+
+.empty-state{text-align:center; padding:var(--spacing-48) var(--spacing-20); color:var(--neutral-600);}
+.empty-state h3{font:var(--title-medium); letter-spacing:.15px; color:var(--neutral-900); margin-bottom:var(--spacing-8);}
+
+/* ---------- overlays (modal + detail panel) ---------- */
+.overlay{position:fixed; inset:0; background:rgba(35,31,32,.4); display:flex; justify-content:flex-end; z-index:50;}
+.overlay[hidden]{display:none;}
+.detail-panel{
+  width:min(760px,100%); height:100%; background:var(--base-white);
+  border-radius:var(--radius-md) 0 0 var(--radius-md);
+  box-shadow:var(--elevation-modal);
+  display:flex; flex-direction:column; overflow:hidden;
+}
+.detail-header{border-bottom:1px solid var(--neutral-200); padding:var(--spacing-24) var(--spacing-24) 0; flex:0 0 auto;}
+.detail-header-top{display:flex; justify-content:space-between; align-items:flex-start; gap:var(--spacing-12);}
+.detail-name-row{display:flex; align-items:center; gap:var(--spacing-10); flex-wrap:wrap;}
+.detail-name{font:var(--title-large); letter-spacing:0; color:var(--neutral-900);}
+.detail-meta-row{display:flex; gap:var(--spacing-16); flex-wrap:wrap; color:var(--neutral-600); font:var(--body-small); letter-spacing:.4px; margin:var(--spacing-8) 0 var(--spacing-16);}
+.detail-meta-row b{color:var(--neutral-900); font-weight:600;}
+.detail-kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:var(--spacing-16); margin-bottom:var(--spacing-16);}
+.detail-kpi-label{font:var(--label-medium); letter-spacing:.5px; color:var(--neutral-600); text-transform:uppercase;}
+.detail-kpi-value{font:var(--title-large); letter-spacing:0; color:var(--neutral-900); margin-top:var(--spacing-2);}
+.progress-track{height:6px; border-radius:var(--radius-full); background:var(--neutral-200); overflow:hidden; margin-top:var(--spacing-6);}
+.progress-fill{height:100%; background:var(--primary); border-radius:var(--radius-full);}
+
+.tabs{display:flex; gap:var(--spacing-24); border-bottom:1px solid var(--neutral-200);}
+.tab{
+  border:0; background:transparent; padding:var(--spacing-8) 0;
+  font:500 16px/24px var(--font-family); letter-spacing:.5px;
+  color:var(--neutral-600); cursor:pointer; position:relative;
+  display:flex; align-items:center; gap:var(--spacing-8); margin-bottom:-1px;
+}
+.tab.is-active{color:var(--primary);}
+.tab.is-active::after{content:""; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:var(--primary); border-radius:2px 2px 0 0;}
+
+.detail-body{flex:1 1 auto; overflow-y:auto; padding:var(--spacing-24);}
+
+.form-grid{display:grid; grid-template-columns:1fr 1fr; gap:var(--spacing-16);}
+.form-wide{grid-column:1/-1;}
+.form-actions{display:flex; justify-content:flex-end; gap:var(--spacing-12); margin-top:var(--spacing-4);}
+.form-actions.spread{justify-content:space-between;}
+
+.scope-toolbar{display:flex; justify-content:flex-end; margin-bottom:var(--spacing-12);}
+.scope-render{font:var(--body-medium); letter-spacing:.25px; color:var(--neutral-900);}
+.scope-edit textarea{width:100%; min-height:420px; font:var(--body-small); letter-spacing:.4px; line-height:1.6;
+  border:1px solid var(--neutral-600); border-radius:var(--radius-sm); padding:var(--spacing-16); color:var(--neutral-900);}
+.scope-edit textarea:focus-visible{outline:0; border-color:var(--primary);}
+
+.rt-heading{font:var(--label-small); letter-spacing:.5px; color:var(--neutral-500); text-transform:uppercase;
+  padding:var(--spacing-12) 0 var(--spacing-4); font-weight:600;}
+.rt-heading:first-child{padding-top:0;}
+.rt-p{margin:0 0 var(--spacing-10);}
+.rt-list{margin:0 0 var(--spacing-10); padding-left:var(--spacing-20);}
+.rt-list li{margin-bottom:var(--spacing-4);}
+.rt-empty{color:var(--neutral-500); font-style:italic;}
+
+/* ---------- weekly activity (Activity tab) ---------- */
+.week-jump{max-width:220px; margin-bottom:var(--spacing-12);}
+.week-chips{display:flex; gap:var(--spacing-6); flex-wrap:wrap;}
+.quick-weeks{margin-bottom:var(--spacing-16);}
+
+/* weekly report (all accounts, one week, on the main dashboard) */
+.weekly-account-list{display:flex; flex-direction:column; gap:var(--spacing-16);}
+.weekly-account{background:var(--base-white); border-radius:var(--radius-sm); box-shadow:var(--elevation-02); padding:var(--spacing-20); display:flex; flex-direction:column; gap:var(--spacing-16);}
+.weekly-account-head{display:flex; align-items:center; justify-content:space-between; gap:var(--spacing-12); cursor:pointer; padding-bottom:var(--spacing-16); border-bottom:1px solid var(--neutral-200);}
+.week-chip-dot{display:inline-block; width:6px; height:6px; border-radius:var(--radius-full); background:var(--primary); margin-left:var(--spacing-2);}
+.week-fields{display:flex; flex-direction:column; gap:var(--spacing-16);}
+.week-fields .tabs{margin-top:calc(var(--spacing-4) * -1);}
+.week-fields .field-wrap textarea{min-height:64px;}
+
+/* ---------- brand logo (cards + detail header) ---------- */
+.card-logo{display:flex; align-items:center; height:32px; max-width:100%;}
+.card-logo svg, .card-logo-img{height:100%; width:auto; max-width:100%; object-fit:contain;}
+.card-logo-fallback{font:var(--body-medium); letter-spacing:.25px; color:var(--primary); font-weight:600; height:auto;}
+.detail-logo{display:flex; align-items:center; height:36px; max-width:260px;}
+.detail-logo svg, .detail-logo-img{height:100%; width:auto; max-width:100%; object-fit:contain;}
+.detail-logo-fallback{font:var(--title-large); letter-spacing:0; color:var(--neutral-900); height:auto;}
+
+.roles-table{width:100%; border-collapse:collapse; margin-bottom:var(--spacing-12);}
+.roles-table th{text-align:left; font:var(--label-medium); letter-spacing:.5px; color:var(--neutral-600); text-transform:uppercase; padding:0 var(--spacing-8) var(--spacing-8) 0;}
+.roles-table td{padding:var(--spacing-4) var(--spacing-8) var(--spacing-4) 0; vertical-align:middle;}
+.roles-table td:first-child{width:38%;}
+.roles-table td:last-child{width:36px;}
+.roles-table .field-wrap{height:36px; padding:0 var(--spacing-12);}
+
+/* ---------- add-account modal ---------- */
+.modal-overlay{position:fixed; inset:0; background:rgba(35,31,32,.4); display:flex; align-items:center; justify-content:center; z-index:60; padding:var(--spacing-20);}
+.modal-overlay[hidden]{display:none;}
+.modal{background:var(--base-white); border-radius:var(--radius-md); box-shadow:var(--elevation-modal); width:min(560px,100%); max-height:90vh; overflow-y:auto; padding:var(--spacing-24);}
+.modal h2{font:var(--title-medium); letter-spacing:.15px; color:var(--neutral-900); margin-bottom:var(--spacing-16);}
+
+/* ---------- toast ---------- */
+.toast{
+  position:fixed; bottom:var(--spacing-24); left:50%; transform:translateX(-50%) translateY(10px);
+  background:var(--base-white); border-radius:var(--radius-md); box-shadow:var(--elevation-toast);
+  padding:var(--spacing-10) var(--spacing-16) var(--spacing-10) var(--spacing-12);
+  display:flex; align-items:center; gap:var(--spacing-8);
+  border-left:4px solid var(--neutral-400);
+  font:var(--body-small); letter-spacing:.4px; color:var(--neutral-700);
+  z-index:100; opacity:0; transition:opacity 150ms ease-out, transform 150ms ease-out; pointer-events:none;
+}
+.toast.is-visible{opacity:1; transform:translateX(-50%) translateY(0);}
+.toast.t-success{border-left-color:var(--success-foreground);}
+.toast.t-error{border-left-color:var(--error-foreground);}
+.toast.t-info{border-left-color:var(--primary);}
+
+@media (max-width:900px){
+  .shell{flex-direction:column;}
+  .rail, .rail.expanded, .rail.is-collapsed{width:100%; flex-direction:row; align-items:center; position:static; height:auto; overflow-x:auto; gap:var(--spacing-8);}
+  .brand-row, .section-label, .footer-row{display:none;}
+  #nav-list{display:contents;}
+  .new-btn, .nav-item{width:auto; flex:0 0 auto;}
+}
+@media (max-width:640px){
+  .shell{padding:var(--spacing-8);}
+  .page-content{padding:var(--spacing-16);}
+  .form-grid{grid-template-columns:1fr;}
+  .detail-body{padding:var(--spacing-16);}
+}
+
+/* Motion policy: every transition/animation is inert under reduced motion. */
+@media (prefers-reduced-motion: reduce){
+  *, *::before, *::after{
+    animation-duration:.01ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    scroll-behavior:auto !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="shell">
+  <aside class="rail expanded" id="app-rail" aria-label="Primary">
+    <div class="brand-row">
+      <span class="ai-mark" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1 L22 6.5 L22 17.5 L12 23 L2 17.5 L2 6.5 Z"/></svg>
+      </span>
+      <span class="name">GEO Tracker</span>
+    </div>
+    <button type="button" class="new-btn ring-focus" id="btn-add-account">
+      <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      <span class="label">New account</span>
+    </button>
+    <div id="nav-list"></div>
+    <div class="footer-row">
+      <button type="button" class="nav-item ring-focus" id="btn-toggle-rail" title="Collapse sidebar" aria-label="Collapse sidebar">
+        <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 6 8 12l6 6"/></svg></span>
+        <span class="label">Collapse</span>
+      </button>
+    </div>
+  </aside>
+
+  <section class="page-content">
+    <header class="app-header">
+      <div class="zone-l">
+        <div>
+          <div class="title" id="header-title">GEO Delivery Tracker</div>
+          <div class="sub" id="header-sub">Active engagements &middot; source of truth</div>
+        </div>
+      </div>
+      <div class="zone-c"></div>
+      <div class="zone-r"></div>
+    </header>
+
+    <div class="view" id="view-accounts">
+      <section class="kpi-row" id="kpi-strip"></section>
+
+      <section class="toolbar">
+        <div class="field">
+          <div class="field-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input id="search-input" type="search" placeholder="Search accounts&hellip;" aria-label="Search accounts">
+          </div>
+        </div>
+        <div class="chip-filter-group" id="rag-filter" role="group" aria-label="Filter by RAG status"></div>
+        <label class="field week-jump-toolbar">
+          <span class="label">Jump to a period</span>
+          <button type="button" class="week-jump-trigger" id="accounts-week-jump-btn" aria-haspopup="dialog">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            <span id="accounts-week-jump-label">Pick a date range&hellip;</span>
+          </button>
+        </label>
+        <div class="field sort-field">
+          <div class="field-wrap">
+            <select id="sort-select" aria-label="Sort accounts">
+              <option value="severity">Needs attention first</option>
+              <option value="order">Original order</option>
+              <option value="name">Name (A&ndash;Z)</option>
+              <option value="revenue">Revenue (high&ndash;low)</option>
+            </select>
+            <span class="caret-wrap" aria-hidden="true">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <main class="card-grid" id="card-grid"></main>
+      <div class="empty-state" id="empty-state" hidden>
+        <h3>No accounts match your filters</h3>
+        <p>Try clearing the search or RAG filter.</p>
+      </div>
+    </div>
+
+    <div class="view" id="view-weekly" hidden>
+      <div id="view-weekly-body"></div>
+    </div>
+
+    <div class="view" id="view-utilization" hidden>
+      <div id="view-utilization-body"></div>
+    </div>
+
+    <div class="view" id="view-risks" hidden>
+      <div id="view-risks-body"></div>
+    </div>
+
+    <div class="view" id="view-invoices" hidden>
+      <div id="view-invoices-body"></div>
+    </div>
+
+    <div class="view" id="view-revenue" hidden>
+      <div id="view-revenue-body"></div>
+    </div>
+  </section>
+</div>
+
+<div class="overlay" id="detail-overlay" hidden>
+  <div class="detail-panel" role="dialog" aria-modal="true" aria-label="Account details">
+    <div class="detail-header" id="detail-header"></div>
+    <div class="detail-body" id="detail-body"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="add-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Add account">
+    <h2>New account</h2>
+    <form id="add-form" class="form-grid">
+      <label class="field form-wide">
+        <span class="label">Account / brand name</span>
+        <div class="field-wrap"><input name="name" required placeholder="e.g. Regeneron"></div>
+      </label>
+      <label class="field">
+        <span class="label">RAG status</span>
+        <div class="field-wrap">
+          <select name="rag">
+            <option value="Green">Green</option>
+            <option value="Amber" selected>Amber</option>
+            <option value="Red">Red</option>
+          </select>
+        </div>
+      </label>
+      <label class="field">
+        <span class="label">SOW status</span>
+        <div class="field-wrap"><select name="sowStatus"></select></div>
+      </label>
+      <label class="field">
+        <span class="label">Project status</span>
+        <div class="field-wrap"><select name="projectStatus"></select></div>
+      </label>
+      <label class="field">
+        <span class="label">Invoice status</span>
+        <div class="field-wrap"><input name="invoiceStatus" list="invoice-status-options" placeholder="Not Scheduled"></div>
+      </label>
+      <label class="field">
+        <span class="label">Owner &ndash; Onshore</span>
+        <div class="field-wrap"><input name="ownerOnshore" placeholder="Name"></div>
+      </label>
+      <label class="field">
+        <span class="label">Owner &ndash; Offshore</span>
+        <div class="field-wrap"><input name="ownerOffshore" placeholder="Name"></div>
+      </label>
+      <label class="field">
+        <span class="label">Revenue (USD)</span>
+        <div class="field-wrap"><input name="revenue" type="number" min="0" step="1" value="0"></div>
+      </label>
+      <label class="field">
+        <span class="label">Invoiced to date (USD)</span>
+        <div class="field-wrap"><input name="invoicedToDate" type="number" min="0" step="1" value="0"></div>
+      </label>
+      <label class="field form-wide">
+        <span class="label">Scope of work (optional)</span>
+        <div class="field-wrap"><textarea name="scopeText" rows="4" placeholder="Engagement summary, deliverables, boundaries&hellip;"></textarea></div>
+      </label>
+      <div class="form-actions form-wide">
+        <button type="button" class="btn btn-md btn-text ring-focus" data-action="close-add">Cancel</button>
+        <button type="submit" class="btn btn-md btn-filled ring-focus">Create account</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<datalist id="invoice-status-options">
+  <option value="Not Scheduled">
+  <option value="Due Soon">
+  <option value="Invoiced">
+  <option value="Overdue">
+  <option value="Paid">
+</datalist>
+
+<div class="calendar-popup" id="calendar-popup" role="dialog" aria-label="Select a custom date range" hidden>
+  <div class="calendar-popup-head">
+    <button type="button" class="cal-nav-btn ring-focus" data-action="cal-prev-month" aria-label="Previous month">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    </button>
+    <span class="calendar-popup-title" id="calendar-popup-title"></span>
+    <button type="button" class="cal-nav-btn ring-focus" data-action="cal-next-month" aria-label="Next month">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+    </button>
+  </div>
+  <div class="calendar-popup-weekdays">
+    <span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span>
+  </div>
+  <div class="calendar-popup-grid" id="calendar-popup-grid"></div>
+  <div class="calendar-popup-range-row">
+    <span class="calendar-popup-hint" id="calendar-popup-range-label"></span>
+  </div>
+  <div class="calendar-popup-foot">
+    <button type="button" class="btn btn-text btn-sm ring-focus" data-action="cal-this-week">This week</button>
+    <button type="button" class="btn btn-filled btn-sm ring-focus" data-action="cal-apply" id="calendar-popup-apply">Apply</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(async function(){
+  "use strict";
+
+  var SOW_STATUS_OPTIONS = ["Signed","SoW to be created","SoW to be submitted","Proposal","POV","Brand Analysis","Under Negotiation","On Hold","N/A"];
+  var PROJECT_STATUS_OPTIONS = ["Yet to Start","In Progress","On Pause","Completed","On Hold","Cancelled","N/A"];
+  var DEFAULT_ROLES = ["Engagement Lead","Geo Strategist","Consultant","Lead Analyst","Analyst","Brand SME","Medical SME","Project Manager"];
+  var WEEK_SUBTABS = [["completed","Completed"],["inProgress","In Progress"],["nextSteps","Next Steps"]];
+  var RAG_SEVERITY = {Red:0, Amber:1, Green:2};
+  var RAG_TAG_CLASS = {Green:"tag-success", Amber:"tag-warning", Red:"tag-error"};
+
+  var ICON_CLOSE = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+  var ICON_EDIT = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+  var ICON_CLOCK = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+  var ICON_WARNING = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>';
+  var ICON_ADD = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>';
+
+  var NAV_ICON_GRID = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>';
+  var NAV_ICON_PIE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>';
+  var NAV_ICON_RISK = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/></svg>';
+  var NAV_ICON_INVOICE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>';
+  var NAV_ICON_REVENUE = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-5 4 3 5-7"/></svg>';
+  var NAV_ICON_CALENDAR = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
+  var ICON_CAL_SM = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
+
+  var NAV_ITEMS = [
+    {id:"accounts", label:"Accounts", icon: NAV_ICON_GRID},
+    {id:"weekly", label:"Weekly Report", icon: NAV_ICON_CALENDAR},
+    {id:"utilization", label:"Utilization", icon: NAV_ICON_PIE},
+    {id:"risks", label:"Risks", icon: NAV_ICON_RISK},
+    {id:"invoices", label:"Invoices", icon: NAV_ICON_INVOICE},
+    {id:"revenue", label:"Revenue", icon: NAV_ICON_REVENUE}
+  ];
+
+  var DONUT_COLORS = ["var(--primary)","var(--success-foreground)","var(--warning-foreground)","var(--info-foreground)","var(--error-foreground)","var(--primary-background-hover)","var(--neutral-600)","var(--neutral-400)"];
+
+  var accounts = [];
+  var currentDetailId = null;
+  var activeTab = "overview";
+  var filterRag = "All";
+  var searchTerm = "";
+  var sortMode = "severity";
+  var scopeEditing = false;
+  var draftRoles = null;
+  var selectedWeekKey = null;
+  var weekSubTab = "completed";
+  var weeklyWeekKey = null;
+  var currentView = "accounts";
+  var railCollapsed = false;
+  var calendarPopupFor = null;
+  var calendarPopupMonth = null;
+  var calendarRangeFrom = null;
+  var calendarRangeTo = null;
+
+  function $(sel, root){ return (root || document).querySelector(sel); }
+
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  function slugify(name){
+    var base = String(name || "account").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    return base || "account";
+  }
+
+  function uniqueId(name){
+    var base = slugify(name);
+    var existing = new Set(accounts.map(function(a){ return a.id; }));
+    if (!existing.has(base)) return base;
+    var n = 2;
+    while (existing.has(base + "-" + n)) n++;
+    return base + "-" + n;
+  }
+
+  function money(n){
+    var v = Number(n) || 0;
+    return "$" + v.toLocaleString("en-US", {maximumFractionDigits: 0});
+  }
+
+  function fmtDate(iso){
+    if (!iso) return "—";
+    var d = new Date(iso + "T00:00:00");
+    if (isNaN(d.getTime())) return esc(iso);
+    return d.toLocaleDateString("en-US", {day:"numeric", month:"short", year:"numeric"});
+  }
+
+  function todayIso(){
+    var d = new Date();
+    var m = String(d.getMonth() + 1).padStart(2, "0");
+    var day = String(d.getDate()).padStart(2, "0");
+    return d.getFullYear() + "-" + m + "-" + day;
+  }
+
+  // ---- week helpers: every account is tracked on a Monday-anchored weekly cadence ----
+  function isoFromDate(d){
+    return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function mondayOf(d){
+    var dd = new Date(d.getTime());
+    var day = dd.getDay();
+    var diff = (day === 0 ? -6 : 1 - day);
+    dd.setDate(dd.getDate() + diff);
+    dd.setHours(0, 0, 0, 0);
+    return dd;
+  }
+  function currentWeekKey(){ return isoFromDate(mondayOf(new Date())); }
+
+  // A period key is either a bare Monday date ("2026-09-21", a legacy/canonical
+  // Mon–Sun week) or a "from_to" pair for a custom-length, custom-start range.
+  function periodBoundsFromKey(key){
+    if (key.indexOf("_") !== -1) {
+      var parts = key.split("_");
+      return {from: parts[0], to: parts[1]};
+    }
+    var end = new Date(key + "T00:00:00");
+    end.setDate(end.getDate() + 6);
+    return {from: key, to: isoFromDate(end)};
+  }
+  // Reuses the bare-date form when the range is exactly a canonical Mon–Sun week
+  // (so it lands on the same bucket legacy weekly data already lives in);
+  // any other span gets an explicit "from_to" key.
+  function periodKeyFor(from, to){
+    var fromD = new Date(from + "T00:00:00");
+    var expectedEnd = new Date(fromD.getTime());
+    expectedEnd.setDate(expectedEnd.getDate() + 6);
+    if (fromD.getDay() === 1 && isoFromDate(expectedEnd) === to) return from;
+    return from + "_" + to;
+  }
+  function compareWeekKeysDesc(x, y){
+    var bx = periodBoundsFromKey(x), by = periodBoundsFromKey(y);
+    if (bx.from !== by.from) return bx.from < by.from ? 1 : -1;
+    if (bx.to !== by.to) return bx.to < by.to ? 1 : -1;
+    return 0;
+  }
+  function fmtShortDate(iso){
+    var d = new Date(iso + "T00:00:00");
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString("en-US", {month:"short", day:"numeric"});
+  }
+  function weekLabel(key){
+    var b = periodBoundsFromKey(key);
+    var start = new Date(b.from + "T00:00:00");
+    if (isNaN(start.getTime())) return key;
+    var end = new Date(b.to + "T00:00:00");
+    var fmt = function(d){ return d.toLocaleDateString("en-US", {month:"short", day:"numeric"}); };
+    if (b.from === b.to) return fmt(start);
+    return fmt(start) + " – " + fmt(end);
+  }
+  function weekData(a, key){
+    return (a.weeks && a.weeks[key]) || {completed:"", inProgress:"", nextSteps:"", risk:"", mitigationActions:"", mitigationDeadline:null, scopeCreep:""};
+  }
+
+  // ---- calendar popup: click-only custom date-range picker shared by all three "jump to a range" triggers ----
+  function openCalendarPopup(forContext, triggerEl, weekIso){
+    calendarPopupFor = forContext;
+    var seedKey = weekIso || currentWeekKey();
+    var bounds = periodBoundsFromKey(seedKey);
+    calendarRangeFrom = bounds.from;
+    calendarRangeTo = bounds.to;
+    calendarPopupMonth = new Date(calendarRangeFrom + "T00:00:00");
+    calendarPopupMonth.setDate(1);
+    renderCalendarPopup();
+    var popup = $("#calendar-popup");
+    popup.hidden = false;
+    var rect = triggerEl.getBoundingClientRect();
+    var popupWidth = 296;
+    var left = rect.left;
+    if (left + popupWidth > window.innerWidth - 8) left = Math.max(8, window.innerWidth - popupWidth - 8);
+    var top = rect.bottom + 6;
+    var popupHeight = 360;
+    if (top + popupHeight > window.innerHeight - 8) top = Math.max(8, rect.top - popupHeight - 6);
+    popup.style.left = left + "px";
+    popup.style.top = top + "px";
+  }
+
+  function closeCalendarPopup(){
+    var popup = $("#calendar-popup");
+    if (popup) popup.hidden = true;
+    calendarPopupFor = null;
+    calendarRangeFrom = null;
+    calendarRangeTo = null;
+  }
+
+  function pickCalendarDay(iso){
+    if (!calendarRangeFrom || (calendarRangeFrom && calendarRangeTo)) {
+      calendarRangeFrom = iso;
+      calendarRangeTo = null;
+    } else if (iso < calendarRangeFrom) {
+      calendarRangeTo = calendarRangeFrom;
+      calendarRangeFrom = iso;
+    } else {
+      calendarRangeTo = iso;
+    }
+    renderCalendarPopup();
+  }
+
+  function applyCalendarRange(from, to){
+    var ctx = calendarPopupFor;
+    var key = periodKeyFor(from, to || from);
+    closeCalendarPopup();
+    if (ctx === "accounts") { weeklyWeekKey = key; navigateTo("weekly"); }
+    else if (ctx === "weekly") { weeklyWeekKey = key; renderWeeklyView(); refreshHeaderSub(); }
+    else if (ctx === "detail") { selectedWeekKey = key; renderDetail(); }
+  }
+
+  function renderCalendarPopup(){
+    var monthStart = new Date(calendarPopupMonth.getTime());
+    $("#calendar-popup-title").textContent = monthStart.toLocaleDateString("en-US", {month:"long", year:"numeric"});
+
+    var startDow = (monthStart.getDay() + 6) % 7; // 0 = Monday
+    var gridStart = new Date(monthStart.getTime());
+    gridStart.setDate(gridStart.getDate() - startDow);
+
+    var today = todayIso();
+    var from = calendarRangeFrom;
+    var to = calendarRangeTo || calendarRangeFrom;
+
+    var days = [];
+    for (var i = 0; i < 42; i++) {
+      var cellDate = new Date(gridStart.getTime());
+      cellDate.setDate(cellDate.getDate() + i);
+      days.push(isoFromDate(cellDate));
+    }
+
+    var cellsHtml = days.map(function(iso, i){
+      var cellDate = new Date(gridStart.getTime());
+      cellDate.setDate(cellDate.getDate() + i);
+      var inMonth = cellDate.getMonth() === monthStart.getMonth();
+      var inRange = from && iso >= from && iso <= to;
+      var isToday = iso === today;
+      var col = i % 7;
+      var prevInRange = i > 0 && from && days[i - 1] >= from && days[i - 1] <= to;
+      var nextInRange = i < 41 && from && days[i + 1] >= from && days[i + 1] <= to;
+      var edgeL = inRange && (col === 0 || !prevInRange);
+      var edgeR = inRange && (col === 6 || !nextInRange);
+      var cls = "cal-day";
+      if (!inMonth) cls += " is-outside";
+      if (isToday) cls += " is-today";
+      if (inRange) {
+        cls += " is-in-range";
+        if (edgeL && edgeR) cls += " is-range-single";
+        else if (edgeL) cls += " is-range-edge-l";
+        else if (edgeR) cls += " is-range-edge-r";
+      }
+      return '<button type="button" class="' + cls + '" data-cal-date="' + iso + '">' + cellDate.getDate() + '</button>';
+    }).join("");
+    $("#calendar-popup-grid").innerHTML = cellsHtml;
+
+    var rangeLabel = "Pick a start day";
+    if (from && !calendarRangeTo) rangeLabel = fmtShortDate(from) + " — pick an end day, or Apply for one day";
+    else if (from) rangeLabel = fmtShortDate(from) + (to !== from ? " – " + fmtShortDate(to) : "") + " selected";
+    $("#calendar-popup-range-label").textContent = rangeLabel;
+    $("#calendar-popup-apply").disabled = !from;
+  }
+
+  function latestNonEmptyWeek(a, field){
+    var weeks = a.weeks || {};
+    var keys = Object.keys(weeks).sort(compareWeekKeysDesc);
+    for (var i = 0; i < keys.length; i++) {
+      var w = weeks[keys[i]];
+      if (w && w[field] && String(w[field]).trim()) return {weekKey: keys[i], value: w[field]};
+    }
+    return null;
+  }
+
+  function ragClass(rag){
+    var r = String(rag || "Amber");
+    return (r === "Green" || r === "Red") ? r : "Amber";
+  }
+
+  function invoiceTagClass(status){
+    var s = String(status || "").toLowerCase();
+    if (s.indexOf("overdue") > -1) return "tag-error";
+    if (s.indexOf("paid") > -1 || s.indexOf("invoiced") > -1) return "tag-success";
+    if (s.indexOf("due") > -1) return "tag-warning";
+    return "tag-neutral";
+  }
+
+  var AVATAR_COLORS = ["var(--primary)", "var(--success-foreground)"];
+  function initials(name){
+    if (!name) return "–";
+    var parts = String(name).split(/[\s/]+/).filter(Boolean);
+    if (!parts.length) return "–";
+    if (parts.length === 1) return esc(parts[0].slice(0,2).toUpperCase());
+    return esc((parts[0][0] + parts[1][0]).toUpperCase());
+  }
+
+  // Source logos vary a lot in built-in padding (a square icon+wordmark lockup
+  // vs. a tightly-cropped wordmark), so matching box height alone doesn't
+  // match visual weight. These per-account overrides were tuned by eye.
+  var LOGO_HEIGHT_OVERRIDE = {
+    "novo-nordisk": {card: 56, detail: 64},
+    "stoke-theraupetics": {card: 44, detail: 48}
+  };
+
+  function logoHtml(a, cls){
+    var sizeKey = cls === "detail-logo" ? "detail" : "card";
+    var override = LOGO_HEIGHT_OVERRIDE[a.id] ? LOGO_HEIGHT_OVERRIDE[a.id][sizeKey] : null;
+    var style = override ? ' style="height:' + override + 'px;"' : "";
+    if (a.logoSvg) return '<span class="' + cls + '"' + style + ' role="img" aria-label="' + esc(a.name) + '">' + a.logoSvg + '</span>';
+    if (a.logoImg) return '<span class="' + cls + '"' + style + '><img class="' + cls + '-img" src="' + esc(a.logoImg) + '" alt="' + esc(a.name) + '"></span>';
+    return '<span class="' + cls + ' ' + cls + '-fallback">' + esc(a.name) + '</span>';
+  }
+
+  // ---- hand-drawn SVG donut chart (no chart library) ----
+  function donutSvg(segments, opts){
+    opts = opts || {};
+    var size = opts.size || 96;
+    var stroke = opts.stroke || 14;
+    var r = (size - stroke) / 2;
+    var c = size / 2;
+    var circumference = 2 * Math.PI * r;
+    var total = segments.reduce(function(s, x){ return s + (Number(x.value) || 0); }, 0);
+    var html = '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" role="img" aria-label="' + esc(opts.ariaLabel || "") + '">';
+    html += '<circle cx="' + c + '" cy="' + c + '" r="' + r + '" fill="none" stroke="var(--neutral-100)" stroke-width="' + stroke + '"/>';
+    var offset = 0;
+    if (total > 0) {
+      segments.forEach(function(seg){
+        var val = Number(seg.value) || 0;
+        if (val <= 0) return;
+        var len = (val / total) * circumference;
+        html += '<circle cx="' + c + '" cy="' + c + '" r="' + r + '" fill="none" stroke="' + seg.color + '" stroke-width="' + stroke + '" ' +
+          'stroke-dasharray="' + len + ' ' + (circumference - len) + '" stroke-dashoffset="' + (-offset) + '" ' +
+          'transform="rotate(-90 ' + c + ' ' + c + ')" stroke-linecap="butt"><title>' + esc(seg.label || "") + '</title></circle>';
+        offset += len;
+      });
+    }
+    html += '</svg>';
+    return '<div class="donut-wrap" style="width:' + size + 'px;height:' + size + 'px;">' + html + '<div class="donut-center">' + (opts.centerHtml || "") + '</div></div>';
+  }
+
+  // ---- rich text formatter for SOW blocks, updates, risks ----
+  function formatRichText(raw){
+    if (!raw || !String(raw).trim()) return '<p class="rt-empty">No details recorded.</p>';
+    var text = String(raw).replace(/\r\n/g, "\n");
+    var blocks = text.split(/\n{2,}/);
+    var headMarker = /^(D\d+|WS\d+|TRACK\s*\d+|PART\s+[A-Z]|MILESTONE\s*\d*|CHECKPOINT\s*[\d.]*)\b/i;
+    var html = "";
+    for (var b = 0; b < blocks.length; b++) {
+      var lines = blocks[b].split("\n").map(function(s){ return s.trim(); }).filter(Boolean);
+      if (!lines.length) continue;
+      var idx = 0;
+      var first = lines[0];
+      var isHeading = (/^.{2,90}:$/.test(first) && first.indexOf("•") === -1) || headMarker.test(first);
+      if (isHeading) {
+        html += '<div class="rt-heading">' + esc(first.replace(/:$/, "")) + '</div>';
+        idx = 1;
+      }
+      var inList = false;
+      for (; idx < lines.length; idx++) {
+        var line = lines[idx];
+        var bulletMatch = line.match(/^[•\-*]\s*(.*)$/);
+        if (bulletMatch && bulletMatch[1]) {
+          if (!inList) { html += '<ul class="rt-list">'; inList = true; }
+          html += "<li>" + esc(bulletMatch[1]) + "</li>";
+        } else {
+          if (inList) { html += "</ul>"; inList = false; }
+          var lm = line.match(/^([A-Z][A-Za-z0-9 &()\/]{1,40}:)\s+(.*)$/);
+          if (lm) html += '<p class="rt-p"><strong>' + esc(lm[1]) + "</strong> " + esc(lm[2]) + "</p>";
+          else html += '<p class="rt-p">' + esc(line) + "</p>";
+        }
+      }
+      if (inList) html += "</ul>";
+    }
+    return html || '<p class="rt-empty">No details recorded.</p>';
+  }
+
+  function showToast(msg, variant){
+    var t = $("#toast");
+    t.className = "toast is-visible t-" + (variant || "success");
+    t.textContent = msg;
+    clearTimeout(showToast._h);
+    showToast._h = setTimeout(function(){ t.classList.remove("is-visible"); }, 2600);
+  }
+
+  // ---------------- data layer (REST API backed by Postgres via server.js) ----------------
+  function apiFetch(url, opts){
+    return fetch(url, opts).then(function(r){
+      if (!r.ok) return r.json().catch(function(){ return {}; }).then(function(body){
+        throw new Error(body.error || (r.status + " " + r.statusText));
+      });
+      return r.json();
+    });
+  }
+
+  function loadAccounts(){
+    return apiFetch("/api/accounts").then(function(list){
+      accounts = list;
+      renderAll();
+    }).catch(function(err){
+      showToast("Load failed: " + err.message, "error");
+    });
+  }
+
+  function updateAccount(id, patch){
+    return apiFetch("/api/accounts/" + encodeURIComponent(id), {
+      method: "PATCH",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(patch)
+    }).then(function(updated){
+      var a = accounts.find(function(x){ return x.id === id; });
+      if (a) Object.assign(a, updated);
+      showToast("Saved", "success");
+    }).catch(function(err){
+      showToast("Save failed: " + err.message, "error");
+    });
+  }
+
+  function createAccount(data){
+    var id = uniqueId(data.name);
+    var full = Object.assign({
+      order: Date.now(),
+      rag: "Amber",
+      sowStatus: "N/A",
+      projectStatus: "Yet to Start",
+      revenue: 0,
+      invoicedToDate: 0,
+      nextInvoiceDue: null,
+      invoiceStatus: "Not Scheduled",
+      scopeText: "",
+      notes: "",
+      ownerOnshore: "",
+      ownerOffshore: "",
+      roles: DEFAULT_ROLES.map(function(r){ return {role: r, value: ""}; }),
+      engagementStartDate: null,
+      engagementEndDate: null,
+      logoSvg: "",
+      logoImg: "",
+      weeks: {}
+    }, data);
+    return apiFetch("/api/accounts/" + encodeURIComponent(id), {
+      method: "PUT",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(full)
+    }).then(function(created){
+      accounts.push(created);
+      showToast("Account created", "success");
+      return id;
+    }).catch(function(err){
+      showToast("Create failed: " + err.message, "error");
+    });
+  }
+
+  function deleteAccount(id){
+    return apiFetch("/api/accounts/" + encodeURIComponent(id), {method: "DELETE"}).then(function(){
+      accounts = accounts.filter(function(a){ return a.id !== id; });
+      showToast("Account deleted", "success");
+    }).catch(function(err){
+      showToast("Delete failed: " + err.message, "error");
+    });
+  }
+
+  // ---------------- rendering: kpi row ----------------
+  function renderKpis(){
+    var totalRevenue = 0, totalInvoiced = 0, overdue = 0;
+    var ragCount = {Green:0, Amber:0, Red:0};
+    accounts.forEach(function(a){
+      totalRevenue += Number(a.revenue) || 0;
+      totalInvoiced += Number(a.invoicedToDate) || 0;
+      if (invoiceTagClass(a.invoiceStatus) === "tag-error") overdue++;
+      ragCount[ragClass(a.rag)]++;
+    });
+    var outstanding = totalRevenue - totalInvoiced;
+    var pct = totalRevenue ? Math.round((totalInvoiced / totalRevenue) * 100) : 0;
+
+    $("#kpi-strip").innerHTML =
+      '<div class="kpi-tile"><div class="kpi-label">Contracted revenue</div><div class="kpi-value mono">' + money(totalRevenue) + '</div><div class="kpi-sub">' + accounts.length + ' active account' + (accounts.length === 1 ? "" : "s") + '</div></div>' +
+      '<div class="kpi-tile"><div class="kpi-label">Invoiced to date</div><div class="kpi-value mono">' + money(totalInvoiced) + '</div><div class="kpi-sub">' + pct + '% invoiced</div></div>' +
+      '<div class="kpi-tile"><div class="kpi-label">Outstanding</div><div class="kpi-value mono">' + money(outstanding) + '</div><div class="kpi-sub">not yet invoiced</div></div>' +
+      '<div class="kpi-tile"><div class="kpi-label">Delivery health</div><div class="kpi-rag-row">' +
+        '<span class="mono"><span class="kpi-rag-dot" style="background:var(--success-foreground)"></span>' + ragCount.Green + '</span>' +
+        '<span class="mono"><span class="kpi-rag-dot" style="background:var(--warning-foreground)"></span>' + ragCount.Amber + '</span>' +
+        '<span class="mono"><span class="kpi-rag-dot" style="background:var(--error-foreground)"></span>' + ragCount.Red + '</span>' +
+      '</div><div class="kpi-sub">green &middot; amber &middot; red</div></div>' +
+      '<div class="kpi-tile"><div class="kpi-label">Overdue invoices</div><div class="kpi-value mono">' + overdue + '</div><div class="kpi-sub">needs follow-up</div></div>';
+  }
+
+  // ---------------- rendering: filters ----------------
+  function renderFilterChips(){
+    var opts = ["All","Green","Amber","Red"];
+    $("#rag-filter").innerHTML = opts.map(function(o){
+      return '<button type="button" class="chip ring-focus' + (filterRag === o ? " is-selected" : "") + '" data-rag-filter="' + o + '">' + o + "</button>";
+    }).join("");
+  }
+
+
+  // ---- utilization: parsed live from each account's Team tab, not a static import ----
+  function parseRoleAssignment(value){
+    if (!value) return [];
+    var m = String(value).match(/^(.*?)[\s—-]+(\d+(?:\.\d+)?)\s*%\s*$/);
+    if (!m) return [];
+    var pct = parseFloat(m[2]) / 100;
+    if (isNaN(pct)) return [];
+    return m[1].split(/,|\/|\n/).map(function(s){ return s.trim(); }).filter(Boolean).map(function(name){
+      return {name: name, pct: pct};
+    });
+  }
+
+  function utilStatus(pct){
+    if (pct <= 0) return {label:"Unallocated", tag:"tag-neutral"};
+    if (pct > 1) return {label:"Overbooked", tag:"tag-error"};
+    if (pct >= 0.99) return {label:"Fully Booked", tag:"tag-primary"};
+    if (pct >= 0.75) return {label:"Balanced", tag:"tag-success"};
+    return {label:"Underbooked", tag:"tag-warning"};
+  }
+
+  function computeUtilization(){
+    var byPerson = {};
+    accounts.forEach(function(a){
+      (a.roles || []).forEach(function(r){
+        parseRoleAssignment(r.value).forEach(function(asg){
+          if (!byPerson[asg.name]) byPerson[asg.name] = {name: asg.name, totalPct: 0, accounts: []};
+          byPerson[asg.name].totalPct += asg.pct;
+          byPerson[asg.name].accounts.push({id: a.id, account: a.name, role: r.role, pct: asg.pct});
+        });
+      });
+    });
+    var list = Object.keys(byPerson).map(function(k){ return byPerson[k]; });
+    list.sort(function(x, y){ return y.totalPct - x.totalPct; });
+    return list;
+  }
+
+  function computeRiskWatch(){
+    return accounts.map(function(a){
+      var hit = latestNonEmptyWeek(a, "risk");
+      return hit ? {a: a, weekKey: hit.weekKey, risk: hit.value} : null;
+    }).filter(Boolean).sort(function(x, y){ return y.weekKey.localeCompare(x.weekKey); });
+  }
+
+  function computeScopeCreepWatch(){
+    return accounts.map(function(a){
+      var hit = latestNonEmptyWeek(a, "scopeCreep");
+      return hit ? {a: a, weekKey: hit.weekKey, note: hit.value} : null;
+    }).filter(Boolean).sort(function(x, y){ return y.weekKey.localeCompare(x.weekKey); });
+  }
+
+  function computeUpcomingInvoices(){
+    return accounts.filter(function(a){ return a.nextInvoiceDue; })
+      .sort(function(x, y){ return (x.nextInvoiceDue||"").localeCompare(y.nextInvoiceDue||""); });
+  }
+
+  var VIEW_META = {
+    accounts: {title:"GEO Delivery Tracker", sub: function(){ return accounts.length + " active account" + (accounts.length===1?"":"s") + " · source of truth"; }},
+    weekly: {title:"Weekly Report", sub: function(){ return "Every account's status for " + weekLabel(weeklyWeekKey || currentWeekKey()); }},
+    utilization: {title:"Team Utilization", sub: function(){ return computeUtilization().length + " people allocated across " + accounts.length + " accounts"; }},
+    risks: {title:"Risk Watch", sub: function(){ return computeRiskWatch().length + " account" + (computeRiskWatch().length===1?"":"s") + " with an open risk"; }},
+    invoices: {title:"Invoice Calendar", sub: function(){ return computeUpcomingInvoices().length + " account" + (computeUpcomingInvoices().length===1?"":"s") + " with a scheduled invoice"; }},
+    revenue: {title:"Revenue Overview", sub: function(){ return "Portfolio composition by delivery status"; }}
+  };
+
+  function renderNavList(){
+    var html = "";
+    NAV_ITEMS.forEach(function(item, i){
+      if (i === 2) html += '<div class="section-label">Portfolio</div>';
+      html += '<button type="button" class="nav-item ring-focus' + (currentView === item.id ? " is-active" : "") + '" data-nav="' + item.id + '" title="' + esc(item.label) + '">' +
+        '<span class="icon">' + item.icon + '</span><span class="label">' + esc(item.label) + '</span></button>';
+    });
+    $("#nav-list").innerHTML = html;
+  }
+
+  function applyRailCollapsed(){
+    $("#app-rail").classList.toggle("is-collapsed", railCollapsed);
+    var btn = $("#btn-toggle-rail");
+    btn.title = railCollapsed ? "Expand sidebar" : "Collapse sidebar";
+    btn.setAttribute("aria-label", btn.title);
+  }
+
+  function navigateTo(view){
+    currentView = view;
+    try { localStorage.setItem("geo-tracker-view", view); } catch (e) {}
+    document.querySelectorAll("#nav-list .nav-item").forEach(function(btn){
+      btn.classList.toggle("is-active", btn.getAttribute("data-nav") === view);
+    });
+    ["accounts","weekly","utilization","risks","invoices","revenue"].forEach(function(v){
+      var el = $("#view-" + v);
+      if (el) el.hidden = (v !== view);
+    });
+    renderCurrentView();
+  }
+
+  function refreshHeaderSub(){
+    var meta = VIEW_META[currentView];
+    if (meta) $("#header-sub").textContent = meta.sub();
+  }
+
+  function renderCurrentView(){
+    var meta = VIEW_META[currentView];
+    $("#header-title").textContent = meta.title;
+    $("#header-sub").textContent = meta.sub();
+    if (currentView === "accounts") { renderKpis(); renderFilterChips(); renderGrid(); }
+    else if (currentView === "weekly") renderWeeklyView();
+    else if (currentView === "utilization") renderUtilizationView();
+    else if (currentView === "risks") renderRisksView();
+    else if (currentView === "invoices") renderInvoicesView();
+    else if (currentView === "revenue") renderRevenueView();
+  }
+
+  function computeGlobalQuickWeeks(){
+    var set = {};
+    accounts.forEach(function(a){
+      Object.keys(a.weeks || {}).forEach(function(k){ set[k] = true; });
+    });
+    set[currentWeekKey()] = true;
+    var keys = Object.keys(set);
+    keys.sort(compareWeekKeysDesc);
+    return keys;
+  }
+
+  function renderWeeklyView(){
+    if (!weeklyWeekKey) weeklyWeekKey = currentWeekKey();
+    var cur = currentWeekKey();
+    var quickKeys = computeGlobalQuickWeeks();
+
+    var chipsHtml = quickKeys.map(function(k){
+      return '<button type="button" class="chip ring-focus' + (weeklyWeekKey === k ? " is-selected" : "") + '" data-weekly-week-key="' + k + '">' +
+        weekLabel(k) + (k === cur ? " (current)" : "") + '</button>';
+    }).join("");
+
+    var jumpHtml =
+      '<label class="field week-jump">' + fieldLabel("Jump to a period") +
+        '<button type="button" class="week-jump-trigger" id="weekly-jump-btn" aria-haspopup="dialog">' + ICON_CAL_SM + '<span>' + esc(weekLabel(weeklyWeekKey)) + '</span></button>' +
+        '<span class="helper">Pick a custom start and end date — not limited to recent weeks. Every account below updates to match.</span>' +
+      '</label>' +
+      '<div class="week-chips quick-weeks">' + chipsHtml + '</div>';
+
+    var ordered = accounts.slice().sort(function(x, y){ return (Number(x.order)||0) - (Number(y.order)||0); });
+    var accountsHtml = ordered.map(function(a){
+      var wd = weekData(a, weeklyWeekKey);
+      var rag = ragClass(a.rag);
+      return (
+        '<div class="weekly-account">' +
+          '<div class="weekly-account-head" data-open-id="' + esc(a.id) + '" title="Open full account detail">' +
+            logoHtml(a, "card-logo") +
+            '<span class="tag ' + RAG_TAG_CLASS[rag] + '">' + rag + '</span>' +
+          '</div>' +
+          '<form data-form="weekly-week" data-account-id="' + esc(a.id) + '" class="week-fields">' +
+            '<input type="hidden" name="weekKey" value="' + esc(weeklyWeekKey) + '">' +
+            '<label class="field">' + fieldLabel("Completed") + '<div class="field-wrap"><textarea name="completed" rows="3" placeholder="Completed this week&hellip;">' + esc(wd.completed || "") + '</textarea></div></label>' +
+            '<label class="field">' + fieldLabel("In progress") + '<div class="field-wrap"><textarea name="inProgress" rows="3" placeholder="In progress this week&hellip;">' + esc(wd.inProgress || "") + '</textarea></div></label>' +
+            '<label class="field">' + fieldLabel("Next steps") + '<div class="field-wrap"><textarea name="nextSteps" rows="2" placeholder="Next steps&hellip;">' + esc(wd.nextSteps || "") + '</textarea></div></label>' +
+            '<label class="field">' + fieldLabel("Risk") + '<div class="field-wrap"><textarea name="risk" rows="2" placeholder="What is at risk this week&hellip;">' + esc(wd.risk || "") + '</textarea></div></label>' +
+            '<label class="field">' + fieldLabel("Risk mitigation actions (next steps)") + '<div class="field-wrap"><textarea name="mitigationActions" rows="2" placeholder="What is being done to address the risk&hellip;">' + esc(wd.mitigationActions || "") + '</textarea></div></label>' +
+            '<label class="field" style="max-width:220px;">' + fieldLabel("Mitigation deadline") + fieldInput("mitigationDeadline", wd.mitigationDeadline || "", 'type="date"') + '</label>' +
+            '<label class="field">' + fieldLabel("Scope creep") + '<div class="field-wrap"><textarea name="scopeCreep" rows="2" placeholder="Any work happening outside the agreed SOW&hellip;">' + esc(wd.scopeCreep || "") + '</textarea></div></label>' +
+            '<div class="form-actions"><button type="submit" class="btn btn-sm btn-filled ring-focus">Save ' + esc(a.name) + '</button></div>' +
+          '</form>' +
+        '</div>'
+      );
+    }).join("");
+
+    $("#view-weekly-body").innerHTML = jumpHtml + '<div class="weekly-account-list">' + accountsHtml + '</div>';
+  }
+
+  function renderUtilizationView(){
+    var util = computeUtilization();
+    var body = $("#view-utilization-body");
+    if (!util.length) { body.innerHTML = '<div class="empty-note">No team allocations logged yet. Add them from an account&#39;s Team tab.</div>'; return; }
+    body.innerHTML = '<div class="util-card-grid">' + util.map(function(p){
+      var st = utilStatus(p.totalPct);
+      var segments = p.accounts.map(function(x, i){ return {value: x.pct, color: DONUT_COLORS[i % DONUT_COLORS.length], label: x.account}; });
+      var centerHtml = '<div class="donut-center-value mono">' + Math.round(p.totalPct * 100) + '%</div><div class="donut-center-label">allocated</div>';
+      var legend = p.accounts.map(function(x, i){
+        return '<div class="legend-row"><span class="legend-dot" style="background:' + DONUT_COLORS[i % DONUT_COLORS.length] + '"></span>' +
+          '<span class="legend-label">' + esc(x.account) + '</span><span class="legend-pct mono">' + Math.round(x.pct * 100) + '%</span></div>';
+      }).join("");
+      return (
+        '<div class="util-card">' +
+          '<div class="util-card-top"><span class="util-card-name">' + esc(p.name) + '</span><span class="tag ' + st.tag + '">' + st.label + '</span></div>' +
+          donutSvg(segments, {size:112, stroke:14, centerHtml:centerHtml, ariaLabel: p.name + " allocation"}) +
+          '<div class="legend">' + legend + '</div>' +
+        '</div>'
+      );
+    }).join("") + '</div>';
+  }
+
+  function renderRisksView(){
+    var watch = computeRiskWatch();
+    var creepWatch = computeScopeCreepWatch();
+    var body = $("#view-risks-body");
+    var html = "";
+    if (!watch.length) {
+      html += '<div class="empty-note">No open risks logged across any account.</div>';
+    } else {
+      html += '<div class="list-card-grid">' + watch.map(function(x){
+        var wd = weekData(x.a, x.weekKey);
+        return (
+          '<div class="list-card" data-open-id="' + esc(x.a.id) + '">' +
+            '<div class="list-card-top"><span class="list-card-name">' + esc(x.a.name) + '</span><span class="tag ' + RAG_TAG_CLASS[ragClass(x.a.rag)] + '">' + ragClass(x.a.rag) + '</span></div>' +
+            '<div class="list-card-body">' + formatRichText(x.risk) + '</div>' +
+            (wd.mitigationActions ? '<div class="list-card-body"><strong>Mitigation:</strong> ' + esc(wd.mitigationActions) + '</div>' : '') +
+            '<div class="list-card-foot">Reported ' + weekLabel(x.weekKey) + (wd.mitigationDeadline ? ' &middot; Deadline ' + fmtDate(wd.mitigationDeadline) : '') + '</div>' +
+          '</div>'
+        );
+      }).join("") + '</div>';
+    }
+    if (creepWatch.length) {
+      html += '<div class="group-title" style="margin-top:var(--spacing-24);">Scope creep watch</div>' +
+        '<div class="list-card-grid">' + creepWatch.map(function(x){
+          return (
+            '<div class="list-card" data-open-id="' + esc(x.a.id) + '">' +
+              '<div class="list-card-top"><span class="list-card-name">' + esc(x.a.name) + '</span><span class="tag tag-warning">Scope creep</span></div>' +
+              '<div class="list-card-body">' + formatRichText(x.note) + '</div>' +
+              '<div class="list-card-foot">Reported ' + weekLabel(x.weekKey) + '</div>' +
+            '</div>'
+          );
+        }).join("") + '</div>';
+    }
+    body.innerHTML = html;
+  }
+
+  function renderInvoicesView(){
+    var invoices = computeUpcomingInvoices();
+    var body = $("#view-invoices-body");
+    if (!invoices.length) { body.innerHTML = '<div class="empty-note">No invoice dates scheduled yet.</div>'; return; }
+    body.innerHTML = '<div class="list-card-grid">' + invoices.map(function(a){
+      return (
+        '<div class="list-card" data-open-id="' + esc(a.id) + '">' +
+          '<div class="list-card-top"><span class="list-card-name">' + esc(a.name) + '</span><span class="tag ' + invoiceTagClass(a.invoiceStatus) + '">' + esc(a.invoiceStatus || "—") + '</span></div>' +
+          '<div class="list-card-body">' + fmtDate(a.nextInvoiceDue) + ' &middot; ' + money(a.revenue) + ' contracted &middot; ' + money(a.invoicedToDate) + ' invoiced so far</div>' +
+        '</div>'
+      );
+    }).join("") + '</div>';
+  }
+
+  function renderRevenueView(){
+    var totalRevenue = 0;
+    var byRag = {Green:0, Amber:0, Red:0};
+    accounts.forEach(function(a){
+      var rev = Number(a.revenue) || 0;
+      totalRevenue += rev;
+      byRag[ragClass(a.rag)] += rev;
+    });
+    var segments = [
+      {value: byRag.Green, color:"var(--success-foreground)", label:"Green"},
+      {value: byRag.Amber, color:"var(--warning-foreground)", label:"Amber"},
+      {value: byRag.Red, color:"var(--error-foreground)", label:"Red"}
+    ];
+    var legend = segments.map(function(s){
+      return '<div class="legend-row"><span class="legend-dot" style="background:' + s.color + '"></span>' +
+        '<span class="legend-label">' + s.label + '</span><span class="legend-pct mono">' + money(s.value) + '</span></div>';
+    }).join("");
+    var centerHtml = '<div class="donut-center-value mono" style="font-size:16px;">' + money(totalRevenue) + '</div><div class="donut-center-label">contracted</div>';
+
+    var maxRev = Math.max.apply(null, accounts.map(function(a){ return Number(a.revenue) || 0; }).concat([1]));
+    var sorted = accounts.slice().sort(function(x, y){ return (Number(y.revenue)||0) - (Number(x.revenue)||0); });
+    var bars = sorted.map(function(a){
+      var rev = Number(a.revenue) || 0;
+      var pct = maxRev ? Math.round((rev / maxRev) * 100) : 0;
+      var rc = ragClass(a.rag);
+      var color = rc === "Green" ? "var(--success-foreground)" : rc === "Red" ? "var(--error-foreground)" : "var(--warning-foreground)";
+      return (
+        '<div class="bar-row" data-open-id="' + esc(a.id) + '">' +
+          '<div class="bar-row-top"><span class="bar-row-name">' + esc(a.name) + '</span><span class="bar-row-value mono">' + money(rev) + '</span></div>' +
+          '<div class="bar-track"><div class="bar-fill" style="width:' + pct + '%; background:' + color + ';"></div></div>' +
+        '</div>'
+      );
+    }).join("");
+
+    $("#view-revenue-body").innerHTML =
+      '<div class="revenue-grid">' +
+        '<div class="donut-panel">' + donutSvg(segments, {size:168, stroke:20, centerHtml:centerHtml, ariaLabel:"Revenue by RAG status"}) + '<div class="legend">' + legend + '</div></div>' +
+        '<div class="bar-panel"><div class="group-title">By account</div>' + bars + '</div>' +
+      '</div>';
+  }
+
+  function visibleAccounts(){
+    var term = searchTerm.trim().toLowerCase();
+    var list = accounts.filter(function(a){
+      if (filterRag !== "All" && ragClass(a.rag) !== filterRag) return false;
+      if (!term) return true;
+      var hay = [a.name, a.sowStatus, a.projectStatus].join(" ").toLowerCase();
+      return hay.indexOf(term) > -1;
+    });
+    list.sort(function(x, y){
+      if (sortMode === "name") return (x.name||"").localeCompare(y.name||"");
+      if (sortMode === "revenue") return (Number(y.revenue)||0) - (Number(x.revenue)||0);
+      if (sortMode === "order") return (Number(x.order)||0) - (Number(y.order)||0);
+      var sx = RAG_SEVERITY[ragClass(x.rag)];
+      var sy = RAG_SEVERITY[ragClass(y.rag)];
+      if (sx !== sy) return sx - sy;
+      return (Number(y.revenue)||0) - (Number(x.revenue)||0);
+    });
+    return list;
+  }
+
+  function engagementProgress(a){
+    if (!a.engagementStartDate || !a.engagementEndDate) return null;
+    var start = new Date(a.engagementStartDate + "T00:00:00").getTime();
+    var end = new Date(a.engagementEndDate + "T00:00:00").getTime();
+    if (isNaN(start) || isNaN(end) || end <= start) return null;
+    var now = Date.now();
+    var pct = Math.round(((now - start) / (end - start)) * 100);
+    return {pct: Math.max(0, Math.min(100, pct)), raw: pct};
+  }
+
+  function cardHtml(a){
+    var rag = ragClass(a.rag);
+    var risk = latestNonEmptyWeek(a, "risk");
+    var creep = latestNonEmptyWeek(a, "scopeCreep");
+    var lastWeekKeys = Object.keys(a.weeks || {}).sort(compareWeekKeysDesc);
+    var lastActivity = lastWeekKeys.length ? weekLabel(lastWeekKeys[0]) : "No weekly update yet";
+    var progress = engagementProgress(a);
+    return (
+      '<article class="card pcard ring-focus" data-open-id="' + esc(a.id) + '" tabindex="0" role="button" aria-label="Open ' + esc(a.name) + '">' +
+        logoHtml(a, "card-logo") +
+        '<hr>' +
+        '<div class="status-row">' +
+          '<span class="tag ' + RAG_TAG_CLASS[rag] + '">' + rag + '</span>' +
+          '<span class="avatars">' +
+            '<span style="background:' + AVATAR_COLORS[0] + '" title="' + esc(a.ownerOnshore||"Unassigned onshore") + '">' + initials(a.ownerOnshore) + '</span>' +
+            '<span style="background:' + AVATAR_COLORS[1] + '" title="' + esc(a.ownerOffshore||"Unassigned offshore") + '">' + initials(a.ownerOffshore) + '</span>' +
+          '</span>' +
+        '</div>' +
+        '<div class="meta">' +
+          '<div class="meta-row"><span class="k">Revenue</span><span class="v mono">' + money(a.revenue) + '</span></div>' +
+          '<div class="meta-row"><span class="k">Invoice</span><span class="v">' + esc(a.invoiceStatus || "—") + '</span></div>' +
+          '<div class="meta-row"><span class="k">Project</span><span class="v">' + esc(a.projectStatus || "—") + '</span></div>' +
+        '</div>' +
+        (progress ? '<div class="progress-track" title="Engagement timeline ' + progress.pct + '% elapsed"><div class="progress-fill" style="width:' + progress.pct + '%"></div></div>' : '') +
+        '<div class="footer">' +
+          '<span class="ts">' + ICON_CLOCK + '<span>' + esc(lastActivity) + '</span></span>' +
+          '<span style="display:flex; gap:var(--spacing-4);">' +
+          (creep ? '<span class="tag tag-warning" title="' + esc(creep.value) + '">Scope creep</span>' : '') +
+          (risk ? '<span class="tag tag-error" title="' + esc(risk.value) + '">' + ICON_WARNING + ' Risk</span>' : '') +
+          '</span>' +
+        '</div>' +
+      '</article>'
+    );
+  }
+
+  function renderGrid(){
+    var list = visibleAccounts();
+    $("#card-grid").innerHTML = list.map(cardHtml).join("");
+    $("#empty-state").hidden = list.length > 0;
+  }
+
+  // ---------------- rendering: detail panel ----------------
+  function getAccount(id){ return accounts.find(function(a){ return a.id === id; }); }
+
+  function openDetail(id){
+    currentDetailId = id;
+    activeTab = "overview";
+    scopeEditing = false;
+    draftRoles = null;
+    selectedWeekKey = currentWeekKey();
+    weekSubTab = "completed";
+    renderDetail();
+    $("#detail-overlay").hidden = false;
+  }
+
+  function closeDetail(){
+    $("#detail-overlay").hidden = true;
+    currentDetailId = null;
+  }
+
+  function renderDetailHeader(a){
+    var invoiced = Number(a.invoicedToDate) || 0;
+    var revenue = Number(a.revenue) || 0;
+    var pct = revenue ? Math.round((invoiced / revenue) * 100) : 0;
+    var outstanding = revenue - invoiced;
+    var rag = ragClass(a.rag);
+    var tabs = [["overview","Overview"],["scope","Scope of Work"],["activity","Activity &amp; Risks"],["team","Team"]];
+
+    var progress = engagementProgress(a);
+
+    $("#detail-header").innerHTML =
+      '<div class="detail-header-top">' +
+        '<div class="detail-name-row">' + logoHtml(a, "detail-logo") + '<span class="tag ' + RAG_TAG_CLASS[rag] + '">' + rag + '</span></div>' +
+        '<button type="button" class="btn btn-icon btn-md btn-text ring-focus" data-action="close-detail" aria-label="Close">' + ICON_CLOSE + '</button>' +
+      '</div>' +
+      '<div class="detail-meta-row">' +
+        '<span>Onshore: <b>' + esc(a.ownerOnshore || "—") + '</b></span>' +
+        '<span>Offshore: <b>' + esc(a.ownerOffshore || "—") + '</b></span>' +
+        '<span>SOW: <b>' + esc(a.sowStatus || "N/A") + '</b></span>' +
+        '<span>Project: <b>' + esc(a.projectStatus || "—") + '</b></span>' +
+      '</div>' +
+      '<div class="detail-kpis">' +
+        '<div><div class="detail-kpi-label">Revenue</div><div class="detail-kpi-value mono">' + money(revenue) + '</div></div>' +
+        '<div><div class="detail-kpi-label">Invoiced</div><div class="detail-kpi-value mono">' + money(invoiced) + ' (' + pct + '%)</div><div class="progress-track"><div class="progress-fill" style="width:' + Math.min(pct,100) + '%"></div></div></div>' +
+        '<div><div class="detail-kpi-label">Outstanding</div><div class="detail-kpi-value mono">' + money(outstanding) + '</div></div>' +
+        '<div><div class="detail-kpi-label">Next invoice</div><div class="detail-kpi-value mono">' + (a.nextInvoiceDue ? fmtDate(a.nextInvoiceDue) : "—") + '</div><div class="kpi-sub">' + esc(a.invoiceStatus || "") + '</div></div>' +
+        '<div><div class="detail-kpi-label">Engagement</div>' +
+          (progress ? '<div class="detail-kpi-value mono">' + progress.pct + '%</div><div class="progress-track"><div class="progress-fill" style="width:' + progress.pct + '%; background:' + (progress.raw > 100 ? "var(--error-foreground)" : "var(--primary)") + ';"></div></div><div class="kpi-sub">' + fmtDate(a.engagementStartDate) + ' – ' + fmtDate(a.engagementEndDate) + (progress.raw > 100 ? " (past end date)" : "") + '</div>'
+            : '<div class="detail-kpi-value mono">—</div><div class="kpi-sub">Set dates in Overview</div>') +
+        '</div>' +
+      '</div>' +
+      '<div class="tabs" role="tablist">' + tabs.map(function(t){
+        return '<button type="button" role="tab" aria-selected="' + (activeTab === t[0]) + '" class="tab' + (activeTab === t[0] ? " is-active" : "") + '" data-tab="' + t[0] + '">' + t[1] + '</button>';
+      }).join("") + '</div>';
+  }
+
+  function fieldSelect(name, list, current){
+    var opts = list.map(function(v){ return '<option value="' + esc(v) + '"' + (v === current ? " selected" : "") + '>' + esc(v) + '</option>'; }).join("");
+    return '<div class="field-wrap"><select name="' + name + '">' + opts + '</select><span class="caret-wrap" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div>';
+  }
+  function fieldInput(name, value, attrs){
+    return '<div class="field-wrap"><input name="' + name + '" value="' + esc(value) + '" ' + (attrs||"") + '></div>';
+  }
+  function fieldLabel(text){ return '<span class="label">' + text + '</span>'; }
+
+  function renderOverviewTab(a){
+    return (
+      '<form data-form="overview" class="form-grid">' +
+        '<label class="field form-wide">' + fieldLabel("Account / brand name") + fieldInput("name", a.name, "required") + '</label>' +
+        '<label class="field">' + fieldLabel("RAG status") + fieldSelect("rag", ["Green","Amber","Red"], a.rag) + '</label>' +
+        '<label class="field">' + fieldLabel("Invoice status") + fieldInput("invoiceStatus", a.invoiceStatus||"", 'list="invoice-status-options"') + '</label>' +
+        '<label class="field">' + fieldLabel("SOW status") + fieldSelect("sowStatus", SOW_STATUS_OPTIONS, a.sowStatus) + '</label>' +
+        '<label class="field">' + fieldLabel("Project status") + fieldSelect("projectStatus", PROJECT_STATUS_OPTIONS, a.projectStatus) + '</label>' +
+        '<label class="field">' + fieldLabel("Owner – Onshore") + fieldInput("ownerOnshore", a.ownerOnshore||"") + '</label>' +
+        '<label class="field">' + fieldLabel("Owner – Offshore") + fieldInput("ownerOffshore", a.ownerOffshore||"") + '</label>' +
+        '<label class="field">' + fieldLabel("Revenue (USD)") + fieldInput("revenue", Number(a.revenue)||0, 'type="number" min="0" step="1"') + '</label>' +
+        '<label class="field">' + fieldLabel("Invoiced to date (USD)") + fieldInput("invoicedToDate", Number(a.invoicedToDate)||0, 'type="number" min="0" step="1"') + '</label>' +
+        '<label class="field">' + fieldLabel("Next invoice due") + fieldInput("nextInvoiceDue", a.nextInvoiceDue||"", 'type="date"') + '</label>' +
+        '<label class="field">' + fieldLabel("Engagement start date") + fieldInput("engagementStartDate", a.engagementStartDate||"", 'type="date"') + '</label>' +
+        '<label class="field">' + fieldLabel("Engagement end date") + fieldInput("engagementEndDate", a.engagementEndDate||"", 'type="date"') + '</label>' +
+        '<label class="field form-wide">' + fieldLabel("Brand logo (SVG markup, optional)") + '<div class="field-wrap"><textarea name="logoSvg" rows="3" placeholder="Paste <svg>...</svg> markup to show the brand mark instead of the account name">' + esc(a.logoSvg||"") + '</textarea></div></label>' +
+        '<label class="field form-wide">' + fieldLabel("Brand logo (image URL, used if no SVG markup is set)") + fieldInput("logoImg", a.logoImg||"", 'placeholder="https://..."') + '</label>' +
+        '<label class="field form-wide">' + fieldLabel("Notes") + '<div class="field-wrap"><textarea name="notes" rows="3">' + esc(a.notes||"") + '</textarea></div></label>' +
+        '<div class="form-actions form-wide spread">' +
+          '<button type="button" class="btn btn-md btn-destructive ring-focus" data-action="delete-account">Delete account</button>' +
+          '<button type="submit" class="btn btn-md btn-filled ring-focus">Save changes</button>' +
+        '</div>' +
+      '</form>'
+    );
+  }
+
+  function renderScopeTab(a){
+    if (scopeEditing) {
+      return (
+        '<div class="scope-toolbar"><button type="button" class="btn btn-sm btn-text ring-focus" data-action="cancel-scope-edit">Cancel</button></div>' +
+        '<div class="scope-edit">' +
+          '<textarea id="scope-textarea">' + esc(a.scopeText||"") + '</textarea>' +
+          '<div class="form-actions"><button type="button" class="btn btn-md btn-filled ring-focus" data-action="save-scope">Save scope of work</button></div>' +
+        '</div>'
+      );
+    }
+    return (
+      '<div class="scope-toolbar"><button type="button" class="btn btn-sm btn-text ring-focus" data-action="toggle-scope-edit">' + ICON_EDIT + ' Edit scope of work</button></div>' +
+      '<div class="scope-render">' + formatRichText(a.scopeText) + '</div>'
+    );
+  }
+
+  function renderActivityTab(a){
+    if (!selectedWeekKey) selectedWeekKey = currentWeekKey();
+    var cur = currentWeekKey();
+    var wd = weekData(a, selectedWeekKey);
+
+    // Quick-access chips: every week that actually has data, plus the current
+    // week — not a fixed lookback window, so history is never capped.
+    var quickKeys = Object.keys(a.weeks || {});
+    if (quickKeys.indexOf(cur) === -1) quickKeys.push(cur);
+    quickKeys.sort(compareWeekKeysDesc);
+
+    var chipsHtml = quickKeys.map(function(k){
+      var wk = (a.weeks || {})[k];
+      var hasData = wk && Object.keys(wk).some(function(f){ return wk[f] && String(wk[f]).trim(); });
+      return '<button type="button" class="chip ring-focus' + (selectedWeekKey === k ? " is-selected" : "") + '" data-week-key="' + k + '">' +
+        weekLabel(k) + (k === cur ? " (current)" : "") + (hasData ? ' <span class="week-chip-dot"></span>' : "") + '</button>';
+    }).join("");
+
+    var jumpHtml =
+      '<label class="field week-jump">' + fieldLabel("Jump to a period") +
+        '<button type="button" class="week-jump-trigger" id="week-jump-btn" aria-haspopup="dialog">' + ICON_CAL_SM + '<span>' + esc(weekLabel(selectedWeekKey)) + '</span></button>' +
+        '<span class="helper">Pick a start and end date for a custom period — not limited to recent weeks.</span>' +
+      '</label>' +
+      (chipsHtml ? '<div class="week-chips quick-weeks">' + chipsHtml + '</div>' : "");
+
+    var subtabsHtml = '<div class="tabs" role="tablist">' + WEEK_SUBTABS.map(function(t){
+      return '<button type="button" role="tab" aria-selected="' + (weekSubTab === t[0]) + '" class="tab' + (weekSubTab === t[0] ? " is-active" : "") + '" data-week-subtab="' + t[0] + '">' + t[1] + '</button>';
+    }).join("") + '</div>';
+
+    var subtabBodies = WEEK_SUBTABS.map(function(t){
+      return '<div' + (weekSubTab === t[0] ? "" : " hidden") + '><div class="field-wrap"><textarea name="' + t[0] + '" rows="5" placeholder="' + esc(t[1]) + ' this week&hellip;">' + esc(wd[t[0]] || "") + '</textarea></div></div>';
+    }).join("");
+
+    return (
+      jumpHtml +
+      '<form data-form="week" class="week-fields">' +
+        '<input type="hidden" name="weekKey" value="' + esc(selectedWeekKey) + '">' +
+        '<label class="field">' + fieldLabel("Risk") + '<div class="field-wrap"><textarea name="risk" rows="2" placeholder="What is at risk this week&hellip;">' + esc(wd.risk || "") + '</textarea></div></label>' +
+        '<label class="field">' + fieldLabel("Risk mitigation actions (next steps)") + '<div class="field-wrap"><textarea name="mitigationActions" rows="2" placeholder="What is being done to address the risk&hellip;">' + esc(wd.mitigationActions || "") + '</textarea></div></label>' +
+        '<label class="field" style="max-width:220px;">' + fieldLabel("Mitigation deadline") + fieldInput("mitigationDeadline", wd.mitigationDeadline || "", 'type="date"') + '</label>' +
+        '<label class="field">' + fieldLabel("Scope creep") + '<div class="field-wrap"><textarea name="scopeCreep" rows="2" placeholder="Any work happening outside the agreed SOW&hellip;">' + esc(wd.scopeCreep || "") + '</textarea></div></label>' +
+        '<div class="group-title">This week&#39;s activity</div>' +
+        subtabsHtml +
+        subtabBodies +
+        '<div class="form-actions"><button type="submit" class="btn btn-md btn-filled ring-focus">Save week</button></div>' +
+      '</form>'
+    );
+  }
+
+  function renderTeamTab(a){
+    if (!draftRoles) draftRoles = (a.roles && a.roles.length ? a.roles : DEFAULT_ROLES.map(function(r){ return {role:r, value:""}; })).map(function(r){ return Object.assign({}, r); });
+    var rows = draftRoles.map(function(r, i){
+      return (
+        '<tr data-role-index="' + i + '">' +
+          '<td><div class="field-wrap"><input data-role-field="role" data-role-index="' + i + '" value="' + esc(r.role) + '"></div></td>' +
+          '<td><div class="field-wrap"><input data-role-field="value" data-role-index="' + i + '" value="' + esc(r.value) + '" placeholder="Name — % allocation"></div></td>' +
+          '<td><button type="button" class="btn btn-icon btn-sm btn-text ring-focus" data-action="remove-role" data-role-index="' + i + '" aria-label="Remove role" title="Remove role">' + ICON_CLOSE + '</button></td>' +
+        '</tr>'
+      );
+    }).join("");
+    return (
+      '<table class="roles-table"><thead><tr><th>Role</th><th>Assigned</th><th></th></tr></thead><tbody id="roles-body">' + rows + '</tbody></table>' +
+      '<button type="button" class="btn btn-sm btn-outlined ring-focus" data-action="add-role">' + ICON_ADD + ' Add role</button>' +
+      '<div class="form-actions"><button type="button" class="btn btn-md btn-filled ring-focus" data-action="save-roles">Save team</button></div>'
+    );
+  }
+
+  function renderDetail(){
+    var a = getAccount(currentDetailId);
+    if (!a) { closeDetail(); return; }
+    renderDetailHeader(a);
+    var body = $("#detail-body");
+    if (activeTab === "overview") body.innerHTML = renderOverviewTab(a);
+    else if (activeTab === "scope") body.innerHTML = renderScopeTab(a);
+    else if (activeTab === "activity") body.innerHTML = renderActivityTab(a);
+    else if (activeTab === "team") body.innerHTML = renderTeamTab(a);
+  }
+
+  function renderAll(){
+    renderCurrentView();
+    if (currentDetailId && !$("#detail-overlay").hidden) renderDetail();
+  }
+
+  // ---------------- event wiring (delegated, attached once) ----------------
+  document.addEventListener("click", function(e){
+    var calPopupEl = $("#calendar-popup");
+    if (calPopupEl && !calPopupEl.hidden && !e.target.closest("#calendar-popup") && !e.target.closest(".week-jump-trigger")) {
+      closeCalendarPopup();
+    }
+
+    var weekTriggerBtn = e.target.closest && e.target.closest(".week-jump-trigger");
+    if (weekTriggerBtn) {
+      if (weekTriggerBtn.id === "accounts-week-jump-btn") { openCalendarPopup("accounts", weekTriggerBtn, weeklyWeekKey || currentWeekKey()); return; }
+      if (weekTriggerBtn.id === "weekly-jump-btn") { openCalendarPopup("weekly", weekTriggerBtn, weeklyWeekKey || currentWeekKey()); return; }
+      if (weekTriggerBtn.id === "week-jump-btn") { openCalendarPopup("detail", weekTriggerBtn, selectedWeekKey || currentWeekKey()); return; }
+    }
+
+    var calDayBtn = e.target.closest && e.target.closest("[data-cal-date]");
+    if (calDayBtn) { pickCalendarDay(calDayBtn.getAttribute("data-cal-date")); return; }
+
+    var calPrevBtn = e.target.closest && e.target.closest('[data-action="cal-prev-month"]');
+    if (calPrevBtn) { calendarPopupMonth.setMonth(calendarPopupMonth.getMonth() - 1); renderCalendarPopup(); return; }
+
+    var calNextBtn = e.target.closest && e.target.closest('[data-action="cal-next-month"]');
+    if (calNextBtn) { calendarPopupMonth.setMonth(calendarPopupMonth.getMonth() + 1); renderCalendarPopup(); return; }
+
+    var calThisWeekBtn = e.target.closest && e.target.closest('[data-action="cal-this-week"]');
+    if (calThisWeekBtn) {
+      var cur = currentWeekKey();
+      var curEnd = new Date(cur + "T00:00:00");
+      curEnd.setDate(curEnd.getDate() + 6);
+      applyCalendarRange(cur, isoFromDate(curEnd));
+      return;
+    }
+
+    var calApplyBtn = e.target.closest && e.target.closest('[data-action="cal-apply"]');
+    if (calApplyBtn) {
+      if (!calendarRangeFrom) return;
+      applyCalendarRange(calendarRangeFrom, calendarRangeTo || calendarRangeFrom);
+      return;
+    }
+
+    var navBtn = e.target.closest && e.target.closest("[data-nav]");
+    if (navBtn) { navigateTo(navBtn.getAttribute("data-nav")); return; }
+
+    var toggleRailBtn = e.target.closest && e.target.closest("#btn-toggle-rail");
+    if (toggleRailBtn) {
+      railCollapsed = !railCollapsed;
+      try { localStorage.setItem("geo-tracker-rail-collapsed", railCollapsed ? "1" : "0"); } catch (e2) {}
+      applyRailCollapsed();
+      return;
+    }
+
+    var addBtn = e.target.closest && e.target.closest("#btn-add-account");
+    if (addBtn) { $("#add-overlay").hidden = false; return; }
+
+    var closeAdd = e.target.closest && e.target.closest('[data-action="close-add"]');
+    if (closeAdd) { $("#add-overlay").hidden = true; return; }
+
+    var card = e.target.closest && e.target.closest("[data-open-id]");
+    if (card) { openDetail(card.getAttribute("data-open-id")); return; }
+
+    var ragChip = e.target.closest && e.target.closest("[data-rag-filter]");
+    if (ragChip) { filterRag = ragChip.getAttribute("data-rag-filter"); renderAll(); return; }
+
+    var closeDetailBtn = e.target.closest && e.target.closest('[data-action="close-detail"]');
+    if (closeDetailBtn) { closeDetail(); return; }
+
+    var tabBtn = e.target.closest && e.target.closest("[data-tab]");
+    if (tabBtn) { activeTab = tabBtn.getAttribute("data-tab"); if (activeTab !== "team") draftRoles = null; renderDetail(); return; }
+
+    var deleteAcctBtn = e.target.closest && e.target.closest('[data-action="delete-account"]');
+    if (deleteAcctBtn) {
+      var a = getAccount(currentDetailId);
+      if (a && confirm('Delete "' + a.name + '" permanently? This cannot be undone.')) {
+        deleteAccount(currentDetailId);
+        closeDetail();
+      }
+      return;
+    }
+
+    var toggleScope = e.target.closest && e.target.closest('[data-action="toggle-scope-edit"]');
+    if (toggleScope) { scopeEditing = true; renderDetail(); return; }
+
+    var cancelScope = e.target.closest && e.target.closest('[data-action="cancel-scope-edit"]');
+    if (cancelScope) { scopeEditing = false; renderDetail(); return; }
+
+    var saveScope = e.target.closest && e.target.closest('[data-action="save-scope"]');
+    if (saveScope) {
+      var val = $("#scope-textarea").value;
+      scopeEditing = false;
+      updateAccount(currentDetailId, {scopeText: val}).then(renderDetail);
+      return;
+    }
+
+    var weekKeyBtn = e.target.closest && e.target.closest("[data-week-key]");
+    if (weekKeyBtn) { selectedWeekKey = weekKeyBtn.getAttribute("data-week-key"); renderDetail(); return; }
+
+    var weeklyKeyBtn = e.target.closest && e.target.closest("[data-weekly-week-key]");
+    if (weeklyKeyBtn) { weeklyWeekKey = weeklyKeyBtn.getAttribute("data-weekly-week-key"); renderWeeklyView(); return; }
+
+    var weekSubtabBtn = e.target.closest && e.target.closest("[data-week-subtab]");
+    if (weekSubtabBtn) { weekSubTab = weekSubtabBtn.getAttribute("data-week-subtab"); renderDetail(); return; }
+
+    var addRoleBtn = e.target.closest && e.target.closest('[data-action="add-role"]');
+    if (addRoleBtn) { draftRoles.push({role:"", value:""}); renderDetail(); return; }
+
+    var removeRoleBtn = e.target.closest && e.target.closest('[data-action="remove-role"]');
+    if (removeRoleBtn) {
+      var ri = Number(removeRoleBtn.getAttribute("data-role-index"));
+      draftRoles.splice(ri, 1);
+      renderDetail();
+      return;
+    }
+
+    var saveRolesBtn = e.target.closest && e.target.closest('[data-action="save-roles"]');
+    if (saveRolesBtn) {
+      var cleanRoles = draftRoles.filter(function(r){ return r.role.trim() || r.value.trim(); });
+      updateAccount(currentDetailId, {roles: cleanRoles}).then(function(){ draftRoles = null; renderDetail(); });
+      return;
+    }
+  });
+
+  document.addEventListener("input", function(e){
+    if (e.target.matches && e.target.matches("[data-role-field]")) {
+      var idx = Number(e.target.getAttribute("data-role-index"));
+      var field = e.target.getAttribute("data-role-field");
+      if (draftRoles && draftRoles[idx]) draftRoles[idx][field] = e.target.value;
+      return;
+    }
+    if (e.target.id === "search-input") { searchTerm = e.target.value; renderGrid(); return; }
+  });
+
+  document.addEventListener("change", function(e){
+    if (e.target.id === "sort-select") { sortMode = e.target.value; renderGrid(); return; }
+  });
+
+  document.addEventListener("submit", function(e){
+    var form = e.target;
+    if (form.matches && form.matches('[data-form="overview"]')) {
+      e.preventDefault();
+      var fd = new FormData(form);
+      var patch = {
+        name: fd.get("name").trim(),
+        rag: fd.get("rag"),
+        sowStatus: fd.get("sowStatus"),
+        projectStatus: fd.get("projectStatus"),
+        invoiceStatus: fd.get("invoiceStatus").trim(),
+        ownerOnshore: fd.get("ownerOnshore").trim(),
+        ownerOffshore: fd.get("ownerOffshore").trim(),
+        revenue: Number(fd.get("revenue")) || 0,
+        invoicedToDate: Number(fd.get("invoicedToDate")) || 0,
+        nextInvoiceDue: fd.get("nextInvoiceDue") || null,
+        engagementStartDate: fd.get("engagementStartDate") || null,
+        engagementEndDate: fd.get("engagementEndDate") || null,
+        logoSvg: fd.get("logoSvg").trim(),
+        logoImg: fd.get("logoImg").trim(),
+        notes: fd.get("notes").trim()
+      };
+      updateAccount(currentDetailId, patch).then(renderDetail);
+      return;
+    }
+    if (form.matches && form.matches('[data-form="week"]')) {
+      e.preventDefault();
+      var fd2 = new FormData(form);
+      var acc = getAccount(currentDetailId);
+      if (!acc) return;
+      var wk = fd2.get("weekKey");
+      var newWeek = {
+        completed: fd2.get("completed").trim(),
+        inProgress: fd2.get("inProgress").trim(),
+        nextSteps: fd2.get("nextSteps").trim(),
+        risk: fd2.get("risk").trim(),
+        mitigationActions: fd2.get("mitigationActions").trim(),
+        mitigationDeadline: fd2.get("mitigationDeadline") || null,
+        scopeCreep: fd2.get("scopeCreep").trim()
+      };
+      var newWeeks = Object.assign({}, acc.weeks || {});
+      newWeeks[wk] = newWeek;
+      updateAccount(currentDetailId, {weeks: newWeeks}).then(renderDetail);
+      return;
+    }
+    if (form.matches && form.matches('[data-form="weekly-week"]')) {
+      e.preventDefault();
+      var fd4 = new FormData(form);
+      var wAccId = form.getAttribute("data-account-id");
+      var wAcc = getAccount(wAccId);
+      if (!wAcc) return;
+      var wWk = fd4.get("weekKey");
+      var wNewWeek = {
+        completed: fd4.get("completed").trim(),
+        inProgress: fd4.get("inProgress").trim(),
+        nextSteps: fd4.get("nextSteps").trim(),
+        risk: fd4.get("risk").trim(),
+        mitigationActions: fd4.get("mitigationActions").trim(),
+        mitigationDeadline: fd4.get("mitigationDeadline") || null,
+        scopeCreep: fd4.get("scopeCreep").trim()
+      };
+      var wNewWeeks = Object.assign({}, wAcc.weeks || {});
+      wNewWeeks[wWk] = wNewWeek;
+      updateAccount(wAccId, {weeks: wNewWeeks}).then(renderWeeklyView);
+      return;
+    }
+    if (form.id === "add-form") {
+      e.preventDefault();
+      var fd3 = new FormData(form);
+      var name = fd3.get("name").trim();
+      if (!name) return;
+      createAccount({
+        name: name,
+        rag: fd3.get("rag"),
+        sowStatus: fd3.get("sowStatus"),
+        projectStatus: fd3.get("projectStatus"),
+        invoiceStatus: fd3.get("invoiceStatus").trim() || "Not Scheduled",
+        ownerOnshore: fd3.get("ownerOnshore").trim(),
+        ownerOffshore: fd3.get("ownerOffshore").trim(),
+        revenue: Number(fd3.get("revenue")) || 0,
+        invoicedToDate: Number(fd3.get("invoicedToDate")) || 0,
+        scopeText: fd3.get("scopeText").trim()
+      }).then(function(id){
+        form.reset();
+        $("#add-overlay").hidden = true;
+        if (id) openDetail(id);
+      });
+      return;
+    }
+  });
+
+  // ---------------- boot ----------------
+  function populateAddFormSelects(){
+    var sowSel = $('#add-form select[name="sowStatus"]');
+    var projSel = $('#add-form select[name="projectStatus"]');
+    sowSel.innerHTML = SOW_STATUS_OPTIONS.map(function(v){ return '<option value="' + esc(v) + '"' + (v==="N/A"?" selected":"") + '>' + esc(v) + '</option>'; }).join("");
+    projSel.innerHTML = PROJECT_STATUS_OPTIONS.map(function(v){ return '<option value="' + esc(v) + '"' + (v==="Yet to Start"?" selected":"") + '>' + esc(v) + '</option>'; }).join("");
+  }
+
+  async function init(){
+    populateAddFormSelects();
+    try {
+      var savedView = localStorage.getItem("geo-tracker-view");
+      if (savedView && VIEW_META[savedView]) currentView = savedView;
+      railCollapsed = localStorage.getItem("geo-tracker-rail-collapsed") === "1";
+    } catch (e) {}
+    renderNavList();
+    applyRailCollapsed();
+    navigateTo(currentView);
+    await loadAccounts();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>

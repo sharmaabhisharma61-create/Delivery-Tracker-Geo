@@ -1,0 +1,617 @@
+[
+  {
+    "id": "novo-nordisk",
+    "engagementEndDate": "2026-12-31",
+    "engagementStartDate": "2026-05-18",
+    "invoiceStatus": "Overdue",
+    "invoicedToDate": 0,
+    "logoImg": "/logos/novo-nordisk.png",
+    "logoSvg": "",
+    "name": "Novo Nordisk",
+    "nextInvoiceDue": "2026-09-20",
+    "notes": "",
+    "order": 0,
+    "ownerOffshore": "Mohit Kumar",
+    "ownerOnshore": "Rashprit Singh",
+    "projectStatus": "In Progress",
+    "rag": "Amber",
+    "revenue": 270240,
+    "roles": [
+      {
+        "role": "Engagement Lead",
+        "value": ""
+      },
+      {
+        "role": "Geo Strategist",
+        "value": "Rashprit — 50%"
+      },
+      {
+        "role": "Consultant",
+        "value": "Zeek\nMohit Kumar — 100%"
+      },
+      {
+        "role": "Lead Analyst",
+        "value": "Gaurav — 100%"
+      },
+      {
+        "role": "Analyst",
+        "value": ""
+      },
+      {
+        "role": "Brand SME",
+        "value": ""
+      },
+      {
+        "role": "Medical SME",
+        "value": "Vijay — 50%"
+      },
+      {
+        "role": "Project Manager",
+        "value": "Sayan Das — 50%"
+      }
+    ],
+    "scopeText": "ENGAGEMENT: Enterprise GEO strategic advisory & program support post-Profound onboarding (US market). Advisory/consultative in nature.\n\nD1 — ENTERPRISE GEO OPERATING MODEL & ROADMAP\n• GEO organizational & governance recommendations (competency + operating model)\n• Cross-functional workflow, stakeholder alignment & agency coordination guidance\n• GEO maturity roadmap across consumer, HCP and clinical AI surfaces\n• Executive alignment materials & advisory sessions (marketing, digital, analytics, medical)\n• Regional guidance differentiating US vs. global AI-search priorities\n• GEO playbook components: prompt governance, AI-ready content principles, visibility measurement\n\nD2 — CENTRALIZED PROMPT INTELLIGENCE & AI VISIBILITY\n• Prompt engineering workshops aligned to GEO objectives & therapeutic priorities\n• Reusable prompt frameworks, templates & taxonomy structures; ongoing library maintenance\n• Prompt-based benchmarking & AI visibility analysis via Profound\n• Competitive visibility benchmarking across priority brands & therapy areas\n• Strategic insight & recommendation readouts on AI visibility trends\n• Periodic GEO performance review & optimization planning sessions\n\nD3 — PROGRAM GOVERNANCE & COORDINATION\n• Project planning, milestone tracking, governance workflows & execution coordination\n• Cross-functional coordination (strategy, analytics, content, web, medical, compliance, agencies)\n• Demand intake, prioritization & dependency tracking\n• RAID tracking: risks, dependencies, escalations, mitigation\n• Governance cadence: status reporting, working sessions, stakeholder reviews\n• Maintenance of governance documentation, trackers, action logs & program records\n\nTEAM: GEO Strategist (0.5 FTE, 12+ yrs) | AI Optimization Specialist / Prompt Engineer (1 FTE, 9+ yrs) | Program Manager (1 FTE, 18+ yrs)\n\nKEY BOUNDARIES:\n• Capped at up to 5 priority Novo Nordisk brands\n• English-language, priority US-market AI search environments only\n• EXCLUDES large-scale technical implementation, CMS development, engineering, production deployment ownership & ongoing managed services\n• No guarantee of specific rankings, citations or AI answer inclusion (probabilistic by nature)\n• Regional expansion / localization / multilingual analysis requires scope reassessment\n• New brands, AI platforms or deliverables require formal change control\n\nACCEPTANCE: NN PM approval; feedback within 5 business days; rework at no charge.\nCHANGE CONTROL: Formal Change Order per MSA. Ramp-up 60 days notice; ramp-down 90 days notice.\nCOMMERCIALS (per SOW): Not to exceed $512,800 in 2026 | Term 18-May-2026 to Dec-2026 | MSA effective 18-May-2025",
+    "sowStatus": "Signed",
+    "timeline": [
+      {
+        "date": "2026-09-23",
+        "id": "seed-update-novo-nordisk",
+        "text": "Completed\n\nDelivered POV on Citation Decay Analysis; awaiting client feedback.\n\nCompleted and delivered Wegovy 7.2 mg Efficacy Association Analysis; awaiting client feedback.\n\nDelivered POV on Dynamic Bot Rendering; compiling key questions and clarifications for discussion during the upcoming Profound call.\n\nIn Progress\n\nReviewing the Ozempic Prompt Library – Rewrite Prompts tab to simplify patient-related prompts and ensure accurate intent mapping.\n\nUpdating the Wegovy Brand Readout with Profound insights and aligning key messages based on the latest analysis.\n\nEnhancing the POV on Agent Analytics exploration for Wegovy and developing recommendations for client discussion.\n\nExploring Agent Analysis testing on PDF and layout-based assets in collaboration with Rakshith to assess feasibility.",
+        "type": "update"
+      },
+      {
+        "date": "2026-09-23",
+        "id": "seed-risk-novo-nordisk",
+        "text": "Recent team attrition has resulted in a replacement resource requirement, requiring timely closure to mitigate capacity risks",
+        "type": "risk"
+      }
+    ],
+    "weeks": {
+      "2026-09-21": {
+        "completed": "Delivered POV on Citation Decay Analysis; awaiting client feedback.\n\nCompleted and delivered Wegovy 7.2 mg Efficacy Association Analysis; awaiting client feedback.\n\nDelivered POV on Dynamic Bot Rendering; compiling key questions and clarifications for discussion during the upcoming Profound call.",
+        "inProgress": "Reviewing the Ozempic Prompt Library – Rewrite Prompts tab to simplify patient-related prompts and ensure accurate intent mapping.\n\nUpdating the Wegovy Brand Readout with Profound insights and aligning key messages based on the latest analysis.\n\nEnhancing the POV on Agent Analytics exploration for Wegovy and developing recommendations for client discussion.\n\nExploring Agent Analysis testing on PDF and layout-based assets in collaboration with Rakshith to assess feasibility.",
+        "mitigationActions": "",
+        "mitigationDeadline": null,
+        "nextSteps": "",
+        "risk": "Recent team attrition has resulted in a replacement resource requirement, requiring timely closure to mitigate capacity risks",
+        "scopeCreep": ""
+      }
+    }
+  },
+  {
+    "id": "abbvie",
+    "engagementEndDate": "2026-10-12",
+    "engagementStartDate": "2026-09-07",
+    "invoiceStatus": "Not Scheduled",
+    "invoicedToDate": 0,
+    "logoSvg": "<svg viewBox=\"0 0 88 16\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M87.7041 15.3733C87.7041 14.4133 87.1637 14.0667 86.276 14.0667H79.5345C76.3696 14.0667 75.2503 12.04 75.1088 10.64H84.462C87.1895 10.64 88 8.6 88 7.29333C88 5.89333 87.1251 3.94667 84.462 3.94667H79.4059C74.8 3.94667 73.2947 7.18667 73.2947 9.82667C73.2947 12.72 75.0187 15.7067 79.393 15.7067H87.7041V15.3733ZM79.5474 5.58667H84.2304C85.8515 5.58667 86.2374 6.62667 86.2374 7.30667C86.2374 7.90667 85.8772 9.02667 84.2304 9.02667H75.1088C75.2246 7.84 76.1637 5.58667 79.5474 5.58667ZM60.4678 14.96C59.9918 15.64 59.6573 15.88 59.2327 15.88C58.6409 15.88 58.4222 15.5467 57.9977 14.96C56.9813 13.52 50.214 3.94667 50.214 3.94667H51.2561C52.3883 3.94667 52.7099 4.36 53.1731 5.04C53.3789 5.33333 59.2585 13.9333 59.2585 13.9333C59.2585 13.9333 65.138 5.34667 65.3696 5C65.807 4.36 66.1415 3.94667 67.2737 3.94667H68.1871C68.1871 3.94667 61.3041 13.7867 60.4678 14.96ZM16.1076 15.7067C15.4 15.7067 14.9497 15.3467 14.8211 14.56L14.5895 13.28C14.2035 14.0133 12.7883 15.7067 9.71345 15.7067H6.17544C1.36374 15.7067 0 12.32 0 9.82667C0 7.01333 1.63392 3.94667 6.17544 3.94667H9.71345C13.1614 3.94667 15.0655 6.02667 15.5287 8.56C15.9146 10.68 16.8152 15.7067 16.8152 15.7067H16.1076ZM9.31462 5.58667H6.29123C2.89474 5.58667 1.73684 7.82667 1.73684 9.82667C1.73684 11.8267 2.89474 14.0667 6.29123 14.0667H9.31462C12.8655 14.0667 13.8947 11.7333 13.8947 9.82667C13.8947 8.12 12.9684 5.58667 9.31462 5.58667ZM70.4901 2.6C70.9918 2.6 71.3778 2.28 71.3778 1.66667V1.28C71.3778 0.666667 70.979 0.346667 70.4901 0.346667C70.0012 0.346667 69.6023 0.653333 69.6023 1.28V1.66667C69.5895 2.28 69.9883 2.6 70.4901 2.6ZM69.6152 3.94667H70.0269C70.8374 3.94667 71.352 4.32 71.352 5.46667V15.7067H70.9146C70.0269 15.7067 69.6023 15.2133 69.6023 14.2267C69.6152 14.08 69.6152 3.94667 69.6152 3.94667ZM19.4784 5.48C20.2246 4.74667 21.5626 3.94667 23.6725 3.94667H27.2105C32.0222 3.94667 33.386 7.33333 33.386 9.82667C33.386 12.64 31.752 15.7067 27.2105 15.7067H23.6725C20.2246 15.7067 17.7415 13.4 17.7415 9.82667V0H18.2819C19.0538 0 19.4784 0.413333 19.4784 1.16V5.48ZM24.0585 14.0667H27.0819C30.4784 14.0667 31.6363 11.8267 31.6363 9.82667C31.6363 7.82667 30.4784 5.58667 27.0819 5.58667H24.0585C20.5076 5.58667 19.4784 7.92 19.4784 9.82667C19.4784 11.5333 20.3918 14.0667 24.0585 14.0667ZM36.8725 5.48C37.6187 4.74667 38.9567 3.94667 41.0667 3.94667H44.6047C49.4164 3.94667 50.7801 7.33333 50.7801 9.82667C50.7801 12.64 49.1462 15.7067 44.6047 15.7067H41.0667C37.6187 15.7067 35.1357 13.4 35.1357 9.82667V0H35.676C36.448 0 36.8725 0.413333 36.8725 1.16V5.48ZM41.4526 14.0667H44.476C47.8725 14.0667 49.0304 11.8267 49.0304 9.82667C49.0304 7.82667 47.8725 5.58667 44.476 5.58667H41.4526C37.9018 5.58667 36.8725 7.92 36.8725 9.82667C36.8725 11.5333 37.7988 14.0667 41.4526 14.0667Z\" fill=\"#071D49\"/></svg>",
+    "name": "AbbVie",
+    "nextInvoiceDue": null,
+    "notes": "",
+    "order": 1,
+    "ownerOffshore": "Ambika",
+    "ownerOnshore": "Arunima",
+    "projectStatus": "In Progress",
+    "rag": "Amber",
+    "revenue": 208000,
+    "roles": [
+      {
+        "role": "Engagement Lead",
+        "value": ""
+      },
+      {
+        "role": "Geo Strategist",
+        "value": ""
+      },
+      {
+        "role": "Consultant",
+        "value": "Ambika\nAnshul — 50%"
+      },
+      {
+        "role": "Lead Analyst",
+        "value": "Arvind — 0%"
+      },
+      {
+        "role": "Analyst",
+        "value": "Muni — 50%"
+      },
+      {
+        "role": "Brand SME",
+        "value": "Shwetali — 10%"
+      },
+      {
+        "role": "Medical SME",
+        "value": ""
+      },
+      {
+        "role": "Project Manager",
+        "value": "Suryansh — 50%"
+      }
+    ],
+    "scopeText": "ENGAGEMENT: AbbVie — Immunology GEO Assessment & Reporting Program.\nBrands: SKYRIZI & RINVOQ. Duration: 4–5 weeks (Week 0 = 7-Sep-2026 through\nWeek 5 = 12-Oct-2026).\n\nSCOPE:\n• Establish the GEO assessment and measurement approach for SKYRIZI and\n  RINVOQ as an enterprise capability, with enterprise dashboards in Profound\n• Assess AI visibility, source use, accuracy and competitive presence across\n  priority questions on 5 AI platforms and up to 10 indications\n• Assess unbranded content source presence across agreed DSA web properties\n  for disease-state questions, incl. visibility vs competitor sources\n• Conduct technical GEO hygiene audit across 19 web properties\n• Synthesize findings into prioritized GEO recommendations and next-phase\n  opportunities across owned, earned and technical areas\n• Conduct 2 deep-dive readouts for SKYRIZI and RINVOQ (gaps & opportunities)\n• Bring outside-in perspective and best practices prior to scaling\n\nWORKSTREAMS & TIMELINE:\n• W0 — Scope, Methodology & Alignment: scope, indication & enterprise\n  capability alignment; assessment methodology & KPI alignment\n• W1 — Prompt Library & Assessment Readiness: prompt library & Profound\n  setup initiation; enterprise dashboards & assessment readiness\n• W2–3 — Baseline Assessment & Diagnostics: assessment for 10 indications\n  across branded, DSA and pre-launch\n• W4 — Insights & Synthesis: consolidated indication-level insights in brand\n  report; findings synthesis & validation\n• W4 — Recommendations & Prioritization: key opportunity identification;\n  recommendation prioritization; claim accuracy using Profound setup\n• W5 — SKYRIZI & RINVOQ brand readouts & next-phase discussion\n\nDELIVERABLES:\n• GEO briefing per brand: prompt methodology, measurement approach, scoring\n  framework and reporting requirements\n• Profound setup: enterprise dashboards, prompts uploaded and tagged by\n  indication, accuracy, visibility and sentiment\n• Accuracy Mapping for indication label claims (prompts)\n• Analysis and Insights for SKYRIZI and RINVOQ covering indication findings\n• Prioritized GEO findings, gaps and recommendations with best practices\n• Executive readout for SKYRIZI and RINVOQ\n\nMILESTONES: M1 Briefing & scope alignment · M2 Label and claim accuracy\nmapping · M3 Prompt library & Profound setup ready · M4 Profound enterprise\ndashboards live with accuracy scores · M5 Assessment & audit execution ·\nM6 Recommendations prioritized & insights ready · M7 First draft analytical\nreports · M8 Next-phase roadmap confirmed.\n\nTEAM: Rusty Rahmer (Strategy & Outcomes Lead) · Prasad Adavadkar\n(Engagement Lead) · Ambika Singh (GEO Lead) · Arunima Chandra (GEO\nStrategist) · Dr. Ayushi Gadekar (Medical SME) · Abhishek Sharma (AIO\nSpecialist). Support: Rashprit / Arunima / Anshul / Mohit / Analyst / Ayushi.\n\nKEY BOUNDARIES (OUT OF SCOPE):\n• Technical hygiene audit is out of scope (per Assumptions slide — NOTE:\n  conflicts with Project Charter which lists a 19-property audit; confirm)\n• Crawl analytics (ChatGPT/Gemini bot logs, AI bot readability per page)\n• Additional KPIs beyond agreed framework (hallucination rate, source\n  inclusion, recommendation strength)\n• Specific efficacy-claim logic — requires separate agent build (future)\n• Phase 1 is assessment, insights and prioritized recommendations only;\n  execution, content development, technical remediation and re-testing\n  will be scoped separately\n\nKEY ASSUMPTIONS:\n• AbbVie provides the baseline prompt/question set; Indegene reviews,\n  structures, tags, validates and prioritizes for assessment readiness\n• 400 prompts total — 200 per brand; AbbVie to provide competitor list\n• Indegene Profound instance: max 10 competitors/brand, 4 AI platforms and\n  200 prompts per configuration (usage inclusive in fee)\n• Results are a point-in-time baseline; AI answers vary across engines/time\n• Effort sizing is directional, not an implementation commitment\n\nRISKS & DEPENDENCIES:\n• Claim accuracy requires timely Medical and Measurement lead alignment\n• Prompt setup starts only on receipt of client prompts — delay hits timeline\n• Profound data stability: prompt data 3–4 days; Fact Check 8–9 days\n• Timely access to approved brand, clinical and disease-state materials\n• Confirmation of priority indications, audiences, competitors, properties\n• Brand/Medical review of prompts, narratives and accuracy findings on time\n• One consolidated feedback route; daily/weekly governance checkpoints\n• Confirmation of reporting format, KPI definitions and scoring rules\n\nCOMMERCIALS (per proposal): Total investment $208,000, inclusive of 10\nindications across both brands and Indegene Profound instance usage.\nAdditional prompt volume, AI platform usage or agent credits require\nseparate configuration and pass-through cost. T&E billed on actuals.",
+    "sowStatus": "Signed",
+    "timeline": [
+      {
+        "date": "2026-09-23",
+        "id": "seed-update-abbvie",
+        "text": "Updated RINVOQ and SKYRIZI prompt measurement split across Visibility, Sentiment, and FactCheck shared with AbbVie for review and sign-off.\n\nAdditional Profound measurement metrics and definitions shared with the client; awaiting feedback.\n\nCompetitor-to-indication mapping and combined Visibility, Sentiment & Citation analysis progressing internally to support reporting and insights.\n\nOne-indication sample report and Recommendation Strength logic in progress as part of the reporting framework.",
+        "type": "update"
+      },
+      {
+        "date": "2026-09-23",
+        "id": "seed-risk-abbvie",
+        "text": "Client review/sign-off is pending on the proposed prompt split and additional metrics; FactCheck setup changes remain on hold until alignment is received.\n\nSample report refinement is dependent on confirmation of the final measurement metrics and reporting framework.",
+        "type": "risk"
+      }
+    ],
+    "weeks": {
+      "2026-09-21": {
+        "completed": "",
+        "inProgress": "Updated RINVOQ and SKYRIZI prompt measurement split across Visibility, Sentiment, and FactCheck shared with AbbVie for review and sign-off.\n\nAdditional Profound measurement metrics and definitions shared with the client; awaiting feedback.\n\nCompetitor-to-indication mapping and combined Visibility, Sentiment & Citation analysis progressing internally to support reporting and insights.\n\nOne-indication sample report and Recommendation Strength logic in progress as part of the reporting framework.",
+        "mitigationActions": "",
+        "mitigationDeadline": null,
+        "nextSteps": "",
+        "risk": "Client review/sign-off is pending on the proposed prompt split and additional metrics; FactCheck setup changes remain on hold until alignment is received.\n\nSample report refinement is dependent on confirmation of the final measurement metrics and reporting framework.",
+        "scopeCreep": ""
+      }
+    }
+  },
+  {
+    "id": "pfizer",
+    "engagementEndDate": "2026-10-23",
+    "engagementStartDate": "2026-08-19",
+    "invoiceStatus": "Not Scheduled",
+    "invoicedToDate": 0,
+    "logoSvg": "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" viewBox=\"0 0 1505.9 621.4\"><defs><style>.cls-1{fill:#0000c9;}</style></defs><g><g id=\"Layer_1\"><g><g><path class=\"cls-1\" d=\"M1255.7,423.2c-27.8.4-42.6-17.3-42.6-48.7s0-4.1.2-6.1h109.2c2.2-8.3,3.6-17.3,3.6-25.6,0-38.3-23.5-67.5-71.5-67.5s-92.7,48.4-92.7,99.2,31.8,78.3,84.8,78.3,46.6-7.9,62.8-20.2l-10.1-25.3c-12.6,9.7-28.1,15.5-43.7,15.9ZM1255.3,302.6c16.2,0,24.5,10.5,24.5,33.6s-.1,4.5-.4,6.9h-62.3c6.8-24.3,21.2-40.4,38.1-40.4Z\"/><path class=\"cls-1\" d=\"M823.4,264.4c0-39.7-31-68.6-78-68.6h-90.9l-68.6,252.6h57.4l25.3-93.1h49.8c57,0,105-36.8,105-90.9ZM696.3,325.7h-19.7l27.2-100.3h20.7c26.1,0,40.8,17.7,40.8,41.1,0,37.5-29.4,59.2-68.9,59.2Z\"/><path class=\"cls-1\" d=\"M898.1,279.9l6.4-23.5c3.2-12.3,8.7-33.2,16.2-57.4,7.9-24.9,22.4-40.4,41.9-40.4s15.2,4.3,15.2,11.5c-.4,7.9-6.9,12.6-6.9,25.3s12.6,26.3,28.9,26.3,36.4-16.2,36.4-36.1c0-30.7-26.3-50.9-66.4-50.9-58.8,0-97.4,37.5-121.6,125.2l-98.2,356.9h55.6l84.8-309.3h57.8l-38,140.7h55.6l45.5-168.5h-113.3Z\"/><polygon class=\"cls-1\" points=\"1179.6 279.9 1032.3 279.9 1025.1 307.7 1096.4 307.7 985.8 448.4 1141.7 448.4 1148.9 420.6 1068.7 420.6 1179.6 279.9\"/><path class=\"cls-1\" d=\"M1471.2,277c-19.9,0-41.1,12.9-57.7,39.6l9.7-36.7h-55.6l-45.5,168.5h55.6l20.6-75.8c8.3-31,28.5-61.4,41.9-61.4s9,27.1,33.9,27.1,28.9-16.6,28.9-31.8-14.1-29.6-31.8-29.6Z\"/></g><path class=\"cls-1\" d=\"M67.5,288.6c42.5-15.7,114.9-19.7,210.9-8.7l28.3-107c-109.4-15-224.3-3.9-251.1,34.6-11.8,17.3-15,53.5,11.8,81.1ZM489.3,271.3c-42.5,15.7-114.9,19.7-210.9,8.7l-28.3,107c109.4,15,224.3,3.9,251.1-34.6,11.8-17.3,15-53.5-11.8-81.1ZM527.1,309l17.3-64.5c6.3-22.8,9.4-34.6,9.4-44.1,0-82.6-216.5-183.4-422.7-196l-29.1,107c212.5,15,429.8,118.1,424.2,197.6h.8ZM29.7,250.8l-17.3,64.5c-6.3,22.8-9.4,34.6-9.4,44.1,0,82.6,216.5,183.4,422.7,196l29.1-107C242.2,433.4,25,330.3,30.5,250.8h-.8Z\"/></g></g></g></svg>",
+    "name": "Pfizer",
+    "nextInvoiceDue": null,
+    "notes": "",
+    "order": 2,
+    "ownerOffshore": "Ambika",
+    "ownerOnshore": "Arunima",
+    "projectStatus": "In Progress",
+    "rag": "Amber",
+    "revenue": 190000,
+    "roles": [
+      {
+        "role": "Engagement Lead",
+        "value": ""
+      },
+      {
+        "role": "Geo Strategist",
+        "value": "Arunima — 50%"
+      },
+      {
+        "role": "Consultant",
+        "value": "Ambika — 50%"
+      },
+      {
+        "role": "Lead Analyst",
+        "value": "Arvind — 25%"
+      },
+      {
+        "role": "Analyst",
+        "value": "Muni — 50%"
+      },
+      {
+        "role": "Brand SME",
+        "value": "Shwetali — 0%"
+      },
+      {
+        "role": "Medical SME",
+        "value": "Ayushi — 25%"
+      },
+      {
+        "role": "Project Manager",
+        "value": "Suryansh — 25%"
+      }
+    ],
+    "scopeText": "ENGAGEMENT: Pfizer — BESPONSA (inotuzumab ozogamicin) GEO Implementation\nRoadmap. R/R B-cell Precursor ALL, HCP audience (besponsa.pfizerpro.com).\nNOTE: This is a delivery roadmap / implementation plan, not an executed SOW —\ntracker SOW Status is \"N/A\". All dates below are stated as working targets.\nDuration: ~10 weeks (W1 19-Aug-2026 through W10 21-23 Oct 2026).\n\nTRACK 1 — FOUNDATION ENHANCEMENTS (4-week plan, backend/technical only):\nOperating model per item = Indegene recommends -> Pfizer reviews & approves ->\nPfizer Web Team implements -> Indegene post-live QC validation.\n• H1 tags: identify missing/duplicate/unrelated H1s; page-specific H1s aligned\n  to HCP intent (Rec 19-25 Aug; Impl 26 Aug-03 Sep; QC 04 Sep)\n• Heading structure H1-H6: map and optimize hierarchy (same cadence)\n• Schema markup: JSON-LD templates for key entities — MedicalWebPage, Drug,\n  MedicalCondition, MedicalAudience, DoseSchedule, Organization\n  (Rec 26 Aug-01 Sep; Impl 02-10 Sep; QC 11-12 Sep)\n• Robots.txt & sitemap optimization: crawler rules for approved AI bots\n  (Rec 20-21 Aug; Impl 22-27 Aug; QC 28 Aug)\n• Make image & table content accessible (image-to-HTML conversion of already\n  MLR-approved efficacy, dosing and AE tables)\nMILESTONE 1 — Foundation Updates Live & Validated — 11 Sep 2026\n\nPRIORITY MATRIX (sequencing under limited Pfizer web/MLR bandwidth):\n• #1 robots.txt — P0 Gate, low effort (1-2d); needs Legal/Privacy, not MLR\n• #2 image & table accessibility — P0 Keystone, med-high; unlocks #3 and #4\n• #3 heading structure H1-H6 — P1 Scaffolding, low-med; depends on #2\n• #4 unique page-specific H1s — P1 Anchoring, low (2d); depends on #2\n• #5 medical & content schema — P2 Amplifier, med; delivers most after #2\nAll five are existing-content, under-the-hood changes requiring no new MLR.\n\nTRACK 2 — AS-IS & GEO ASSESSMENT (10 weeks):\n• WS1 Understand Brand Priorities: brand strategy, HCP objectives, evidence and\n  competitive positioning review; HCP content assessment; joint working session\n  (19-24 Aug; 25-28 Aug) — CHECKPOINT 2.a brand priorities aligned\n• WS2 AI Visibility & Narrative Assessment: define narratives BESPONSA must own\n  (29 Aug-03 Sep); client session to prioritize narrative battles (04-06 Sep);\n  prompt library creation — intent mapping, clustering, journey-aligned prompt\n  architecture (07-12 Sep); prompt review & approval (13-17 Sep); Profound\n  platform setup — tracking, prompts, competitor brands (18-26 Sep)\n  — CHECKPOINT 2.b Narratives signed off & Profound setup — 26 Sep 2026\n• WS3 Baseline & Opportunity Landscape: AI visibility baseline (citation rate,\n  Share of Model, cross-platform visibility) 27-30 Sep; competitive\n  benchmarking; gap & opportunity analysis 01-05 Oct; authority & citation\n  analysis; opportunity synthesis & final assessment readout 19-23 Oct\nMILESTONE 2 — GEO Assessment Complete — 23 Oct 2026\n\nTRACK 3 — RECOMMENDATIONS & PRIORITIZATION (W7-W10):\n• Prioritize & score by impact, effort, feasibility, evidence strength and\n  measurement potential -> priority scoring matrix (06-14 Oct)\n• Define AI-native GEO KPIs, downstream indicators, owners and dependencies\n  -> KPI and ownership framework (07-14 Oct)\n• Build phased GEO implementation roadmap separating quick wins from\n  higher-effort initiatives (14-20 Oct)\n• Joint roadmap review, alignment and approval; confirm implementation scope\n  and sequencing (21-27 Oct)\nMILESTONE 3 — Roadmap Approved — 27 Oct 2026\n\nGOVERNANCE: Scope & Assumptions Alignment 28-Aug-2026 · AI Weekly Call for\nmilestone updates (weekly/on milestone) · Interim Readout 13-Oct-2026 ·\nFinal Readout 27-Oct-2026. Pre-reads shared ahead of key discussions.\n\nKEY BOUNDARIES (OUT OF SCOPE):\n• Foundational enhancements are backend/technical changes only — no front-end\n  content or creative changes in scope\n• Indegene recommends and validates; Pfizer Web/Digital team implements\n• Off-page/authority activities are recommendations only\n\nKEY ASSUMPTIONS:\n• Pfizer Web/Digital team capacity planned to support implementation\n• Pfizer to confirm a single named point of contact for technical execution\n• Recommendations adapted to Pfizer CMS and web platform requirements\n• Implementation timelines may be re-baselined based on volume and complexity\n  of recommendations identified\n\nRISKS & DEPENDENCIES:\n• Pfizer technical owner must be identified and engaged for implementation\n• CMS/platform feasibility validation against current architecture\n• Website impact: Pfizer to confirm deployment window, downtime or\n  availability considerations\n• Access to brand plan, evidence pack, gated content, Profound access/licence\n• Legal/privacy/security governance sign-off for robots.txt\n• Page inventory and web implementation slots from Pfizer\n\nOPEN QUESTIONS FOR PFIZER:\n• Will any BESPONSA HCP pages be taken down or experience downtime during\n  implementation?\n• What is the expected implementation window once specifications are handed off?\n\nCOMMERCIALS: No fees, rate card or contract value stated in this roadmap deck.\nTracker revenue of $190,000 is not evidenced by this document — confirm against\nthe underlying Pfizer SOW/PO.",
+    "sowStatus": "N/A",
+    "timeline": [
+      {
+        "date": "2026-09-23",
+        "id": "seed-update-pfizer",
+        "text": "Prompt methodology finalized and narrative-to-prompt coverage aligned with Pfizer; client feedback incorporated into the assessment approach.\n\nProfound setup completed and baseline measurement initiated across key GEO metrics.\n\nPrompt library enhanced based on client feedback, including 4 new branded Clinical Evidence prompts and 2 updated Administration & Use prompts for Sentiment and Fact Check measurement.\n\nFoundation Enhancement recommendations and Schema deliverable completed, with an impact measurement approach established for pre/post implementation comparison.\n\nBaseline window aligned for 14–25 Sep, with assessment and readout preparation underway for October.",
+        "type": "update"
+      },
+      {
+        "date": "2026-09-23",
+        "id": "seed-risk-pfizer",
+        "text": "Foundation Enhancement implementation remains dependent on Pfizer Web Team timelines, which may impact the planned technical enhancement and subsequent post-implementation measurement schedule.\n\nBaseline metrics are being monitored for stabilization following the latest prompt updates before finalizing the assessment benchmark.",
+        "type": "risk"
+      }
+    ],
+    "weeks": {
+      "2026-09-21": {
+        "completed": "",
+        "inProgress": "Prompt methodology finalized and narrative-to-prompt coverage aligned with Pfizer; client feedback incorporated into the assessment approach.\n\nProfound setup completed and baseline measurement initiated across key GEO metrics.\n\nPrompt library enhanced based on client feedback, including 4 new branded Clinical Evidence prompts and 2 updated Administration & Use prompts for Sentiment and Fact Check measurement.\n\nFoundation Enhancement recommendations and Schema deliverable completed, with an impact measurement approach established for pre/post implementation comparison.\n\nBaseline window aligned for 14-25 Sep, with assessment and readout preparation underway for October.",
+        "mitigationActions": "",
+        "mitigationDeadline": null,
+        "nextSteps": "",
+        "risk": "Foundation Enhancement implementation remains dependent on Pfizer Web Team timelines, which may impact the planned technical enhancement and subsequent post-implementation measurement schedule.\n\nBaseline metrics are being monitored for stabilization following the latest prompt updates before finalizing the assessment benchmark.",
+        "scopeCreep": ""
+      }
+    }
+  },
+  {
+    "id": "gilead-italy",
+    "engagementEndDate": null,
+    "engagementStartDate": null,
+    "invoiceStatus": "Not Scheduled",
+    "invoicedToDate": 0,
+    "logoSvg": "<svg viewBox=\"0 0 168 45\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M63.356 21.294V29.1017C62.0747 29.5275 60.7933 29.6695 59.512 29.6695C54.2442 29.6695 50.9696 26.6884 50.9696 21.8618C50.9696 17.0352 54.2442 14.0541 59.6544 14.0541C61.3628 14.0541 63.2137 14.1961 64.7798 14.9058L65.3493 15.1898L66.4882 12.2086L65.9187 11.9247C64.0679 11.2149 61.9323 10.7891 59.9391 10.7891C50.9696 10.7891 46.8408 16.4674 46.8408 21.8618C46.6985 24.8429 47.9798 27.6821 50.1154 29.6695C52.251 31.7989 55.2408 32.9345 59.0849 32.9345C61.6476 32.9345 64.3527 32.5087 66.773 31.515H67.0577V21.294H63.356Z\" fill=\"#54565B\"/><path d=\"M77.7347 11.2188H73.8906V32.7964H77.7347V11.2188Z\" fill=\"#54565B\"/><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M88.8402 29.3894V11.2188H84.9961V32.7964H98.8062V29.3894H88.8402Z\" fill=\"#54565B\"/><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M107.348 29.3894V22.8593H116.887V19.7362H107.348V14.3418H117.599V11.2188H103.646V32.7964H118.026V29.3894H107.348Z\" fill=\"#54565B\"/><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M132.263 15.4775C132.547 16.0453 134.398 21.4397 134.968 23.0013H129.131C129.131 23.0013 131.978 16.0453 132.263 15.4775ZM134.256 11.2188H130.412L122.154 32.7964H125.998L128.419 26.4083H136.107L138.527 32.7964H142.656L134.256 11.2188Z\" fill=\"#54565B\"/><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M164.582 13.7702C162.304 11.9247 158.745 10.7891 154.332 10.7891H147.213V14.0541H154.332C157.606 14.0541 160.169 14.9058 161.735 16.1835C163.016 17.6031 163.728 19.4485 163.728 21.294C163.87 23.4233 163.016 25.6947 161.45 27.2562C159.742 28.8177 157.037 29.6695 153.762 29.6695H151.057V19.7324H147.213V32.6506H147.498C149.491 32.9345 151.342 32.9345 153.335 32.9345C158.033 32.9345 161.877 31.515 164.44 29.3856C166.718 27.2562 167.857 24.2751 167.715 21.294C167.715 18.4548 166.576 15.7576 164.582 13.7702Z\" fill=\"#54565B\"/><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M34.5972 0H34.3124C5.55317 2.6972 1.99386 21.7196 11.3904 27.9657C9.68197 34.9217 11.3904 34.9217 11.3904 34.9217C11.5328 32.7923 11.9599 30.8049 12.5294 28.6755C16.0887 14.9056 25.2006 3.12308 34.3124 0.141958C34.5022 0.236597 34.5972 0.189277 34.5972 0Z\" fill=\"#C5203F\"/><path fill-rule=\"evenodd\" clip-rule=\"evenodd\" d=\"M32.7457 4.82298V4.53906L32.4609 4.82298C30.3254 9.36564 29.3287 15.8957 27.7626 20.7223C25.6271 26.4006 21.9254 30.3754 16.2305 29.8076V43.7195C16.2305 43.7195 0.996608 37.0475 0.996608 26.2587V6.1006L13.383 4.96494C13.5728 4.96494 13.6678 4.8703 13.6678 4.68102H0V26.1167C0 38.3251 16.2305 44.9971 16.2305 44.9971C16.2305 44.9971 32.7457 38.0412 32.7457 26.2587V4.82298Z\" fill=\"#C5203F\"/></svg>",
+    "name": "Gilead Italy",
+    "nextInvoiceDue": null,
+    "notes": "",
+    "order": 3,
+    "ownerOffshore": "Akshita",
+    "ownerOnshore": "Ashruti Srivastava",
+    "projectStatus": "In Progress",
+    "rag": "Green",
+    "revenue": 35000,
+    "roles": [
+      {
+        "role": "Engagement Lead",
+        "value": ""
+      },
+      {
+        "role": "Geo Strategist",
+        "value": ""
+      },
+      {
+        "role": "Consultant",
+        "value": ""
+      },
+      {
+        "role": "Lead Analyst",
+        "value": ""
+      },
+      {
+        "role": "Analyst",
+        "value": "Nishant — 50%"
+      },
+      {
+        "role": "Brand SME",
+        "value": "Shwetali — 10%"
+      },
+      {
+        "role": "Medical SME",
+        "value": "Ayushi — 25%"
+      },
+      {
+        "role": "Project Manager",
+        "value": "Akshita — 50%"
+      }
+    ],
+    "scopeText": "ENGAGEMENT: Gilead Sciences S.r.l (Italy) — GEO AI Visibility Pilot\n(Listening & Recommendations). Work Order under MSA between Gilead Sciences\nInc. and Indegene, Inc. effective 22-Sep-2015.\nTerm: 6 weeks from Effective Date. EFFECTIVE DATE IS \"TBD\" IN THE DOCUMENT.\n\nCOVERAGE MODEL: Italy market · 1 therapy area (Oncology) · 1 brand (Trodelvy) ·\n1 gated HCP website · Italian language · HCP and Patient audiences.\n\nD1 — EXTENSIVE & ROBUST PROMPT LIBRARY (Weeks 1-4):\n• Keyword research and topic discovery\n• Prompt construction across a 3-layer taxonomy (Gilead -> Therapy Area ->\n  Brand)\n• Cognitive Intent Funnel coverage: Exploration, Evaluation, Decision Support\n  and Management\n• Prompt engineering across HCP and Patient journeys\n• Multi-LLM execution across ChatGPT, Gemini and Google AI Overviews\n• Volume Heatmap and Segment Priority Index\n• QA, compliance validation and client walkthrough\n\nD2 — ANALYSIS & RECOMMENDATIONS READOUT (Weeks 3-6):\n• AI Visibility Baseline via GEO Metrics Scorecard\n• Platform-level comparative views and competitive benchmarking\n• Third-party citation analysis with authority/influence scoring\n• Governance and audit recommendations framework with source-priority matrix\n• Insights synthesis and final executive readout with playbook handoff\n\nACCEPTANCE CRITERIA:\n• D1 — final prompt library in editable format plus methodology pack; client\n  walkthrough completed and confirmation received\n• D2 — final readout delivered with playbook handoff; client confirmation\n  received. Gilead shall review and accept or reject each deliverable.\n\nKEY BOUNDARIES (OUT OF SCOPE):\n• Implementation or execution of recommendations\n• Net-new content creation\n• Full website overhaul beyond defined priority pages\n• Markets outside Italy or non-Italian languages\n• MLR submission management, workflows or approval cycles\n• Paid media, social or campaign execution\n• Third-party website updates, publisher outreach, backlink acquisition\n• Live dashboards, continuous monitoring or always-on tracking\n• Anything not explicitly defined — subject to formal Change Control\n\nKEY ASSUMPTIONS:\n• Engagement is diagnostic, analytical and advisory only — no implementation\n• Third-party ecosystem: advisory only; no control over AI platform behaviour\n• All outputs require Gilead MLR review; Indegene will not publish, deploy or\n  modify any Gilead property\n• No guarantee of visibility, ranking or citation improvements\n• Proprietary GEO tools/accelerators are not licensed for ongoing independent\n  use by Gilead\n• 6-week timeline assumes timely Gilead dependencies; delays require\n  re-baselining\n• Gilead's Obligations section is marked NOT APPLICABLE\n\nRISKS & DEPENDENCIES:\n• EFFECTIVE DATE UNRESOLVED — document carries an open reviewer comment\n  requiring an exact date; start date pending client confirmation of when the\n  engagement commences. Term and all milestones float until this is fixed.\n• Timely access to Gilead Materials and stakeholder availability\n• MLR review capacity for all outputs\n\nCOMMERCIALS (per Work Order): Total Engagement Cost $39,400 fixed fee,\ninclusive of a $2,250 tool/accelerator allocation, exclusive of taxes;\nout-of-pocket at cost without markup. Fee breakup — Gilead Italy fee $25,000\n+ Central Funding (CPC) $10,000 + Commercial Discount $4,400 = $39,400.\nThe Service Fees field states $25,000. Payment schedule: Payment 1 $12,500\n(50%) upon Effective Date / kickoff; Payment 2 $12,500 (50%) end of Week 6.\nExpenses budget: none (included in service fees). Invoiced against milestone\ncompletion; payment within 30 days of receipt. Invoicing entity: Gilead\nSciences S.r.l, Via Melchiorre Gioia 26, 20124 Milan, Italy.\nNOTE: Tracker revenue $35,000 matches neither $39,400 nor $25,000 — confirm.",
+    "sowStatus": "Signed",
+    "timeline": [
+      {
+        "date": "2026-09-23",
+        "id": "seed-update-gilead-italy",
+        "text": "Kick off planned for 30th September\n\nWorking on finalising the keywords and topics",
+        "type": "update"
+      }
+    ],
+    "weeks": {
+      "2026-09-21": {
+        "completed": "",
+        "inProgress": "Working on finalising the keywords and topics",
+        "mitigationActions": "",
+        "mitigationDeadline": null,
+        "nextSteps": "Kick off planned for 30th September",
+        "risk": "",
+        "scopeCreep": ""
+      }
+    }
+  },
+  {
+    "id": "ipsen",
+    "engagementEndDate": "2027-01-08",
+    "engagementStartDate": "2026-10-01",
+    "invoiceStatus": "Not Scheduled",
+    "invoicedToDate": 0,
+    "logoSvg": "<svg viewBox=\"0 0 168 48\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><mask id=\"mask0_259_283\" style=\"mask-type:luminance\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"1\" width=\"168\" height=\"46\"><path d=\"M167.7 1H0V46.5H167.7V1Z\" fill=\"white\"/></mask><g mask=\"url(#mask0_259_283)\"><path d=\"M17.0002 24.7999C17.0002 24.6999 16.9002 24.5999 16.8002 24.5999C9.60018 21.4999 6.0002 18.1999 6.1002 14.6999C6.3002 7.49992 22.1002 1.69992 22.2002 1.69992C22.4002 1.59992 22.5002 1.39992 22.4002 1.19992C22.3002 0.999924 22.1002 0.899924 21.9002 0.999924C9.60019 4.89992 3.3002 9.19992 3.2002 13.7999C3.2002 17.6999 7.6002 20.9999 11.4002 22.9999H11.5002C11.7002 23.1999 11.8002 23.1999 12.0002 23.2999C12.7002 23.5999 13.3002 23.8999 13.9002 24.1999C19.6002 27.0999 22.5002 30.1999 22.3002 33.1999C21.9002 40.3999 6.0002 45.6999 5.9002 45.6999C5.7002 45.6999 5.6002 45.9999 5.7002 46.1999C5.7002 46.3999 5.9002 46.4999 6.0002 46.4999C18.5002 42.9999 24.9002 38.8999 25.1002 34.2999C25.1002 30.2999 20.7002 26.9999 16.9002 24.7999H17.0002Z\" fill=\"#234B82\"/><path d=\"M19.5002 15.0998C19.7002 8.4998 6.70017 3.4998 6.10017 3.2998C6.00017 3.2998 5.80017 3.2998 5.70017 3.4998C5.60017 3.6998 5.70017 3.8998 5.90017 3.9998C13.2002 7.1998 16.8002 10.6998 16.6002 14.1998C16.2002 21.2998 0.300168 26.5998 0.200168 26.5998C0.000167981 26.6998 -0.099832 26.8998 0.000167981 27.0998C0.000167981 27.2998 0.200168 27.3998 0.300168 27.3998H0.400168C12.9002 23.7998 19.3002 19.6998 19.5002 15.0998Z\" fill=\"#2A97D4\"/><path d=\"M27.9002 18.5998C27.8002 18.3998 27.6002 18.2998 27.4002 18.3998C15.1002 22.2998 8.8002 26.5998 8.7002 31.1998C8.7002 37.8998 21.5002 42.4998 22.0002 42.6998H22.1002C22.2002 42.6998 22.4002 42.6998 22.4002 42.4998C22.5002 42.2998 22.4002 42.0998 22.2002 41.9998C15.0002 38.8998 11.4002 35.4998 11.5002 32.0998C11.7002 24.8998 27.5002 19.0998 27.6002 19.0998C27.9002 18.9998 28.0002 18.7998 27.9002 18.5998Z\" fill=\"#2A97D4\"/><path d=\"M25.7004 12.3C26.4004 13.8 25.8004 15.4 24.0004 16.1C22.5004 16.7 21.3004 15.4 21.0004 14.4C20.7004 12.9 22.4004 11.8 24.2004 11.5C24.9004 11.5 25.4004 11.7 25.7004 12.3Z\" fill=\"#2A97D4\"/><path d=\"M71.5006 11.6001H47.6006V33.6001H56.4006V25.8001H71.5006C75.2006 25.8001 77.4006 25.0001 77.4006 21.3001V16.0001C77.4006 12.4001 75.2006 11.6001 71.5006 11.6001ZM68.6006 20.4001C68.6006 22.2001 68.1006 23.0001 66.3006 23.0001H56.5006V17.0001C56.5006 15.3001 57.3006 14.5001 59.5006 14.5001H66.3006C68.1006 14.5001 68.7006 15.3001 68.6006 17.0001V20.4001Z\" fill=\"#234B82\"/><path d=\"M43.2004 33.6001H34.4004V11.6001H43.2004V33.6001Z\" fill=\"#234B82\"/><path d=\"M108.001 29.1002C108.001 31.6002 107.301 33.7002 102.201 33.7002H82.1006V30.9002H97.0006C98.3006 30.9002 99.1006 30.1002 99.1006 28.9002V26.4002C99.1006 24.8002 98.4006 24.0002 96.9006 24.0002H85.2006C81.3006 24.0002 80.1006 22.1002 80.1006 19.7002V15.7002C80.1006 13.3002 82.0006 11.7002 85.2006 11.7002H104.701C104.701 11.7002 104.501 14.5002 101.001 14.5002H91.2006C89.3006 14.5002 88.9006 15.6002 88.9006 16.8002V18.9002C88.9006 20.2002 89.4006 21.2002 91.1006 21.2002H102.401C106.801 21.2002 107.901 22.9002 107.901 26.1002V29.1002H108.001Z\" fill=\"#234B82\"/><path d=\"M110.7 33.6001V11.6001H134.8V14.5001H121.9C120.4 14.5001 119.6 15.0001 119.6 16.8001V21.1001H132.2C132.2 21.1001 132 23.9001 128.5 23.9001H119.6V28.4001C119.6 30.1001 120.5 30.7001 121.8 30.7001H134.8V33.5001H110.7V33.6001Z\" fill=\"#234B82\"/><path d=\"M160.3 33.6001C158.2 33.6001 156.6 32.7001 155.1 30.9001C153.9 29.7001 141.8 15.8001 141.8 15.8001H141.7V33.6001H137.7V11.6001H145.8C147.1 11.6001 148.6 11.8001 149.8 13.2001C150.9 14.5001 163.5 29.0001 163.5 29.0001H163.6V11.6001H167.7V33.6001H160.3Z\" fill=\"#234B82\"/></g></svg>",
+    "name": "Ipsen",
+    "nextInvoiceDue": null,
+    "notes": "",
+    "order": 4,
+    "ownerOffshore": "Akshita",
+    "ownerOnshore": "Rashprit Singh",
+    "projectStatus": "In Progress",
+    "rag": "Green",
+    "revenue": 45000,
+    "roles": [
+      {
+        "role": "Engagement Lead",
+        "value": ""
+      },
+      {
+        "role": "Geo Strategist",
+        "value": ""
+      },
+      {
+        "role": "Consultant",
+        "value": ""
+      },
+      {
+        "role": "Lead Analyst",
+        "value": ""
+      },
+      {
+        "role": "Analyst",
+        "value": "Nishant — 50%"
+      },
+      {
+        "role": "Brand SME",
+        "value": "Shwetali — 10%"
+      },
+      {
+        "role": "Medical SME",
+        "value": "Vijay — 50%"
+      },
+      {
+        "role": "Project Manager",
+        "value": "Akshita — 50%"
+      }
+    ],
+    "scopeText": "ENGAGEMENT: Ipsen Biopharmaceuticals — DSA Website for Migraine (Dysport,\nepisodic migraine). SOW-51 under MSA CW257725. Contract CW359810.\nTerm: 01-Oct-2026 to 08-Jan-2027. Signed 21-Sep-2026.\n\nD1 — DSA DYSPORT MIGRAINE WEBSITE (3 pages):\n• Home\n• Disease-information page\n• Resource page with filtering and search functionality\n\nD2 — GOOGLE ANALYTICS IMPLEMENTATION:\n• SDR creation, GA tagging, Data Layer implementation and QA\n\nD3 — SEO IMPLEMENTATION:\n• Technical audits during staging and post-live\n• SEO metadata: Titles, Meta Descriptions, OG Tags, Image ALT Tags\n• Google Search Console setup, sitemap submission, indexing verification\n\nD4 — GEO IMPLEMENTATION:\n• Intent-based prompt library development\n• Cross-LLM AI visibility and citation benchmarking\n• Competitor DSA website assessment\n• Keyword-to-content mapping\n• GEO best practices: answer-first content structuring, schema/metadata and\n  evidence/citation standards, with actionable recommendations\n• Brand Evidence & Narrative Analysis — how AI platforms represent Dysport's\n  evidence and positioning for episodic migraine\n• Prompt Library Development — where/how the market forms queries on\n  episodic migraine treatment\n• Competitive Share of Voice benchmarking for the indication\n• AI Visibility Assessment — baseline accuracy/frequency score\n• DSA website content and structural recommendations to improve citability\n• Continuous monthly AI visibility and citation monitoring, with 3–4\n  performance reports tracking changes, gaps and optimization opportunities\n\nDELIVERY MANAGEMENT:\n• Create, maintain and track the project plan; report status to Ipsen\n• Weekly status calls and critical-activity discussions\n• Proactive stakeholder communication on status, timelines and issues\n\nKEY BOUNDARIES:\n• Ipsen owns provision/approval of all content, target lists, business rules,\n  campaign requirements, data inputs, reporting requirements and platform\n  access; delays relieve Indegene of resulting schedule impact\n• Indegene retains ownership of its methodologies, know-how, tools, processes\n  and analytics; may use aggregated/anonymised insights internally\n• No AI to be used in performing Services or creating Deliverables (SOW 2(c))\n• No expenses reimbursable; pricing excludes taxes\n• No payments or transfers of value to HCPs under this SOW\n• PRC approval required for any promotional/training materials\n• Adverse events reportable to Ipsen PV within 1 business day (max 3 calendar\n  days over weekends/holidays)\n\nACCEPTANCE: Final payment subject to Ipsen's confirmation of delivery of all\nDeliverables and Checklist Items.\n\nCHANGE CONTROL: Amendments only by written agreement executed by an\nauthorised officer of each party.\n\nCOMMERCIALS (per SOW): Not-to-exceed $93,000, payment within 90 days.\nMilestones — Development completion 20-Dec-2026 $75,000; UAT & PRC\ncompletion 06-Jan-2027 $15,000; Project closure 12-Jan-2027 $3,000.\nAnnex 1 breakdown — Web $30,000; Google Analytics $8,000; SEO $10,000;\nGEO $45,000.",
+    "sowStatus": "Signed",
+    "timeline": [
+      {
+        "date": "2026-09-23",
+        "id": "seed-update-ipsen",
+        "text": "Finalised the narrative battles and prompt library creation\n\nProfound set up completed on 23rd September",
+        "type": "update"
+      }
+    ],
+    "weeks": {
+      "2026-09-21": {
+        "completed": "Finalised the narrative battles and prompt library creation\n\nProfound set up completed on 23rd September",
+        "inProgress": "",
+        "mitigationActions": "",
+        "mitigationDeadline": null,
+        "nextSteps": "",
+        "risk": "",
+        "scopeCreep": ""
+      }
+    }
+  },
+  {
+    "id": "summit",
+    "engagementEndDate": "2026-12-31",
+    "engagementStartDate": "2026-04-21",
+    "invoiceStatus": "Not Scheduled",
+    "invoicedToDate": 0,
+    "logoImg": "/logos/summit.png",
+    "logoSvg": "",
+    "name": "Summit",
+    "nextInvoiceDue": null,
+    "notes": "",
+    "order": 5,
+    "ownerOffshore": "Arvind (TBH)",
+    "ownerOnshore": "",
+    "projectStatus": "In Progress",
+    "rag": "Amber",
+    "revenue": 40750,
+    "roles": [
+      {
+        "role": "Engagement Lead",
+        "value": ""
+      },
+      {
+        "role": "Geo Strategist",
+        "value": ""
+      },
+      {
+        "role": "Consultant",
+        "value": ""
+      },
+      {
+        "role": "Lead Analyst",
+        "value": "Arvind — 50%"
+      },
+      {
+        "role": "Analyst",
+        "value": "Muni\nNishant — 10%"
+      },
+      {
+        "role": "Brand SME",
+        "value": ""
+      },
+      {
+        "role": "Medical SME",
+        "value": ""
+      },
+      {
+        "role": "Project Manager",
+        "value": "Akshita — 10%"
+      }
+    ],
+    "scopeText": "ENGAGEMENT: Summit Therapeutics Inc. — Digital Commercial Operations.\nSOW No. 1 under MSA dated 11-Apr-2026. Executed 21-Apr-2026.\nTerm: ~9 months from last signature through 31-Dec-2026.\nBrand: Ivonescimab (single indication), launch and post-launch execution.\n\nPURPOSE: Design, implement and operationalize core digital commercial\ncapabilities — a scalable, execution-ready digital operating model enabled by\nfoundational platforms, integrated data and omnichannel engagement.\n\nWS1 — DEPLOY CORE PLATFORMS:\n• Salesforce Marketing Cloud: instance provisioning; discovery & solution\n  alignment; setup (3 business units, roles/permissions, private domain and\n  dedicated IP); Contact Builder data model and data extensions; Journey\n  Builder, triggered/batch sends, templates, automation workflows; API\n  integrations with OneTrust, CRM, Drupal, GA360 and ON24; unit/integration\n  testing and UAT; documentation, knowledge transfer and hypercare\n  In scope: Email Studio/Builder, Mobile Studio (email use only), Content\n  Builder, Journey Builder, Einstein as applicable, OOB analytics, ~45K\n  contacts. Out: Agentforce, SMS/MMS short code procurement, mobile push,\n  messaging apps, social channels, migration from incumbent platform.\n• Additional platforms: Drupal, GA360, OneTrust, ON24\n\nWS2 — ARCHETYPES, PERSONAS & JOURNEY PLANNING:\n• Audience segment definition and omnichannel customer journey design,\n  delivered in 5 phases on Tandem, Indegene's proprietary data and technology\n  platform (platform fees included in this engagement)\n• Out of scope: full HCP target list development, data licensing, content or\n  derivative asset development, journey activation and campaign execution\n\nWS3 — OMNICHANNEL CAMPAIGN ORCHESTRATION & OPERATIONS:\n• Execution, management and optimization of campaigns across digital channels\n\nWS4 — WEBSITE BUILD & DEPLOYMENT:\n• Design, development, testing and deployment of the Summit digital DSE\n  website; functional testing, UAT support and bug fixes\n\nWS5 — TAGGING & TAXONOMY FRAMEWORK:\n• GA4/GTM architecture design; event & parameter configuration spec; custom\n  dimensions/metrics; GTM baseline container; third-party tag governance list;\n  publish & change-control SOP; agency onboarding and training materials;\n  tagging validation & QA report\n\nWS6 — DIGITAL DATA LAYER & PERFORMANCE INSIGHTS:\n• Measurement framework & KPI definitions; data dictionary; file interface\n  agreements for inbound vendor feeds; Power BI dashboard; campaign\n  performance reporting and insights; analytics-ready file feeds\n\nWS7 — SEO/GEO STRATEGY, LISTENING & CONTENT OPTIMIZATION:\nOne-time — GEO strategy setup and listening foundation:\n• DSE (unbranded) site: GenAI listening scan and GEO search landscape analysis\n  for priority intents; SEO/GEO readiness assessment and strategy framework;\n  prompt library (up to 200) for structured AI monitoring; competitive\n  analysis and AI intelligence; technical readiness assessment for AI\n  enablement and on-page SEO\n• Launch phase (up to 2 branded splash pages + 2 branded sites, 1 HCP and\n  1 Patient): GenAI listening and landscape analysis across branded\n  properties; KPI, benchmark and success-metric definition for AI visibility\n  and influence; evolved prompt library across sites and top contributing\n  LLMs; SEO/GEO readiness assessment incl. content strategy and web\n  optimizations; AI-focused schema and technical elements (structured data,\n  metadata, robots.txt design, sitemap, E-E-A-T, crawlability controls);\n  content and web recommendations for AI retrievability; GenAI listening\n  dashboards with in-market benchmarks\n• OpenEvidence: roadmap for publication in indexed journals; review and\n  structure for ClinicalTrials.gov entries; multi-format repurposing plan and\n  internal evidence ecosystem linking; roadmap for inclusion in major society\n  guidelines (e.g. NCCN, ASCO)\n• Post-launch maintenance: AI visibility and listening analysis incl. citation\n  share and answer presence across engines (Excel-based dashboard); translate\n  monitoring insights into actionable content and web directives\n\nPROJECT SCHEDULE: 9 consecutive months from kick-off. Phase 1 — platform\nsetups; Phase 2 — omnichannel activation and launch preparation. Workplan and\nprioritization developed with the Summit project sponsor in the initial weeks.\n\nTEAM: Engagement Lead (0.5 US) · Technical Architect (0.5 US) · SFMC Tech Lead\n· Tech Project Manager · Web Tagging & Campaign Tracking Lead · OneTrust\nConsultant · Event Specialist, supported by offshore SMEs. Key personnel:\nJay Khan (VP), Puneet Singh (Client Partner), Debanka Nandi (Engagement Lead).\nSummit representative: Jon Albert, ED Commercial Operations.\n\nKEY BOUNDARIES (OUT OF SCOPE — GEO workstream):\n• Any new content creation incl. original copy, creative and multimedia\n• Paid media or social campaign execution\n• Management of MLR submissions, routing, annotations or approval cycles\n• Prompt volume beyond the 200 cap — additional cost via Change Request\n• Platform licence and third-party costs borne directly by Summit\n• Third-party payments or vendor fees for link/authority building\n\nKEY ASSUMPTIONS:\n• English-language websites, up to 10 pages per website, single indication\n• AI listening across AIO, Perplexity, Gemini, ChatGPT and Copilot\n• Website updates executed within mutually agreed timelines\n• All performance results depend on implementation of the recommendations\n• Content creation depends on Summit's content team collaboration\n• Summit responsible for all content, SOPs, data, target lists and materials\n  and for their compliance with applicable laws\n• Summit provides strategy documents, MarTech inventories and relevant\n  contracts within 3 business days of project start\n\nREGULATORY PAUSE CLAUSE: If regulatory considerations require the workstream\nto be paused, Indegene will work with Summit for up to 3 weeks to develop a\nhalt-and-restart plan. Summit liable only for pre-approved, documented and\nverifiable incremental costs directly resulting from stoppage and restart.\n\nCOMMERCIALS (per SOW): Not to exceed $1,621,862 plus taxes and approved\npass-throughs. Gross workstream total $1,633,577 less 20% Indegene\nRelationship Discount ($326,715) = net $1,306,862. By workstream — Core\nPlatforms $523,160; Archetypes/Personas one-time $171,250 + recurring\n$14,000; Campaign Operations fixed $270,333 + variable $96,250; Tagging &\nTaxonomy one-time $95,757 + recurring $55,277; Data Layer & Insights one-time\n$172,500 + recurring $150,150; SEO/GEO one-time $62,500 + recurring $22,400.\nLicences (annual recurring, pass-through, borne by Summit): SFMC $55,000,\nOneTrust $55,000, GA360 $60,000, Drupal $60,000, ON24 $85,000 = $315,000.\nNOTE: Tracker revenue $40,750 reflects neither the SOW total nor the SEO/GEO\nslice of $84,900 ($62,500 one-time + $22,400 recurring) — confirm basis.",
+    "sowStatus": "Signed",
+    "timeline": [
+      {
+        "date": "2026-09-23",
+        "id": "seed-update-summit",
+        "text": "HCP and Patient website GEO recommendations and AI Listening reports completed and shared with the client.\n\nNSCLC pricing shared with Debanka.",
+        "type": "update"
+      },
+      {
+        "date": "2026-09-23",
+        "id": "seed-risk-summit",
+        "text": "Further activities are dependent on client review/feedback and alignment on next steps.",
+        "type": "risk"
+      }
+    ],
+    "weeks": {
+      "2026-09-21": {
+        "completed": "HCP and Patient website GEO recommendations and AI Listening reports completed and shared with the client.\n\nNSCLC pricing shared with Debanka.",
+        "inProgress": "",
+        "mitigationActions": "",
+        "mitigationDeadline": null,
+        "nextSteps": "",
+        "risk": "Further activities are dependent on client review/feedback and alignment on next steps.",
+        "scopeCreep": ""
+      }
+    }
+  },
+  {
+    "id": "stoke-theraupetics",
+    "engagementEndDate": "2027-06-03",
+    "engagementStartDate": "2026-06-13",
+    "invoiceStatus": "Not Scheduled",
+    "invoicedToDate": 0,
+    "logoSvg": "<svg id=\"a\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" viewBox=\"0 0 364.15856 162.44176\"><defs><style>.c{fill:url(#b);}.d{fill:#444;}</style><linearGradient id=\"b\" x1=\"156.82583\" y1=\"101.50002\" x2=\"156.82583\" y2=\"0\" gradientUnits=\"userSpaceOnUse\"><stop offset=\"0\" stop-color=\"#efa904\"/><stop offset=\"1\" stop-color=\"#db4507\"/></linearGradient></defs><path class=\"d\" d=\"M2.01924,144.68224h12.73053v1.72485h-5.39374v15.64563h-1.94409v-15.64563H2.01924v-1.72485ZM43.96154,152.1646h-9.28088v-7.48236h-1.94312v17.37048h1.94312v-8.16333h9.28088v8.16333h1.94305v-17.37048h-1.94305v7.48236ZM66.06024,162.05273h10.88348v-1.70056h-8.94037v-6.34052h8.50287v-1.70154h-8.50287v-5.92731h8.94037v-1.70056h-10.88348v17.37048ZM103.09417,154.38506l6.07898,7.66766h-2.47858l-5.82288-7.60455h-3.14178v7.60455h-1.94312v-17.37048h6.36481c1.08459,0,2.03235.20276,2.84235.6073.81006.40454,1.44159.97205,1.89557,1.70056.45306.72858.68005,1.5871.68005,2.57562,0,.97107-.22699,1.82184-.68005,2.55035-.45398.72852-1.08551,1.29993-1.89557,1.7132-.56494.28754-1.20117.46863-1.89978.55579ZM97.72992,152.74761h4.42169c1.06903,0,1.90723-.28326,2.51447-.84979.6073-.56653.91095-1.34454.91095-2.33209,0-1.00409-.30365-1.78595-.91095-2.34473-.60724-.55878-1.44543-.8382-2.51447-.8382h-4.42169v6.36481ZM135.39868,144.68224l6.58398,17.37048h-2.04108l-1.79114-4.81067h-7.66565l-1.79144,4.81067h-1.96735l6.58307-17.37048h2.0896ZM137.51727,155.5415l-3.19934-8.5929-3.19989,8.5929h6.39923ZM171.44732,146.9901c.45306.72858.68005,1.5871.68005,2.57562,0,.97107-.22699,1.82184-.68005,2.55035-.45398.72852-1.08551,1.29993-1.89557,1.7132-.81.41229-1.75781.6189-2.84235.6189h-4.42169v7.60455h-1.94312v-17.37048h6.36481c1.08453,0,2.03235.20276,2.84235.6073.81006.40454,1.44159.97205,1.89557,1.70056ZM170.13476,149.56573c0-1.00409-.30359-1.78595-.91089-2.34473s-1.44543-.8382-2.51447-.8382h-4.42169v6.36481h4.42169c1.06903,0,1.90717-.28326,2.51447-.84979s.91089-1.34454.91089-2.33209ZM190.67944,162.05273h10.88348v-1.70056h-8.94037v-6.34052h8.50287v-1.70154h-8.50287v-5.92731h8.94037v-1.70056h-10.88348v17.37048ZM231.24096,155.20196c0,1.76556-.40936,3.11786-1.2262,4.05695-.81873.93903-1.96442,1.40955-3.43799,1.40955-1.47455,0-2.61633-.47052-3.42542-1.40955-.81-.93909-1.21454-2.29138-1.21454-4.05695v-10.51971h-1.94409v10.51971c0,2.28357.58301,4.06079,1.74908,5.33258s2.7774,1.90723,4.83496,1.90723c2.05658,0,3.66791-.63544,4.83496-1.90723,1.16602-1.27179,1.74908-3.04901,1.74908-5.33258v-10.51971h-1.91986v10.51971ZM251.36749,146.4071h5.39276v15.64563h1.94409v-15.64563h5.39368v-1.72485h-12.73053v1.72485ZM282.48327,162.05273h1.94305v-17.37048h-1.94305v17.37048ZM308.69903,146.9901c.94781-.63153,2.02075-.94775,3.21979-.94775,1.08453,0,2.05267.24347,2.90253.72949.85077.48505,1.57538,1.20581,2.17493,2.16138l1.36005-1.33582c-.745-1.06903-1.6637-1.88684-2.75696-2.45337-1.09332-.5675-2.30402-.85077-3.63208-.85077-1.1825,0-2.28357.22699-3.30414.67999-1.02051.45404-1.90332,1.09332-2.64832,1.91986-.74506.82556-1.32806,1.78979-1.74908,2.89087-.42102,1.10199-.63153,2.30011-.63153,3.59515,0,1.28052.2066,2.47083.6189,3.5719.41327,1.10107.99628,2.06531,1.75006,2.89087.75281.82654,1.63074,1.46582,2.63574,1.91882,1.00403.45404,2.09735.68103,3.27991.68103,1.26306,0,2.4776-.2959,3.64368-.88666,1.16602-.5918,2.09729-1.39697,2.79382-2.41748l-1.36005-1.33679c-.58301.94-1.30865,1.65692-2.17493,2.1507-.86633.49377-1.8335.74115-2.90253.74115-1.19904,0-2.27197-.31622-3.21979-.94775-.94678-.63153-1.69183-1.50269-2.23505-2.61151-.5423-1.1098-.8139-2.36023-.8139-3.75427,0-1.42505.27161-2.68811.8139-3.78918.54321-1.10205,1.28827-1.96832,2.23505-2.59985ZM346.89068,153.80505c-.99628-.78583-2.65222-1.3562-4.96783-1.7132-1.55505-.24255-2.66486-.58307-3.32843-1.02057-.66449-.4375-.99628-1.0448-.99628-1.82184,0-1.00403.36768-1.78979,1.10492-2.35632.7373-.56653,1.74524-.85077,3.02478-.85077,1.06903,0,2.02069.21051,2.85498.63153.83429.422,1.63171,1.08551,2.39325,1.99255l1.36005-1.36102c-.89056-1.01959-1.87909-1.77722-2.96362-2.271-1.08557-.49377-2.30011-.74115-3.64465-.74115-1.18256,0-2.23895.21533-3.17029.6441-.93127.42883-1.65979,1.01666-2.18658,1.76074-.52673.74597-.78967,1.60358-.78967,2.57562,0,1.32806.47827,2.35248,1.43384,3.07324.95551.72076,2.53485,1.25916,4.73694,1.61517,1.68506.27649,2.87927.66064,3.58356,1.15442.70526.49475,1.05737,1.19421,1.05737,2.10126,0,1.05353-.40936,1.89557-1.22717,2.5271-.81775.63153-1.90717.94775-3.26727.94775-.72949,0-1.42114-.10571-2.07794-.31622-.65576-.21051-1.27466-.52191-1.85773-.93518-.58301-.41327-1.13403-.93518-1.65204-1.56769l-1.38531,1.38531c.92352,1.05255,1.97223,1.84607,3.146,2.38062,1.1748.53448,2.44952.80225,3.82703.80225,1.26306,0,2.38452-.22314,3.36432-.6684s1.74518-1.06519,2.2962-1.8587c.55005-.79352.82556-1.70056.82556-2.72113,0-1.47357-.49768-2.60272-1.49396-3.38849Z\"/><g><g><path class=\"d\" d=\"M211.32102,72.1647c0,30.66144-32.54308,37.15949-48.45289,53.0693-3.95664,3.95664-6.88357,8.44543-7.92584,13.82369-.74101-1.48196-1.45347-3.62656-1.45347-6.40785,0-20.67103,32.09977-35.40083,40.10169-43.40275,5.0375-5.0375,6.63388-8.9404,6.71713-9.15094h-29.61532c-1.34615,0-2.42308-1.07693-2.42308-2.42308s1.07693-2.42308,2.42308-2.42308h31.49999c1.5106-4.53156,1.27548-10.84668,1.07693-11.4423h-15.48077c-1.34615,0-2.42308-1.07692-2.42308-2.42308s1.07693-2.42308,2.42308-2.42308h14.67307c-2.61083-10.44348-3.28772-11.01758-8.48077-21.40386,2.94426,2.94428,17.34027,15.83064,17.34027,34.60702Z\"/><path class=\"c\" d=\"M127.90972,66.893c0-30.66144,32.54308-37.15949,48.45289-53.0693,3.95664-3.95664,6.88357-8.44543,7.92584-13.82369.74101,1.48196,1.45347,3.62656,1.45347,6.40785,0,20.67103-32.09977,35.40083-40.10169,43.40275-5.0375,5.0375-6.63388,8.9404-6.71713,9.15094h29.61532c1.34615,0,2.42308,1.07693,2.42308,2.42308s-1.07693,2.42308-2.42308,2.42308h-31.49999c-1.5106,4.53156-1.27548,10.84668-1.07693,11.4423h15.48077c1.34615,0,2.42308,1.07692,2.42308,2.42308s-1.07693,2.42308-2.42308,2.42308h-14.67307c2.61083,10.44348,3.28772,11.01758,8.48077,21.40386-2.94426-2.94428-17.34027-15.83064-17.34027-34.60702Z\"/></g><path class=\"d\" d=\"M357.00386,36.34616v-4.30629h-1.35001v-.53986h3.3209v.53986h-1.36343v4.30629h-.60746ZM363.53755,36.34616v-4.34669h-.02697l-1.21492,4.34669h-.66152l-1.30949-4.34669h-.02697v4.34669h-.59392v-4.84615h1.03945l1.20138,4.07676h.02709l1.16087-4.07676h1.02602v4.84615h-.62101ZM44.28846,44.5577c-1.75-2.42308-4.03846-4.44231-6.73077-5.92308-2.82692-1.48077-6.05769-2.28846-9.96154-2.28846-2.01923,0-4.03846.26923-6.05769.94231s-3.90385,1.61539-5.65385,2.82692c-1.75,1.21154-3.09615,2.82692-4.03846,4.71154-1.07692,1.88462-1.61539,4.17307-1.61539,6.73077s.53846,4.71154,1.48077,6.46154,2.28846,3.09615,3.90385,4.30769c1.61539,1.21154,3.5,2.15384,5.65385,2.96154,2.15384.80769,4.30769,1.48077,6.59616,2.28846,2.82692.9423,5.65385,1.88462,8.61539,2.96153,2.82692,1.07693,5.51923,2.42308,7.80769,4.17307,2.28846,1.75,4.17307,3.90385,5.65385,6.59616,1.48077,2.69231,2.15384,6.05769,2.15384,10.09615s-.80769,7.53846-2.28846,10.5c-1.61539,2.96153-3.5,5.38462-6.05769,7.26923-2.42308,1.88462-5.25,3.36538-8.48077,4.30769-3.23077.9423-6.32692,1.34615-9.55769,1.34615-2.42308,0-4.84615-.26923-7.40385-.80769-2.42308-.53846-4.84615-1.21154-7-2.28846-2.28846-.9423-4.30769-2.28846-6.19231-3.76923-1.88461-1.48077-3.63462-3.36538-5.11538-5.25l7.13462-5.25c1.75,2.96153,4.17308,5.38462,7.40385,7.26923,3.23077,2.01923,6.86538,2.96153,11.17308,2.96153,2.01923,0,4.17307-.26923,6.32692-.9423,2.15384-.67308,4.03846-1.61538,5.78846-2.96153s3.09615-2.96153,4.30769-4.98077c1.07692-2.01923,1.61539-4.17307,1.61539-6.86538,0-2.82692-.53846-5.25-1.61539-7.13462-1.07692-1.88462-2.55769-3.5-4.44231-4.71154-1.88462-1.21154-3.90385-2.28846-6.32692-3.23077-2.42308-.80769-4.84615-1.75-7.53846-2.55769s-5.38462-1.75-7.94231-2.82692c-2.55769-1.07693-4.98077-2.42308-7-4.17307-2.01923-1.75-3.76923-3.90385-4.98077-6.32692-1.21154-2.55769-1.88461-5.65385-1.88461-9.28846,0-3.90385.80769-7.26923,2.42308-10.09615,1.61539-2.82692,3.63462-5.11538,6.19231-7s5.38462-3.23077,8.34615-4.03846c3.09615-.80769,6.05769-1.21154,9.15385-1.21154,5.51923,0,10.23077.94231,14.13462,2.96154s6.86538,4.30769,8.88461,7l-6.86539,5.25ZM93.82693,38.76924h27.32692v-7.26923h-62.86538v7.26923h27.32693v74.17308h8.21154V38.76924ZM233.82692,31.50001h-8.34615v81.44231h8.34615v-43.34616h.13462l40.65384,43.34616h12.25001l-43.34615-44.5577,41.05769-36.88461h-11.84616l-38.76923,36.61539h-.13462V31.50001ZM306.11539,74.17309h39.44229v-7.40385h-39.44229v-28h42.26922v-7.26923h-50.61539v81.44231h51.96155v-7.40385h-43.61538v-31.36539Z\"/></g></svg>",
+    "name": "Stoke Theraupetics",
+    "nextInvoiceDue": null,
+    "notes": "",
+    "order": 6,
+    "ownerOffshore": "Arvind(TBH)",
+    "ownerOnshore": "",
+    "projectStatus": "In Progress",
+    "rag": "Amber",
+    "revenue": 36507,
+    "roles": [
+      {
+        "role": "Engagement Lead",
+        "value": ""
+      },
+      {
+        "role": "Geo Strategist",
+        "value": ""
+      },
+      {
+        "role": "Consultant",
+        "value": ""
+      },
+      {
+        "role": "Lead Analyst",
+        "value": "Arvind — 25%"
+      },
+      {
+        "role": "Analyst",
+        "value": "Nishant — 25%"
+      },
+      {
+        "role": "Brand SME",
+        "value": ""
+      },
+      {
+        "role": "Medical SME",
+        "value": "Ayushi — 10%"
+      },
+      {
+        "role": "Project Manager",
+        "value": "Suryansh — 25%"
+      }
+    ],
+    "scopeText": "ENGAGEMENT: Stoke Therapeutics Inc. — US Medical Affairs Portal (MVP build\nand ongoing maintenance). Work Order IND-03-26-01673 under MSA dated\n21-Oct-2025. Dated 08-May-2026. Kick-off 13-Jun-2026.\nTimeline: MVP delivered in 16 weeks post kick-off; maintenance 8 months.\n\nPURPOSE: A centralized, compliant, scalable platform for external medical\ncontent, supporting pre-launch engagement and future advanced capabilities.\n\nMVP CORE CAPABILITIES:\n• Publishing of approved core scientific content (disease education,\n  publications, congress materials)\n• Integration with Veeva MedComms for approved assets\n• Honesty Box based authentication and content access for external users\n• SSO with Microsoft Entra for CMS and back-office administration\n• Keyword search via Solr; WordPress content structured with Custom Post\n  Types and Advanced Custom Fields for discoverability\n• Cookie consent management\n• DAMS librarian services for asset maintenance (tagging/hygiene) in Veeva\n• Medical Inquiry intake workflow\n• Web tagging and standard reporting\n• Generative Engine Optimization (content assessment & advisory)\n• Technical / on-page SEO\n\nSERVICES:\na) MVP Medical Affairs website delivery — discovery, UX design, architecture\n   design, modular WordPress development, testing & UAT, go-live support\nb) SEO + GEO implementation for the MVP website\nc) Program management and governance — SLA/KPI tracking and reporting\nd) Medical Affairs SME & strategy/consulting expert hours (onshore)\ne) Ongoing maintenance of the website post go-live\n\nPART A — BUILD:\n• Technical design and build on WordPress CMS with ReactJS/Angular UI;\n  structured content model for modular reuse; seamless integration with the\n  Stoke corporate website (navigation, UX, branding, handoffs)\n• Functional testing, UAT support, MLR review support of draft site,\n  go-live deployment. One round of edits based on MLR feedback.\n• Security: role-based access control for HCP-gated medical content; HCP\n  authentication via NPI registry or equivalent; MI form submissions\n  transmitted via structured email to Stoke-designated addresses (Stoke to\n  provide SMTP access and API credentials); encrypted in transit and at rest;\n  OWASP Top 10 aligned secure coding; vetted WordPress plugins\n• UI/UX: design workshops; IA, sitemap and core user flows signed off by end\n  of Week 2; approx. 20-25 unique pages (shared layouts count as one\n  template); desktop and mobile layouts with responsive tablet adaptation;\n  Atomic Architecture principles; max 2 design revision cycles per template;\n  LTR languages only; Figma handoff files and print-ready PDFs for MLR/PRC\n\nSEO & GEO SCOPE:\n• Discovery analysis: competitor landscape, US market and disease search\n  behaviour, website architecture, user journey and content theme analysis\n• AI listening: AI visibility benchmarking and competitor landscape assessment\n• Prompt library: high-intent HCP prompts clustered across clinical, safety,\n  dosing and trials parameters\n• GEO strategy document: AI-readable content structuring standards for content\n  teams, technical guidelines for web teams, measurement standards for\n  analytics; incorporates WebMCP guidelines and public vs gated content\n  strategy\n• On-page recommendations: keyword research, meta titles and descriptions,\n  OG tags, header tags, image ALT tags\n• Schema markup and AI-focused technical elements: structured data, metadata,\n  robots.txt design, sitemap, E-E-A-T elements, crawlability and extraction\n  controls; OG and Twitter card tags\n• UAT audit for pre-launch GEO readiness across content, schema and\n  accessibility; technical SEO and accessibility checks during development\n• Post-live technical SEO audit; post-launch AI listening and GEO audit\n• Monitor and benchmark AI visibility incl. citation share and answer presence\n  across engines; GEO performance reporting with actionable recommendations\n\nPART B — MAINTENANCE (8 months): web technical maintenance capped at 120\nhours per month; infra maintenance; GA/GTM tagging maintenance; schema markup\nmaintenance and minor enhancements; SEO support for standard content updates;\ncookie banner and preference centre maintenance; DAMS-to-web integration\nsupport; programme governance.\n\nKEY BOUNDARIES (OUT OF SCOPE — MVP):\n• NPI and/or email-based authentication for portal and content access\n• AI-enabled or semantic search experiences; chatbot implementation\n• Integration with data warehouse, marketing automation, webinar/event\n  platforms; custom analytics and data visualization\n• Off-page SEO; GEO-optimized content brief creation; content gap analysis;\n  content optimization; advanced on-page SEO recommendations; link building\n• Content creation beyond web copy; multi-language support; localization\n• MLR submission and legal review; procurement of domain names\n• Design system creation; separate custom tablet template\n• SEO for net-new pages beyond agreed maintenance limits; AI/GEO strategy\n  expansion beyond existing schema and structured data\n\nKEY ASSUMPTIONS & DEPENDENCIES:\n• Hosting: Stoke hosts on its own WordPress (WP Engine) environment; Stoke IT\n  maintains hosting, security configuration and grants Indegene access. Any\n  WP Engine configuration or licensing costs are Stoke's responsibility.\n• Design files approved during discovery; solution, timelines and cost\n  revisited at end of discovery phase\n• BrowserStack licence provided by Stoke; latest two versions of major\n  browsers supported\n• Timeline depends on timely client approvals, feedback and deliverables;\n  scope/timeline/feature changes go through formal change request\n• Power BI available for dashboard development\n• Licensed image costs borne by Stoke and billed separately\n\nCOMMERCIALS (per Work Order): Total $653,356, exclusive of taxes.\nBreakdown — Core MVP development (discovery, design kit, platform build, UAT,\ngo-live) $301,370; Advanced Search Enablement & Website Visibility\nacceleration (SEO + GEO) $44,990; Program management and Medical Affairs SME\n/ strategy consulting onshore hours $131,100; ongoing portal maintenance\n(web tagging, DAM, SEO & GEO optimizations, governance, page updates, consent\nand integration support, 8 months) $175,896.\nTotal Build Amount $477,460, released against milestones — 5% on kick-off;\n20% on completion of discovery & design (incl. competitive benchmarking\noutcome report, approved tech solution, IA and final wireframes); 40% on\ncompletion of web development ready for testing & UAT; 20% on completion of\nSEO/GEO implementation, testing & UAT; 15% on website go-live.\nMonthly invoicing; due on receipt, 60-day credit period, 1.5% monthly penalty\nthereafter. Invoice schedule runs 13-Jun-2026 ($23,873) through 30-May-2027\n($21,987), peaking at $190,984 on 30-Jul-2026.\nNOTE: Tracker revenue $36,507 vs SOW total $653,356 (SEO/GEO slice $44,990)\n— confirm which basis the tracker should carry.",
+    "sowStatus": "Signed",
+    "timeline": [
+      {
+        "date": "2026-09-23",
+        "id": "seed-update-stoke-theraupetics",
+        "text": "Project timelines are being re-baselined to account for the expanded content scope, extended MLR review cycle, and the resulting impact on downstream design and development activities.",
+        "type": "update"
+      },
+      {
+        "date": "2026-09-23",
+        "id": "seed-risk-stoke-theraupetics",
+        "text": "Timeline risk: Additional content scope and MLR review cycles are pushing downstream UX, design, and development timelines.",
+        "type": "risk"
+      }
+    ],
+    "weeks": {
+      "2026-09-21": {
+        "completed": "",
+        "inProgress": "Project timelines are being re-baselined to account for the expanded content scope, extended MLR review cycle, and the resulting impact on downstream design and development activities.",
+        "mitigationActions": "",
+        "mitigationDeadline": null,
+        "nextSteps": "",
+        "risk": "Timeline risk: Additional content scope and MLR review cycles are pushing downstream UX, design, and development timelines.",
+        "scopeCreep": ""
+      }
+    }
+  },
+  {
+    "id": "cingulate",
+    "engagementEndDate": "2026-07-31",
+    "engagementStartDate": "2025-10-01",
+    "invoiceStatus": "Not Scheduled",
+    "invoicedToDate": 0,
+    "logoImg": "/logos/cingulate.png",
+    "logoSvg": "",
+    "name": "Cingulate",
+    "nextInvoiceDue": null,
+    "notes": "",
+    "order": 7,
+    "ownerOffshore": "Arvind(TBH)",
+    "ownerOnshore": "",
+    "projectStatus": "In Progress",
+    "rag": "Amber",
+    "revenue": 100000,
+    "roles": [
+      {
+        "role": "Engagement Lead",
+        "value": ""
+      },
+      {
+        "role": "Geo Strategist",
+        "value": ""
+      },
+      {
+        "role": "Consultant",
+        "value": ""
+      },
+      {
+        "role": "Lead Analyst",
+        "value": "Arvind — 25%"
+      },
+      {
+        "role": "Analyst",
+        "value": ""
+      },
+      {
+        "role": "Brand SME",
+        "value": ""
+      },
+      {
+        "role": "Medical SME",
+        "value": ""
+      },
+      {
+        "role": "Project Manager",
+        "value": "Suryansh — 25%"
+      }
+    ],
+    "scopeText": "ENGAGEMENT: Cingulate Therapeutics LLC — Websites Support.\nSOW No. IND-09-25-01372 under MSA dated 07-May-2025. PO 1313.\nTerm: 01-Oct-2025 to 31-Jul-2026 (pre-launch duration). CTX1301 ENFOCUS.\nEnd-to-end website build, design, deployment, GEO readiness and support.\n\nWEBSITES IN SCOPE (4 properties):\n• Brand — Splash Pages (pre-launch), up to 3–5 pages (Nov 25 – Apr 26)\n• Brand / Patient site — launch site, up to 10 pages (Feb 26 – Jul 26)\n• Brand HCP site — up to 15 pages (Jan 26 – Jul 26)\n• Market Conditioning site — up to 5 pages; medical communication,\n  podcasts, infographics, KOL videos (Nov 25 – Apr 26)\n\nUX DESIGN:\n• Splash pages: up to 3–5 desktop + 3–5 mobile (Nov 25 – Jan 26)\n• Brand/Patient site: up to 10 desktop + 10 mobile (Nov 25 – Jan 26)\n• Brand HCP site: up to 15 desktop + 15 mobile (Jan 26 – Mar 26)\n• Market Conditioning site: up to 5 desktop + 5 mobile (Nov 25 – Jan 26)\n\nBUILD & TECHNICAL SUPPORT:\n• SEO Support — define SEO title tags and keywords for each page\n• Web Analytics & Cookie Consent — enable Google Analytics; implement\n  OneTrust cookie consent mechanism compliant with regulations\n• Functional Testing — verify all features and functionalities work as\n  intended; responsiveness across 2 major browsers and devices (BrowserStack)\n• UAT Support — 2 rounds of UAT (staging review and quality control)\n• Bug Fixes — address issues from functional testing and UAT feedback\n• Deployment and Go-Live support; address immediate post-launch concerns\n• Hypercare — two weeks of post-launch support\n\nGENERATIVE ENGINE OPTIMIZATION (GEO):\n• GEO / AIO Support: patient and HCP questions, intents and entities\n  (target prompt research) (Jan 2026)\n• GEO Testing & Benchmarking incl. competitor analysis (Feb–Mar 2026)\n• AI-Ready Content & Metadata: optimize/organize content for Q&A snippets,\n  summaries and FAQs; structure content using schema / structured data\n  (Medical Webpage, Drug, FAQ) (Mar–May 2026)\n• Functional Testing of AI responses on latest approved data, UAT (GEO) and\n  remediation / bug fixes in AI answers (Apr–Jul 2026)\n• GEO Hypercare & Monitoring (Jul 2026)\n\nGEO WORK SCHEDULE: Review & preliminary analysis (Jan–Mar 26) · GEO analysis,\norchestration and implementation (Apr–Jun 26) · Orchestration, implementation\nand tracking (Jul 26).\n\nSERVICE LEVEL / KPIs TRACKED: Timeliness (% on-time completion, number of\nschedule adjustments) · Quality & Cost (# errors, customer complaints,\nschedule & effort variance) · Speed of delivery (effort hours, adherence to\ntimelines) · UAT (% requirements completion, defects raised/closed/open).\n\nKEY BOUNDARIES:\n• Anything not mentioned in the scope is considered out of scope\n• Content development is OUT of scope — covered under AOR and Medical Affairs\n  SOW; final signed-off content to be provided by Cingulate\n• Browser/device compatibility testing = 100% coverage for 2 primary browsers\n  (Chrome/Firefox/Edge) and device (Windows Desktop/Android or iOS\n  Tablet/Mobile) combination using BrowserStack\n• Any schedule deviation from design/content availability, MLR submissions or\n  UAT signoff impacts go-live and goes through the change request process\n• GEO scope covers 3 Cingulate websites; new sites or localized versions\n  require revised estimates\n• Market conditioning website gets end-to-end GEO benchmarking,\n  recommendations and implementation support; other websites are limited to\n  benchmarking, gap identification and recommendations only\n• GEO team focuses on content and technical recommendations; authority and\n  off-page activities (link-building, external citations) are recommendations\n  only\n• GEO audits/visibility tests cover up to 100 priority prompts/questions\n  across 5 agreed AI assistants/bots (Google AI Overviews, ChatGPT, Copilot,\n  Gemini, Perplexity); Cingulate to approve prompts before audit/tests\n• GEO visibility tool licence waived for first six months; standard licence\n  fees apply thereafter\n\nCLIENT OBLIGATIONS: Cingulate to ensure stakeholder availability for review,\napproval and UAT per schedule; approval on final designs and final approved\ncontent; pay all charges, taxes and fees as invoiced. Subcontractors: N/A.\n\nEARLY TERMINATION: On 30 days' written notice for convenience, Cingulate pays\n(i) fees for services completed to the termination date, (ii) non-mitigable\ncontractual commitments, and (iii) 3 months' cost of dedicated resources.\n\nCOMMERCIALS (per SOW): Total $734,783 inclusive of pass-throughs.\nProfessional services by quarter — Q4 2025 $99,110; Q1 2026 $288,690;\nQ2 2026 $228,491; Q3 (Jul) 2026 $61,389.\nGEO component — benchmarking & preliminary analysis $34,000 (Q1 26);\nGEO analysis & orchestration $50,000 (Q2 26); GEO tracking $8,000 (Jul 26).\nPass-through / out-of-pocket est. $57,103 incl. 3% admin fee $1,663 —\nhosting & licensing $42,000, domains $480, EV SSL $9,600, authoritative\nDNS $3,360 (reimbursed at actuals).",
+    "sowStatus": "Signed",
+    "timeline": [
+      {
+        "date": "2026-09-23",
+        "id": "seed-update-cingulate",
+        "text": "Medical Affairs website confirmed as an additional scope, transitioning from the existing DSE website.\n\nPricing is in progress, pending internal review and alignment before being shared with the broader Cingulate team.",
+        "type": "update"
+      },
+      {
+        "date": "2026-09-23",
+        "id": "seed-risk-cingulate",
+        "text": "Internal pricing approval pending before the GEO estimate can be finalized/shared.",
+        "type": "risk"
+      }
+    ],
+    "weeks": {
+      "2026-09-21": {
+        "completed": "Medical Affairs website confirmed as an additional scope, transitioning from the existing DSE website.",
+        "inProgress": "Pricing is in progress, pending internal review and alignment before being shared with the broader Cingulate team.",
+        "mitigationActions": "",
+        "mitigationDeadline": null,
+        "nextSteps": "",
+        "risk": "Internal pricing approval pending before the GEO estimate can be finalized/shared.",
+        "scopeCreep": ""
+      }
+    }
+  }
+]

@@ -1,9 +1,3 @@
-databases:
-  - name: geo-tracker-db
-    plan: free
-    databaseName: geo_tracker
-    user: geo_tracker
-
 services:
   - type: web
     name: geo-delivery-tracker
@@ -12,7 +6,6 @@ services:
     buildCommand: npm install
     startCommand: npm start
     envVars:
+      # Supabase Postgres connection string (Session pooler URI) - set in the Render dashboard
       - key: DATABASE_URL
-        fromDatabase:
-          name: geo-tracker-db
-          property: connectionString
+        sync: false

@@ -1873,7 +1873,7 @@ a{color:var(--primary);}
     var pct = revenue ? Math.round((invoiced / revenue) * 100) : 0;
     var outstanding = revenue - invoiced;
     var rag = ragClass(a.rag);
-    var tabs = [["overview","Overview"],["scope","Scope of Work"],["status","Current Status"],["risks","Risks"],["team","Team"]];
+    var tabs = [["overview","Overview"],["scope","Scope of Work"],["status","Current Status"],["risks","Risks"],["changes","Scope Creep &amp; Change Requests"],["team","Team"]];
 
     var progress = engagementProgress(a);
 
@@ -2016,8 +2016,20 @@ a{color:var(--primary);}
         '<label class="field">' + fieldLabel("Risk") + '<div class="field-wrap"><textarea name="risk" rows="3" placeholder="What is at risk in this period&hellip;">' + esc(wd.risk || "") + '</textarea></div></label>' +
         '<label class="field">' + fieldLabel("Risk mitigation actions (next steps)") + '<div class="field-wrap"><textarea name="mitigationActions" rows="3" placeholder="What is being done to address the risk&hellip;">' + esc(wd.mitigationActions || "") + '</textarea></div></label>' +
         '<label class="field" style="max-width:220px;">' + fieldLabel("Mitigation deadline") + fieldInput("mitigationDeadline", wd.mitigationDeadline || "", 'type="date"') + '</label>' +
-        '<label class="field">' + fieldLabel("Scope creep") + '<div class="field-wrap"><textarea name="scopeCreep" rows="3" placeholder="Any work happening outside the agreed SOW&hellip;">' + esc(wd.scopeCreep || "") + '</textarea></div></label>' +
         '<div class="form-actions"><button type="submit" class="btn btn-md btn-filled ring-focus">Save risks</button></div>' +
+      '</form>'
+    );
+  }
+
+  function renderChangesTab(a){
+    var wd = weekData(a, selectedWeekKey || currentWeekKey());
+    return (
+      renderWeekJump(a) +
+      '<form data-form="week" class="week-fields">' +
+        '<input type="hidden" name="weekKey" value="' + esc(selectedWeekKey) + '">' +
+        '<label class="field">' + fieldLabel("Scope creep") + '<div class="field-wrap"><textarea name="scopeCreep" rows="5" placeholder="Any work happening outside the agreed SOW&hellip;">' + esc(wd.scopeCreep || "") + '</textarea></div></label>' +
+        '<label class="field">' + fieldLabel("Change requests") + '<div class="field-wrap"><textarea name="changeRequests" rows="5" placeholder="Change requests raised, their status and impact&hellip;">' + esc(wd.changeRequests || "") + '</textarea></div></label>' +
+        '<div class="form-actions"><button type="submit" class="btn btn-md btn-filled ring-focus">Save scope &amp; changes</button></div>' +
       '</form>'
     );
   }
@@ -2053,6 +2065,7 @@ a{color:var(--primary);}
     else if (activeTab === "scope") body.innerHTML = renderScopeTab(a);
     else if (activeTab === "status") body.innerHTML = renderStatusTab(a);
     else if (activeTab === "risks") body.innerHTML = renderRisksTab(a);
+    else if (activeTab === "changes") body.innerHTML = renderChangesTab(a);
     else if (activeTab === "team") body.innerHTML = renderTeamTab(a);
   }
 
@@ -2248,7 +2261,7 @@ a{color:var(--primary);}
       if (!acc) return;
       var wk = fd2.get("weekKey");
       var newWeek = Object.assign({}, weekData(acc, wk));
-      ["completed", "inProgress", "nextSteps", "risk", "mitigationActions", "scopeCreep"].forEach(function(f){
+      ["completed", "inProgress", "nextSteps", "risk", "mitigationActions", "scopeCreep", "changeRequests"].forEach(function(f){
         if (fd2.has(f)) newWeek[f] = String(fd2.get(f)).trim();
       });
       if (fd2.has("mitigationDeadline")) newWeek.mitigationDeadline = fd2.get("mitigationDeadline") || null;
@@ -2264,7 +2277,7 @@ a{color:var(--primary);}
       var wAcc = getAccount(wAccId);
       if (!wAcc) return;
       var wWk = fd4.get("weekKey");
-      var wNewWeek = {
+      var wNewWeek = Object.assign({}, weekData(wAcc, wWk), {
         completed: fd4.get("completed").trim(),
         inProgress: fd4.get("inProgress").trim(),
         nextSteps: fd4.get("nextSteps").trim(),
@@ -2272,7 +2285,7 @@ a{color:var(--primary);}
         mitigationActions: fd4.get("mitigationActions").trim(),
         mitigationDeadline: fd4.get("mitigationDeadline") || null,
         scopeCreep: fd4.get("scopeCreep").trim()
-      };
+      });
       var wNewWeeks = Object.assign({}, wAcc.weeks || {});
       wNewWeeks[wWk] = wNewWeek;
       updateAccount(wAccId, {weeks: wNewWeeks}).then(renderWeeklyView);

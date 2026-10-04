@@ -556,6 +556,15 @@ a{color:var(--primary);}
 .modal-overlay[hidden]{display:none;}
 .modal{background:var(--base-white); border-radius:var(--radius-md); box-shadow:var(--elevation-modal); width:min(560px,100%); max-height:90vh; overflow-y:auto; padding:var(--spacing-24);}
 .modal h2{font:var(--title-medium); letter-spacing:.15px; color:var(--neutral-900); margin-bottom:var(--spacing-16);}
+.modal-wide{width:min(720px,100%);}
+.import-hint{font:var(--body-small); letter-spacing:.3px; color:var(--neutral-600); margin-bottom:var(--spacing-16);}
+.import-preview-list{display:flex; flex-direction:column; gap:var(--spacing-12); max-height:50vh; overflow-y:auto; margin-bottom:var(--spacing-16);}
+.import-row{border:1px solid var(--neutral-200); border-radius:var(--radius-sm); padding:var(--spacing-12) var(--spacing-16);}
+.import-row-head{display:flex; align-items:center; justify-content:space-between; gap:var(--spacing-12);}
+.import-row-name{font:var(--label-large); letter-spacing:.1px; color:var(--neutral-900);}
+.import-row-changes{font:var(--body-small); letter-spacing:.3px; color:var(--neutral-700); margin-top:var(--spacing-6);}
+.import-row.is-new .import-row-name{color:var(--primary);}
+.import-row.is-skipped{opacity:.55;}
 
 /* ---------- toast ---------- */
 .toast{
@@ -610,6 +619,10 @@ a{color:var(--primary);}
     <button type="button" class="new-btn ring-focus" id="btn-add-account">
       <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
       <span class="label">New account</span>
+    </button>
+    <button type="button" class="nav-item ring-focus" id="btn-import-excel" title="Import from Excel">
+      <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></span>
+      <span class="label">Import from Excel</span>
     </button>
     <div id="nav-list"></div>
     <div class="footer-row">
@@ -761,6 +774,45 @@ a{color:var(--primary);}
         <button type="submit" class="btn btn-md btn-filled ring-focus">Create account</button>
       </div>
     </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="import-overlay" hidden>
+  <div class="modal modal-wide" role="dialog" aria-modal="true" aria-label="Import from Excel">
+    <h2>Import from Excel</h2>
+
+    <div id="import-step-pick">
+      <p class="import-hint">Upload the weekly status workbook. Nothing is sent anywhere &mdash; the file is read in your browser only.</p>
+      <label class="field form-wide">
+        <span class="label">Excel file (.xlsx)</span>
+        <div class="field-wrap"><input type="file" id="import-file-input" accept=".xlsx,.xls"></div>
+      </label>
+      <label class="field form-wide" id="import-sheet-field" hidden>
+        <span class="label">Which sheet is this week's data?</span>
+        <div class="field-wrap"><select id="import-sheet-select"></select></div>
+      </label>
+      <div id="import-pick-status" class="import-hint"></div>
+      <div class="form-actions form-wide">
+        <button type="button" class="btn btn-md btn-text ring-focus" data-action="close-import">Cancel</button>
+        <button type="button" class="btn btn-md btn-filled ring-focus" id="import-parse-btn" disabled>Preview changes</button>
+      </div>
+    </div>
+
+    <div id="import-step-preview" hidden>
+      <p class="import-hint" id="import-preview-summary"></p>
+      <div class="import-preview-list" id="import-preview-list"></div>
+      <div class="form-actions form-wide">
+        <button type="button" class="btn btn-md btn-text ring-focus" data-action="import-back">Back</button>
+        <button type="button" class="btn btn-md btn-filled ring-focus" id="import-apply-btn">Apply import</button>
+      </div>
+    </div>
+
+    <div id="import-step-done" hidden>
+      <p class="import-hint" id="import-done-summary"></p>
+      <div class="form-actions form-wide">
+        <button type="button" class="btn btn-md btn-filled ring-focus" data-action="close-import">Done</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1248,9 +1300,10 @@ a{color:var(--primary);}
     return {method: method, headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)};
   }
 
-  function updateAccount(id, patch){
+  function updateAccount(id, patch, opts){
     var a = getAccount(id);
     if (!a) return Promise.resolve();
+    var silent = opts && opts.silent;
     var clientPatch = {}, projPatch = {};
     Object.keys(patch).forEach(function(k){
       if (k === "logoSvg" || k === "logoImg") clientPatch[k] = patch[k];
@@ -1262,11 +1315,12 @@ a{color:var(--primary);}
     if (Object.keys(projPatch).length) calls.push(apiFetch(base + "/projects/" + encodeURIComponent(id), jsonReq("PATCH", projPatch)));
     if (Object.keys(clientPatch).length) calls.push(apiFetch(base, jsonReq("PATCH", clientPatch)));
     return Promise.all(calls).then(function(){
-      return loadAccounts();
+      return silent ? Promise.resolve() : loadAccounts();
     }).then(function(){
-      showToast("Saved", "success");
+      if (!silent) showToast("Saved", "success");
     }).catch(function(err){
       showToast("Save failed: " + err.message, "error");
+      throw err;
     });
   }
 
@@ -1291,18 +1345,20 @@ a{color:var(--primary);}
   }
 
   // New client with its first project. Returns the project id.
-  function createAccount(data){
+  function createAccount(data, opts){
+    var silent = opts && opts.silent;
     var clientId = uniqueClientId(data.clientName);
     var projectId = clientId + "-1";
     var project = Object.assign(newProjectFields(), data.project, {id: projectId});
     var doc = {name: data.clientName, order: Date.now(), logoSvg: "", logoImg: "", projects: [project]};
     return apiFetch("/api/accounts/" + encodeURIComponent(clientId), jsonReq("PUT", doc)).then(function(){
-      return loadAccounts();
+      return silent ? Promise.resolve() : loadAccounts();
     }).then(function(){
-      showToast("Account created", "success");
+      if (!silent) showToast("Account created", "success");
       return projectId;
     }).catch(function(err){
       showToast("Create failed: " + err.message, "error");
+      throw err;
     });
   }
 
@@ -1325,6 +1381,334 @@ a{color:var(--primary);}
     var n = 2;
     while (existing.has(base + "-" + n)) n++;
     return base + "-" + n;
+  }
+
+  // ---------------- Excel import ----------------
+  // Reads the weekly status workbook entirely in the browser (SheetJS, loaded
+  // on demand) and maps its "Account" table onto existing clients/projects.
+  var xlsxLibPromise = null;
+  function loadXlsxLib(){
+    if (window.XLSX) return Promise.resolve();
+    if (!xlsxLibPromise) {
+      xlsxLibPromise = new Promise(function(resolve, reject){
+        var s = document.createElement("script");
+        s.src = "vendor/xlsx.full.min.js";
+        s.onload = function(){ resolve(); };
+        s.onerror = function(){ reject(new Error("Could not load the Excel reader library.")); };
+        document.head.appendChild(s);
+      });
+    }
+    return xlsxLibPromise;
+  }
+
+  function normHeaderKey(raw){
+    return String(raw == null ? "" : raw).toLowerCase().replace(/[–—]/g, "-").replace(/\s+/g, " ").trim();
+  }
+
+  var IMPORT_FIELD_MAP = {
+    "owner - onshore": "ownerOnshore",
+    "owner onshore": "ownerOnshore",
+    "owner - offshore": "ownerOffshore",
+    "owner offshore": "ownerOffshore",
+    "sow status": "sowStatus",
+    "revenue": "revenue",
+    "invoiced to date": "invoicedToDate",
+    "next invoice due": "nextInvoiceDue",
+    "invoice status": "invoiceStatus",
+    "project status": "projectStatus",
+    "scope of work (sow)": "scopeText",
+    "scope of work": "scopeText",
+    "completed": "completed",
+    "in progress": "inProgress",
+    "next steps": "nextSteps",
+    "key updates": "keyUpdatesBlob",
+    "risk": "risk",
+    "risk / dependency": "risk",
+    "dependency": "risk",
+    "risk mitigation steps": "mitigationActions",
+    "mitigation steps": "mitigationActions",
+    "rag (helper)": "rag",
+    "rag": "rag"
+  };
+  var IMPORT_ROLE_MAP = {
+    "engagement lead": "Engagement Lead",
+    "geo strategist": "Geo Strategist",
+    "consultant": "Consultant",
+    "lead analyst": "Lead Analyst",
+    "analyst": "Analyst",
+    "brand sme": "Brand SME",
+    "medical sme": "Medical SME",
+    "project manager": "Project Manager"
+  };
+  var WEEK_PROJECT_FIELDS = ["completed", "inProgress", "nextSteps", "risk", "mitigationActions"];
+  var IMPORT_MONTHS = {january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11};
+
+  function sheetToRows(wb, sheetName){
+    return window.XLSX.utils.sheet_to_json(wb.Sheets[sheetName], {header: 1, defval: ""});
+  }
+
+  function guessDefaultSheet(sheetNames){
+    var bad = /gtm|dashboard|draft|original|list/i;
+    for (var i = 0; i < sheetNames.length; i++) {
+      if (/\d{1,2}\s*(st|nd|rd|th)?\s+[a-z]+/i.test(sheetNames[i]) && !bad.test(sheetNames[i])) return sheetNames[i];
+    }
+    return sheetNames[0];
+  }
+
+  function findAccountHeaderRow(rows, fromIndex){
+    for (var i = fromIndex || 0; i < rows.length; i++) {
+      if (normHeaderKey(rows[i][0]) === "account") return i;
+    }
+    return -1;
+  }
+
+  function buildImportColumnMap(rows, headerRowIdx){
+    var topRow = rows[headerRowIdx] || [];
+    var subRow = rows[headerRowIdx + 1] || [];
+    var maxCol = Math.max(topRow.length, subRow.length);
+    var map = {};
+    for (var c = 0; c < maxCol; c++) {
+      var text = normHeaderKey(subRow[c]) || normHeaderKey(topRow[c]);
+      if (!text) continue;
+      if (IMPORT_ROLE_MAP[text]) map[c] = {role: IMPORT_ROLE_MAP[text]};
+      else if (IMPORT_FIELD_MAP[text]) map[c] = {field: IMPORT_FIELD_MAP[text]};
+    }
+    return map;
+  }
+
+  function splitKeyUpdatesBlob(raw){
+    var out = {completed: "", inProgress: "", nextSteps: ""};
+    if (!raw) return out;
+    var paras = String(raw).replace(/\r\n/g, "\n").split(/\n{2,}/).map(function(p){ return p.trim(); }).filter(Boolean);
+    var headingMap = {"completed": "completed", "in progress": "inProgress", "next steps": "nextSteps"};
+    var bucket = "completed", buckets = {completed: [], inProgress: [], nextSteps: []};
+    paras.forEach(function(p){
+      var key = normHeaderKey(p);
+      if (headingMap[key]) { bucket = headingMap[key]; return; }
+      buckets[bucket].push(p);
+    });
+    out.completed = buckets.completed.join("\n\n");
+    out.inProgress = buckets.inProgress.join("\n\n");
+    out.nextSteps = buckets.nextSteps.join("\n\n");
+    return out;
+  }
+
+  function parseDateCell(v){
+    if (!v && v !== 0) return null;
+    if (v instanceof Date) return isNaN(v.getTime()) ? null : isoFromDate(v);
+    var d = new Date(v);
+    return isNaN(d.getTime()) ? null : isoFromDate(d);
+  }
+
+  function numOrUndef(v){
+    if (v === "" || v == null) return undefined;
+    var n = Number(v);
+    return isNaN(n) ? undefined : n;
+  }
+
+  function parseSheetWeekKey(sheetName){
+    var m = String(sheetName).toLowerCase().match(/(\d{1,2})(?:st|nd|rd|th)?\s+([a-z]+)/);
+    if (!m) return currentWeekKey();
+    var day = parseInt(m[1], 10), month = IMPORT_MONTHS[m[2]];
+    if (month === undefined) return currentWeekKey();
+    var now = new Date(), candidate = new Date(now.getFullYear(), month, day);
+    if (candidate.getTime() - now.getTime() > 200 * 24 * 3600 * 1000) candidate = new Date(now.getFullYear() - 1, month, day);
+    return isoFromDate(mondayOf(candidate));
+  }
+
+  // Parses the first "Account" table in the chosen sheet into one entry per row.
+  function parseImportSheet(wb, sheetName){
+    var rows = sheetToRows(wb, sheetName);
+    var headerRowIdx = findAccountHeaderRow(rows, 0);
+    if (headerRowIdx === -1) throw new Error('No "Account" column found on this sheet.');
+    var colMap = buildImportColumnMap(rows, headerRowIdx);
+    var weekKey = parseSheetWeekKey(sheetName);
+    var dataStart = headerRowIdx + 2;
+    var dataEnd = findAccountHeaderRow(rows, dataStart);
+    if (dataEnd === -1) dataEnd = rows.length;
+
+    var entries = [];
+    for (var r = dataStart; r < dataEnd; r++) {
+      var row = rows[r];
+      var accountName = String(row[0] || "").trim();
+      if (!accountName) continue;
+
+      var fields = {}, roleCells = {};
+      Object.keys(colMap).forEach(function(cStr){
+        var c = Number(cStr), target = colMap[c], v = row[c];
+        if (v === "" || v == null) return;
+        if (target.role) { roleCells[target.role] = v; return; }
+        fields[target.field] = v;
+      });
+
+      var projPatch = {};
+      if (fields.ownerOnshore) projPatch.ownerOnshore = String(fields.ownerOnshore).trim();
+      if (fields.ownerOffshore) projPatch.ownerOffshore = String(fields.ownerOffshore).trim();
+      if (fields.sowStatus) projPatch.sowStatus = String(fields.sowStatus).trim();
+      if (fields.invoiceStatus) projPatch.invoiceStatus = String(fields.invoiceStatus).trim();
+      if (fields.projectStatus) projPatch.projectStatus = String(fields.projectStatus).trim();
+      if (fields.scopeText) projPatch.scopeText = String(fields.scopeText).trim();
+      var ragRaw = fields.rag ? String(fields.rag).trim() : "";
+      var ragMatch = ["Green", "Amber", "Red"].find(function(r){ return r.toLowerCase() === ragRaw.toLowerCase(); });
+      if (ragMatch) projPatch.rag = ragMatch;
+      var rev = numOrUndef(fields.revenue); if (rev !== undefined) projPatch.revenue = rev;
+      var inv = numOrUndef(fields.invoicedToDate); if (inv !== undefined) projPatch.invoicedToDate = inv;
+      var nid = parseDateCell(fields.nextInvoiceDue); if (nid) projPatch.nextInvoiceDue = nid;
+
+      // Key-updates columns are often merged in this template, so whichever of
+      // Completed/In Progress/Next Steps actually holds text may be the only
+      // one filled in for a row. One populated column -> split it by its
+      // inline "Completed"/"In Progress"/"Next Steps" headings, if any,
+      // falling back to Completed. Several populated columns -> genuinely
+      // separate entries, so keep them as-is.
+      var weekPatch = {};
+      var cuFields = ["completed", "inProgress", "nextSteps"];
+      var cuFilled = cuFields.filter(function(f){ return fields[f] !== undefined && String(fields[f]).trim(); });
+      if (cuFilled.length === 1) {
+        Object.assign(weekPatch, splitKeyUpdatesBlob(fields[cuFilled[0]]));
+      } else if (cuFilled.length > 1) {
+        cuFilled.forEach(function(f){ weekPatch[f] = String(fields[f]).trim(); });
+      } else if (fields.keyUpdatesBlob !== undefined) {
+        Object.assign(weekPatch, splitKeyUpdatesBlob(fields.keyUpdatesBlob));
+      }
+      if (fields.risk !== undefined) weekPatch.risk = String(fields.risk).trim();
+      if (fields.mitigationActions !== undefined) weekPatch.mitigationActions = String(fields.mitigationActions).trim();
+
+      var rolesInput = Object.keys(roleCells).map(function(roleName){ return {role: roleName, value: String(roleCells[roleName])}; });
+      var roles = rolesInput.length ? normalizeRoles(rolesInput) : null;
+
+      var matchedClient = clients.find(function(c){ return normHeaderKey(c.name) === normHeaderKey(accountName); }) || null;
+
+      entries.push({
+        accountName: accountName,
+        clientId: matchedClient ? matchedClient.id : null,
+        isNew: !matchedClient,
+        projPatch: projPatch,
+        weekPatch: weekPatch,
+        roles: roles,
+        weekKey: weekKey
+      });
+    }
+    return {weekKey: weekKey, entries: entries};
+  }
+
+  function describeImportRow(entry){
+    var parts = [];
+    var fieldLabels = {ownerOnshore: "Owner (onshore)", ownerOffshore: "Owner (offshore)", sowStatus: "SOW status", revenue: "Revenue", invoicedToDate: "Invoiced to date", nextInvoiceDue: "Next invoice due", invoiceStatus: "Invoice status", projectStatus: "Project status", scopeText: "Scope of work", rag: "RAG"};
+    Object.keys(entry.projPatch).forEach(function(k){ parts.push(fieldLabels[k] || k); });
+    var weekLabels = {completed: "Completed", inProgress: "In progress", nextSteps: "Next steps", risk: "Risk", mitigationActions: "Mitigation actions"};
+    Object.keys(entry.weekPatch).forEach(function(k){ if (entry.weekPatch[k]) parts.push(weekLabels[k] || k); });
+    if (entry.roles && entry.roles.length) parts.push("Team allocation");
+    return parts;
+  }
+
+  var importState = null;
+
+  function openImportModal(){
+    importState = {wb: null, sheetNames: [], parsed: null};
+    $("#import-file-input").value = "";
+    $("#import-sheet-field").hidden = true;
+    $("#import-pick-status").textContent = "";
+    $("#import-parse-btn").disabled = true;
+    $("#import-step-pick").hidden = false;
+    $("#import-step-preview").hidden = true;
+    $("#import-step-done").hidden = true;
+    $("#import-overlay").hidden = false;
+  }
+
+  function closeImportModal(){
+    $("#import-overlay").hidden = true;
+    importState = null;
+  }
+
+  function handleImportFile(file){
+    $("#import-pick-status").textContent = "Reading workbook…";
+    $("#import-parse-btn").disabled = true;
+    loadXlsxLib().then(function(){
+      return file.arrayBuffer();
+    }).then(function(buf){
+      var wb = window.XLSX.read(buf, {type: "array", cellDates: true});
+      importState.wb = wb;
+      importState.sheetNames = wb.SheetNames;
+      var sel = $("#import-sheet-select");
+      sel.innerHTML = wb.SheetNames.map(function(n){ return '<option value="' + esc(n) + '">' + esc(n) + '</option>'; }).join("");
+      sel.value = guessDefaultSheet(wb.SheetNames);
+      $("#import-sheet-field").hidden = false;
+      $("#import-pick-status").textContent = "Pick the sheet for this week's data, then preview.";
+      $("#import-parse-btn").disabled = false;
+    }).catch(function(err){
+      $("#import-pick-status").textContent = "Could not read that file: " + err.message;
+    });
+  }
+
+  function renderImportPreview(){
+    var parsed = importState.parsed;
+    var entries = parsed.entries;
+    var newCount = entries.filter(function(e){ return e.isNew; }).length;
+    $("#import-preview-summary").textContent =
+      entries.length + " row" + (entries.length === 1 ? "" : "s") + " found for " + weekLabel(parsed.weekKey) +
+      " — " + (entries.length - newCount) + " will update an existing account, " + newCount + " will be created as new.";
+    $("#import-preview-list").innerHTML = entries.map(function(e, i){
+      var changes = describeImportRow(e);
+      return '<div class="import-row' + (e.isNew ? " is-new" : "") + '">' +
+        '<div class="import-row-head">' +
+          '<span class="import-row-name">' + esc(e.accountName) + '</span>' +
+          '<label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--neutral-600);">' +
+            '<input type="checkbox" data-import-toggle="' + i + '" checked> ' + (e.isNew ? "Create new account" : "Update existing") +
+          '</label>' +
+        '</div>' +
+        '<div class="import-row-changes">' + (changes.length ? "Will set: " + changes.map(esc).join(", ") : "No recognized fields on this row — nothing to change.") + '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  function applyImport(){
+    var entries = importState.parsed.entries.filter(function(e, i){
+      var cb = $('[data-import-toggle="' + i + '"]');
+      return !cb || cb.checked;
+    });
+    $("#import-apply-btn").disabled = true;
+    $("#import-apply-btn").textContent = "Importing…";
+
+    var created = 0, updated = 0, failed = [];
+    var chain = Promise.resolve();
+    entries.forEach(function(e){
+      chain = chain.then(function(){
+        var weekEntryBase = {completed: "", inProgress: "", nextSteps: "", risk: "", mitigationActions: "", mitigationDeadline: null, scopeCreep: "", changeRequests: ""};
+        if (e.isNew) {
+          var weeks = {};
+          weeks[e.weekKey] = Object.assign({}, weekEntryBase, e.weekPatch);
+          var projectData = Object.assign({}, e.projPatch, {weeks: weeks});
+          if (e.roles && e.roles.length) projectData.roles = e.roles;
+          return createAccount({clientName: e.accountName, project: projectData}, {silent: true}).then(function(){ created++; });
+        }
+        var acc = accounts.find(function(a){ return a.clientId === e.clientId; });
+        if (!acc) { failed.push(e.accountName + " (no project found)"); return; }
+        var patch = Object.assign({}, e.projPatch);
+        if (Object.keys(e.weekPatch).length) {
+          var existingWeek = weekData(acc, e.weekKey);
+          var newWeek = Object.assign({}, existingWeek, e.weekPatch);
+          var newWeeks = Object.assign({}, acc.weeks || {});
+          newWeeks[e.weekKey] = newWeek;
+          patch.weeks = newWeeks;
+        }
+        if (e.roles && e.roles.length) patch.roles = e.roles;
+        if (!Object.keys(patch).length) return;
+        return updateAccount(acc.id, patch, {silent: true}).then(function(){ updated++; }).catch(function(){ failed.push(e.accountName); });
+      });
+    });
+
+    chain.then(function(){
+      return loadAccounts();
+    }).then(function(){
+      $("#import-apply-btn").disabled = false;
+      $("#import-apply-btn").textContent = "Apply import";
+      $("#import-step-preview").hidden = true;
+      $("#import-step-done").hidden = false;
+      var msg = "Updated " + updated + " account" + (updated === 1 ? "" : "s") + " and created " + created + " new one" + (created === 1 ? "" : "s") + " for " + weekLabel(importState.parsed.weekKey) + ".";
+      if (failed.length) msg += " Could not import: " + failed.join(", ") + ".";
+      $("#import-done-summary").textContent = msg;
+    });
   }
 
   // Deletes one project; removes the client too when it was the last one.
@@ -2164,6 +2548,32 @@ a{color:var(--primary);}
     var addBtn = e.target.closest && e.target.closest("#btn-add-account");
     if (addBtn) { openAddModal(null); return; }
 
+    var importBtn = e.target.closest && e.target.closest("#btn-import-excel");
+    if (importBtn) { openImportModal(); return; }
+
+    var closeImport = e.target.closest && e.target.closest('[data-action="close-import"]');
+    if (closeImport) { closeImportModal(); return; }
+
+    var importParseBtn = e.target.closest && e.target.closest("#import-parse-btn");
+    if (importParseBtn) {
+      try {
+        var sheetName = $("#import-sheet-select").value;
+        importState.parsed = parseImportSheet(importState.wb, sheetName);
+        renderImportPreview();
+        $("#import-step-pick").hidden = true;
+        $("#import-step-preview").hidden = false;
+      } catch (err) {
+        $("#import-pick-status").textContent = err.message;
+      }
+      return;
+    }
+
+    var importBackBtn = e.target.closest && e.target.closest('[data-action="import-back"]');
+    if (importBackBtn) { $("#import-step-preview").hidden = true; $("#import-step-pick").hidden = false; return; }
+
+    var importApplyBtn = e.target.closest && e.target.closest("#import-apply-btn");
+    if (importApplyBtn) { applyImport(); return; }
+
     var addProjBtn = e.target.closest && e.target.closest('[data-action="add-project"]');
     if (addProjBtn) { openAddModal(currentClientId); return; }
 
@@ -2271,6 +2681,11 @@ a{color:var(--primary);}
 
   document.addEventListener("change", function(e){
     if (e.target.id === "sort-select") { sortMode = e.target.value; renderGrid(); return; }
+    if (e.target.id === "import-file-input") {
+      var f = e.target.files && e.target.files[0];
+      if (f) handleImportFile(f);
+      return;
+    }
   });
 
   document.addEventListener("submit", function(e){

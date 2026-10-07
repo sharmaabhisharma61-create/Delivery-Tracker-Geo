@@ -746,10 +746,6 @@ a{color:var(--primary);}
         <div class="field-wrap"><select name="projectStatus"></select></div>
       </label>
       <label class="field">
-        <span class="label">Invoice status</span>
-        <div class="field-wrap"><input name="invoiceStatus" list="invoice-status-options" placeholder="Not Scheduled"></div>
-      </label>
-      <label class="field">
         <span class="label">Owner &ndash; Onshore</span>
         <div class="field-wrap"><input name="ownerOnshore" placeholder="Name"></div>
       </label>
@@ -1121,6 +1117,25 @@ a{color:var(--primary);}
     return (r === "Green" || r === "Red") ? r : "Amber";
   }
 
+  // Invoice status is derived from the numbers and the next invoice date unless
+  // the project is switched to manual mode.
+  var INVOICE_STATUS_OPTIONS = ["Not Scheduled", "Scheduled", "Due Soon", "Overdue", "Invoiced", "Fully invoiced", "Paid"];
+  function autoInvoiceStatus(revenue, invoiced, due){
+    var rev = Number(revenue) || 0, inv = Number(invoiced) || 0;
+    if (rev > 0 && inv >= rev) return "Fully invoiced";
+    if (!due) return "Not Scheduled";
+    var today = todayIso();
+    if (due < today) return "Overdue";
+    var soon = new Date(today + "T00:00:00");
+    soon.setDate(soon.getDate() + 7);
+    if (due <= isoFromDate(soon)) return "Due Soon";
+    return "Scheduled";
+  }
+  function effectiveInvoiceStatus(p){
+    if (p.invoiceMode === "manual") return p.invoiceStatus || "Not Scheduled";
+    return autoInvoiceStatus(p.revenue, p.invoicedToDate, p.nextInvoiceDue);
+  }
+
   function invoiceTagClass(status){
     var s = String(status || "").toLowerCase();
     if (s.indexOf("overdue") > -1) return "tag-error";
@@ -1274,6 +1289,9 @@ a{color:var(--primary);}
           clientName: c.name,
           projectName: p.name || "GEO Engagement",
           projectCount: projs.length,
+          invoiceMode: p.invoiceMode === "manual" ? "manual" : "auto",
+          invoiceStatusManual: p.invoiceStatus || "Not Scheduled",
+          invoiceStatus: effectiveInvoiceStatus(p),
           roles: normalizeRoles(p.roles),
           logoSvg: c.logoSvg || "",
           logoImg: c.logoImg || "",
@@ -1333,6 +1351,7 @@ a{color:var(--primary);}
       invoicedToDate: 0,
       nextInvoiceDue: null,
       invoiceStatus: "Not Scheduled",
+      invoiceMode: "auto",
       scopeText: "",
       notes: "",
       ownerOnshore: "",
@@ -1545,7 +1564,6 @@ a{color:var(--primary);}
       if (fields.ownerOnshore) projPatch.ownerOnshore = String(fields.ownerOnshore).trim();
       if (fields.ownerOffshore) projPatch.ownerOffshore = String(fields.ownerOffshore).trim();
       if (fields.sowStatus) projPatch.sowStatus = String(fields.sowStatus).trim();
-      if (fields.invoiceStatus) projPatch.invoiceStatus = String(fields.invoiceStatus).trim();
       if (fields.projectStatus) projPatch.projectStatus = String(fields.projectStatus).trim();
       if (fields.scopeText) projPatch.scopeText = String(fields.scopeText).trim();
       var ragRaw = fields.rag ? String(fields.rag).trim() : "";
@@ -1554,6 +1572,7 @@ a{color:var(--primary);}
       var rev = numOrUndef(fields.revenue); if (rev !== undefined) projPatch.revenue = rev;
       var inv = numOrUndef(fields.invoicedToDate); if (inv !== undefined) projPatch.invoicedToDate = inv;
       var nid = parseDateCell(fields.nextInvoiceDue); if (nid) projPatch.nextInvoiceDue = nid;
+      var importedInvoiceStatus = fields.invoiceStatus ? String(fields.invoiceStatus).trim() : "";
 
       // Key-updates columns are often merged in this template, so whichever of
       // Completed/In Progress/Next Steps actually holds text may be the only
@@ -1578,6 +1597,17 @@ a{color:var(--primary);}
       var roles = rolesInput.length ? normalizeRoles(rolesInput) : null;
 
       var matchedClient = clients.find(function(c){ return normHeaderKey(c.name) === normHeaderKey(accountName); }) || null;
+      if (importedInvoiceStatus) {
+        var existingProj = matchedClient ? (accounts.find(function(a){ return a.clientId === matchedClient.id; }) || {}) : {};
+        var autoResult = autoInvoiceStatus(
+          projPatch.revenue !== undefined ? projPatch.revenue : existingProj.revenue,
+          projPatch.invoicedToDate !== undefined ? projPatch.invoicedToDate : existingProj.invoicedToDate,
+          projPatch.nextInvoiceDue !== undefined ? projPatch.nextInvoiceDue : existingProj.nextInvoiceDue);
+        if (normHeaderKey(importedInvoiceStatus) !== normHeaderKey(autoResult)) {
+          projPatch.invoiceStatus = importedInvoiceStatus;
+          projPatch.invoiceMode = "manual";
+        }
+      }
 
       entries.push({
         accountName: accountName,
@@ -1594,7 +1624,7 @@ a{color:var(--primary);}
 
   function describeImportRow(entry){
     var parts = [];
-    var fieldLabels = {ownerOnshore: "Owner (onshore)", ownerOffshore: "Owner (offshore)", sowStatus: "SOW status", revenue: "Revenue", invoicedToDate: "Invoiced to date", nextInvoiceDue: "Next invoice due", invoiceStatus: "Invoice status", projectStatus: "Project status", scopeText: "Scope of work", rag: "RAG"};
+    var fieldLabels = {ownerOnshore: "Owner (onshore)", ownerOffshore: "Owner (offshore)", sowStatus: "SOW status", revenue: "Revenue", invoicedToDate: "Invoiced to date", nextInvoiceDue: "Next invoice due", invoiceStatus: "Invoice status", invoiceMode: "Invoice status mode", projectStatus: "Project status", scopeText: "Scope of work", rag: "RAG"};
     Object.keys(entry.projPatch).forEach(function(k){ parts.push(fieldLabels[k] || k); });
     var weekLabels = {completed: "Completed", inProgress: "In progress", nextSteps: "Next steps", risk: "Risk", mitigationActions: "Mitigation actions"};
     Object.keys(entry.weekPatch).forEach(function(k){ if (entry.weekPatch[k]) parts.push(weekLabels[k] || k); });
@@ -2328,6 +2358,17 @@ a{color:var(--primary);}
     var opts = list.map(function(v){ return '<option value="' + esc(v) + '"' + (v === current ? " selected" : "") + '>' + esc(v) + '</option>'; }).join("");
     return '<div class="field-wrap"><select name="' + name + '">' + opts + '</select><span class="caret-wrap" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div>';
   }
+  function fieldSelectLabeled(name, pairs, current){
+    var opts = pairs.map(function(p){ return '<option value="' + esc(p[0]) + '"' + (p[0] === current ? " selected" : "") + '>' + esc(p[1]) + '</option>'; }).join("");
+    return '<div class="field-wrap"><select name="' + name + '" data-invoice-mode>' + opts + '</select><span class="caret-wrap" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div>';
+  }
+  function invoiceStatusSelect(a){
+    var manual = a.invoiceMode === "manual";
+    var shown = manual ? a.invoiceStatusManual : a.invoiceStatus;
+    var list = INVOICE_STATUS_OPTIONS.indexOf(shown) === -1 ? INVOICE_STATUS_OPTIONS.concat([shown]) : INVOICE_STATUS_OPTIONS;
+    var opts = list.map(function(v){ return '<option value="' + esc(v) + '"' + (v === shown ? " selected" : "") + '>' + esc(v) + '</option>'; }).join("");
+    return '<div class="field-wrap"><select name="invoiceStatus" id="invoice-status-select"' + (manual ? "" : " disabled") + '>' + opts + '</select><span class="caret-wrap" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div>';
+  }
   function fieldInput(name, value, attrs){
     return '<div class="field-wrap"><input name="' + name + '" value="' + esc(value) + '" ' + (attrs||"") + '></div>';
   }
@@ -2339,7 +2380,8 @@ a{color:var(--primary);}
         '<label class="field">' + fieldLabel("Project name") + fieldInput("name", a.projectName, "required") + '</label>' +
         '<label class="field">' + fieldLabel("Client / brand name") + fieldInput("clientName", a.clientName, "required") + '</label>' +
         '<label class="field">' + fieldLabel("RAG status") + fieldSelect("rag", ["Green","Amber","Red"], a.rag) + '</label>' +
-        '<label class="field">' + fieldLabel("Invoice status") + fieldInput("invoiceStatus", a.invoiceStatus||"", 'list="invoice-status-options"') + '</label>' +
+        '<label class="field">' + fieldLabel("Invoice status mode") + fieldSelectLabeled("invoiceMode", [["auto", "Automatic (from invoice date)"], ["manual", "Manual"]], a.invoiceMode) + '</label>' +
+        '<label class="field">' + fieldLabel("Invoice status") + invoiceStatusSelect(a) + '<span class="helper" id="invoice-status-helper">' + (a.invoiceMode === "manual" ? "Set by you. It will not change when the invoice date changes." : "Calculated from the invoice date and amounts. Switch to Manual to override.") + '</span></label>' +
         '<label class="field">' + fieldLabel("SOW status") + fieldSelect("sowStatus", SOW_STATUS_OPTIONS, a.sowStatus) + '</label>' +
         '<label class="field">' + fieldLabel("Project status") + fieldSelect("projectStatus", PROJECT_STATUS_OPTIONS, a.projectStatus) + '</label>' +
         '<label class="field">' + fieldLabel("Owner – Onshore") + fieldInput("ownerOnshore", a.ownerOnshore||"") + '</label>' +
@@ -2681,6 +2723,16 @@ a{color:var(--primary);}
 
   document.addEventListener("change", function(e){
     if (e.target.id === "sort-select") { sortMode = e.target.value; renderGrid(); return; }
+    if (e.target.matches && e.target.matches("[data-invoice-mode]")) {
+      var sel = document.getElementById("invoice-status-select");
+      var helper = document.getElementById("invoice-status-helper");
+      var manualOn = e.target.value === "manual";
+      var a = getAccount(currentDetailId);
+      sel.disabled = !manualOn;
+      if (a) sel.value = manualOn ? a.invoiceStatusManual : effectiveInvoiceStatus(Object.assign({}, a, {invoiceStatus: a.invoiceStatusManual, invoiceMode: "auto"}));
+      helper.textContent = manualOn ? "Set by you. It will not change when the invoice date changes." : "Calculated from the invoice date and amounts. Switch to Manual to override.";
+      return;
+    }
     if (e.target.id === "import-file-input") {
       var f = e.target.files && e.target.files[0];
       if (f) handleImportFile(f);
@@ -2699,7 +2751,7 @@ a{color:var(--primary);}
         rag: fd.get("rag"),
         sowStatus: fd.get("sowStatus"),
         projectStatus: fd.get("projectStatus"),
-        invoiceStatus: fd.get("invoiceStatus").trim(),
+        invoiceMode: fd.get("invoiceMode") === "manual" ? "manual" : "auto",
         ownerOnshore: fd.get("ownerOnshore").trim(),
         ownerOffshore: fd.get("ownerOffshore").trim(),
         revenue: Number(fd.get("revenue")) || 0,
@@ -2711,6 +2763,7 @@ a{color:var(--primary);}
         logoImg: fd.get("logoImg").trim(),
         notes: fd.get("notes").trim()
       };
+      if (patch.invoiceMode === "manual" && fd.get("invoiceStatus")) patch.invoiceStatus = fd.get("invoiceStatus");
       updateAccount(currentDetailId, patch).then(renderDetail);
       return;
     }
@@ -2762,7 +2815,6 @@ a{color:var(--primary);}
         rag: fd3.get("rag"),
         sowStatus: fd3.get("sowStatus"),
         projectStatus: fd3.get("projectStatus"),
-        invoiceStatus: fd3.get("invoiceStatus").trim() || "Not Scheduled",
         ownerOnshore: fd3.get("ownerOnshore").trim(),
         ownerOffshore: fd3.get("ownerOffshore").trim(),
         revenue: Number(fd3.get("revenue")) || 0,

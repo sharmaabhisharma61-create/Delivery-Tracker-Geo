@@ -777,10 +777,6 @@ a{color:var(--primary);}
         <div class="field-wrap"><input name="revenue" type="number" min="0" step="1" value="0"></div>
       </label>
       <label class="field">
-        <span class="label">Revenue recognized (USD)</span>
-        <div class="field-wrap"><input name="revenueRecognized" type="number" min="0" step="1" value="0"></div>
-      </label>
-      <label class="field">
         <span class="label">Invoiced to date (USD)</span>
         <div class="field-wrap"><input name="invoicedToDate" type="number" min="0" step="1" value="0"></div>
       </label>
@@ -912,6 +908,7 @@ a{color:var(--primary);}
   var sortMode = "severity";
   var scopeEditing = false;
   var draftRoles = null;
+  var draftInvoices = null;
   var selectedWeekKey = null;
   var weekSubTab = "completed";
   var weeklyWeekKey = null;
@@ -1320,19 +1317,34 @@ a{color:var(--primary);}
     return out;
   }
 
+  // Raised invoices per project: {id, number, date, amount}. When a project has
+  // any, they are the source of truth for "invoiced to date" and for recognized revenue.
+  function normalizeInvoices(list){
+    return (Array.isArray(list) ? list : []).map(function(i){
+      return {id: i.id || ("inv-" + Math.random().toString(36).slice(2, 8)), number: i.number || "", date: i.date || "", amount: Number(i.amount) || 0};
+    });
+  }
+
   function flattenClients(list){
     var out = [];
     list.forEach(function(c){
       var projs = c.projects || [];
       projs.forEach(function(p){
+        var invList = normalizeInvoices(p.invoices);
+        var fromList = invList.length > 0;
+        var invoicedTotal = fromList ? invList.reduce(function(sum, i){ return sum + i.amount; }, 0) : (Number(p.invoicedToDate) || 0);
         var flat = Object.assign({}, p, {
+          invoices: invList,
+          invoicesFromList: fromList,
+          invoicedToDate: invoicedTotal,
+          revenueRecognized: invoicedTotal,
           clientId: c.id,
           clientName: c.name,
           projectName: p.name || "GEO Engagement",
           projectCount: projs.length,
           invoiceMode: p.invoiceMode === "manual" ? "manual" : "auto",
           invoiceStatusManual: p.invoiceStatus || "Not Scheduled",
-          invoiceStatus: effectiveInvoiceStatus(p),
+          invoiceStatus: effectiveInvoiceStatus(Object.assign({}, p, {invoicedToDate: invoicedTotal})),
           roles: normalizeRoles(p.roles),
           logoSvg: c.logoSvg || "",
           logoImg: c.logoImg || "",
@@ -1390,7 +1402,6 @@ a{color:var(--primary);}
       projectStatus: "Yet to Start",
       revenue: 0,
       invoicedToDate: 0,
-      revenueRecognized: 0,
       nextInvoiceDue: null,
       invoiceStatus: "Not Scheduled",
       invoiceMode: "auto",
@@ -1474,8 +1485,6 @@ a{color:var(--primary);}
     "sow status": "sowStatus",
     "revenue": "revenue",
     "invoiced to date": "invoicedToDate",
-    "revenue recognized": "revenueRecognized",
-    "revenue recognised": "revenueRecognized",
     "next invoice due": "nextInvoiceDue",
     "invoice status": "invoiceStatus",
     "project status": "projectStatus",
@@ -1615,7 +1624,6 @@ a{color:var(--primary);}
       if (ragMatch) projPatch.rag = ragMatch;
       var rev = numOrUndef(fields.revenue); if (rev !== undefined) projPatch.revenue = rev;
       var inv = numOrUndef(fields.invoicedToDate); if (inv !== undefined) projPatch.invoicedToDate = inv;
-      var recog = numOrUndef(fields.revenueRecognized); if (recog !== undefined) projPatch.revenueRecognized = recog;
       var nid = parseDateCell(fields.nextInvoiceDue); if (nid) projPatch.nextInvoiceDue = nid;
       var importedInvoiceStatus = fields.invoiceStatus ? String(fields.invoiceStatus).trim() : "";
 
@@ -1669,7 +1677,7 @@ a{color:var(--primary);}
 
   function describeImportRow(entry){
     var parts = [];
-    var fieldLabels = {ownerOnshore: "Owner (onshore)", ownerOffshore: "Owner (offshore)", sowStatus: "SOW status", revenue: "Revenue", invoicedToDate: "Invoiced to date", revenueRecognized: "Revenue recognized", nextInvoiceDue: "Next invoice due", invoiceStatus: "Invoice status", invoiceMode: "Invoice status mode", projectStatus: "Project status", scopeText: "Scope of work", rag: "RAG"};
+    var fieldLabels = {ownerOnshore: "Owner (onshore)", ownerOffshore: "Owner (offshore)", sowStatus: "SOW status", revenue: "Revenue", invoicedToDate: "Invoiced to date", nextInvoiceDue: "Next invoice due", invoiceStatus: "Invoice status", invoiceMode: "Invoice status mode", projectStatus: "Project status", scopeText: "Scope of work", rag: "RAG"};
     Object.keys(entry.projPatch).forEach(function(k){ parts.push(fieldLabels[k] || k); });
     var weekLabels = {completed: "Completed", inProgress: "In progress", nextSteps: "Next steps", risk: "Risk", mitigationActions: "Mitigation actions"};
     Object.keys(entry.weekPatch).forEach(function(k){ if (entry.weekPatch[k]) parts.push(weekLabels[k] || k); });
@@ -1806,12 +1814,11 @@ a{color:var(--primary);}
 
   // ---------------- rendering: kpi row ----------------
   function renderKpis(){
-    var totalRevenue = 0, totalInvoiced = 0, totalRecognized = 0, overdue = 0;
+    var totalRevenue = 0, totalInvoiced = 0, overdue = 0;
     var ragCount = {Green:0, Amber:0, Red:0};
     accounts.forEach(function(a){
       totalRevenue += Number(a.revenue) || 0;
       totalInvoiced += Number(a.invoicedToDate) || 0;
-      totalRecognized += Number(a.revenueRecognized) || 0;
       if (invoiceTagClass(a.invoiceStatus) === "tag-error") overdue++;
       ragCount[ragClass(a.rag)]++;
     });
@@ -1820,7 +1827,6 @@ a{color:var(--primary);}
 
     $("#kpi-strip").innerHTML =
       '<div class="kpi-tile"><div class="kpi-label">Contracted revenue</div><div class="kpi-value mono">' + money(totalRevenue) + '</div><div class="kpi-sub">' + accounts.length + ' active project' + (accounts.length === 1 ? "" : "s") + ' across ' + clients.length + ' client' + (clients.length === 1 ? "" : "s") + '</div></div>' +
-      '<div class="kpi-tile"><div class="kpi-label">Revenue recognized</div><div class="kpi-value mono">' + money(totalRecognized) + '</div><div class="kpi-sub">' + (totalRevenue ? Math.round((totalRecognized / totalRevenue) * 100) : 0) + '% of contracted</div></div>' +
       '<div class="kpi-tile"><div class="kpi-label">Invoiced to date</div><div class="kpi-value mono">' + money(totalInvoiced) + '</div><div class="kpi-sub">' + pct + '% invoiced</div></div>' +
       '<div class="kpi-tile"><div class="kpi-label">Outstanding</div><div class="kpi-value mono">' + money(outstanding) + '</div><div class="kpi-sub">not yet invoiced</div></div>' +
       '<div class="kpi-tile"><div class="kpi-label">Delivery health</div><div class="kpi-rag-row">' +
@@ -2096,7 +2102,7 @@ a{color:var(--primary);}
     var summary =
       '<section class="kpi-row rev-summary">' +
         '<div class="kpi-tile"><div class="kpi-label">Total revenue</div><div class="kpi-value mono">' + money(totalRevenue) + '</div><div class="kpi-sub">contracted across ' + accounts.length + ' project' + (accounts.length === 1 ? "" : "s") + '</div></div>' +
-        '<div class="kpi-tile"><div class="kpi-label">Revenue recognized</div><div class="kpi-value mono">' + money(totalRecognized) + '</div><div class="kpi-sub">' + pctRec + '% of total revenue</div></div>' +
+        '<div class="kpi-tile"><div class="kpi-label">Revenue recognized</div><div class="kpi-value mono">' + money(totalRecognized) + '</div><div class="kpi-sub">' + pctRec + '% of total &middot; from invoices raised</div></div>' +
         '<div class="kpi-tile"><div class="kpi-label">Yet to recognize</div><div class="kpi-value mono">' + money(remaining) + '</div><div class="kpi-sub">' + (100 - Math.min(pctRec, 100)) + '% remaining</div></div>' +
       '</section>';
 
@@ -2119,7 +2125,7 @@ a{color:var(--primary);}
       var over = rev > 0 ? rec > rev : rec > 0;
       return (
         '<div class="bar-row" data-open-id="' + esc(a.id) + '" title="Open ' + esc(a.name) + '">' +
-          '<div class="bar-row-top"><span class="bar-row-name">' + esc(a.name) + '</span><span class="bar-row-value mono">' + (rev ? Math.round((Math.min(rec, rev) / rev) * 100) : 0) + '% recognized</span></div>' +
+          '<div class="bar-row-top"><span class="bar-row-name">' + esc(a.name) + '</span><span class="bar-row-value mono">' + (rec > 0 ? (rev ? Math.round((Math.min(rec, rev) / rev) * 100) : 0) + '% recognized' : 'No invoices raised yet') + '</span></div>' +
           '<div class="rev-bar-track"><div class="rev-bar-total" style="width:' + totalW + '%;"><div class="rev-bar-recognized" style="width:' + recW + '%;"></div></div></div>' +
           '<div class="rev-bar-figures"><span>Revenue recognized <b class="mono' + (over ? " rev-over" : "") + '">' + money(rec) + '</b>' + (over ? ' <span class="rev-over">exceeds total</span>' : '') + '</span><span>Total revenue <b class="mono">' + money(rev) + '</b></span></div>' +
         '</div>'
@@ -2130,7 +2136,7 @@ a{color:var(--primary);}
       '<div class="revenue-grid">' +
         '<div class="donut-panel">' + donutSvg(segments, {size:176, stroke:22, centerHtml:centerHtml, ariaLabel:"Revenue recognized versus total revenue"}) +
           '<div class="legend">' + legend + '</div>' +
-          '<div class="rev-donut-note">Recognized revenue as a share of total contracted revenue</div></div>' +
+          '<div class="rev-donut-note">Revenue recognized = invoices raised on each project, as a share of total revenue</div></div>' +
         '<div class="bar-panel"><div class="group-title">By account</div>' +
           '<div class="rev-legend"><span class="rev-legend-item"><span class="rev-swatch total"></span>Total revenue</span><span class="rev-legend-item"><span class="rev-swatch recognized"></span>Revenue recognized</span></div>' +
           bars + '</div>' +
@@ -2367,6 +2373,7 @@ a{color:var(--primary);}
     activeTab = "overview";
     scopeEditing = false;
     draftRoles = null;
+    draftInvoices = null;
     selectedWeekKey = currentWeekKey();
     weekSubTab = "completed";
     renderDetail();
@@ -2384,7 +2391,7 @@ a{color:var(--primary);}
     var pct = revenue ? Math.round((invoiced / revenue) * 100) : 0;
     var outstanding = revenue - invoiced;
     var rag = ragClass(a.rag);
-    var tabs = [["overview","Overview"],["scope","Scope of Work"],["status","Current Status"],["risks","Risks"],["changes","Scope Creep &amp; Change Requests"],["team","Team"]];
+    var tabs = [["overview","Overview"],["scope","Scope of Work"],["status","Current Status"],["risks","Risks"],["changes","Scope Creep &amp; Change Requests"],["invoices","Invoices"],["team","Team"]];
 
     var progress = engagementProgress(a);
 
@@ -2401,7 +2408,6 @@ a{color:var(--primary);}
       '</div>' +
       '<div class="detail-kpis">' +
         '<div><div class="detail-kpi-label">Revenue</div><div class="detail-kpi-value mono">' + money(revenue) + '</div></div>' +
-        '<div><div class="detail-kpi-label">Recognized</div><div class="detail-kpi-value mono">' + money(Number(a.revenueRecognized) || 0) + ' (' + (revenue ? Math.round(((Number(a.revenueRecognized) || 0) / revenue) * 100) : 0) + '%)</div><div class="progress-track"><div class="progress-fill" style="width:' + Math.min(revenue ? Math.round(((Number(a.revenueRecognized) || 0) / revenue) * 100) : 0, 100) + '%"></div></div></div>' +
         '<div><div class="detail-kpi-label">Invoiced</div><div class="detail-kpi-value mono">' + money(invoiced) + ' (' + pct + '%)</div><div class="progress-track"><div class="progress-fill" style="width:' + Math.min(pct,100) + '%"></div></div></div>' +
         '<div><div class="detail-kpi-label">Outstanding</div><div class="detail-kpi-value mono">' + money(outstanding) + '</div></div>' +
         '<div><div class="detail-kpi-label">Next invoice</div><div class="detail-kpi-value mono">' + (a.nextInvoiceDue ? fmtDate(a.nextInvoiceDue) : "—") + '</div><div class="kpi-sub">' + esc(a.invoiceStatus || "") + '</div></div>' +
@@ -2448,8 +2454,7 @@ a{color:var(--primary);}
         '<label class="field">' + fieldLabel("Owner – Onshore") + fieldInput("ownerOnshore", a.ownerOnshore||"") + '</label>' +
         '<label class="field">' + fieldLabel("Owner – Offshore") + fieldInput("ownerOffshore", a.ownerOffshore||"") + '</label>' +
         '<label class="field">' + fieldLabel("Revenue (USD)") + fieldInput("revenue", Number(a.revenue)||0, 'type="number" min="0" step="1"') + '</label>' +
-        '<label class="field">' + fieldLabel("Revenue recognized (USD)") + fieldInput("revenueRecognized", Number(a.revenueRecognized)||0, 'type="number" min="0" step="1"') + '</label>' +
-        '<label class="field">' + fieldLabel("Invoiced to date (USD)") + fieldInput("invoicedToDate", Number(a.invoicedToDate)||0, 'type="number" min="0" step="1"') + '</label>' +
+        '<label class="field">' + fieldLabel("Invoiced to date (USD)") + fieldInput("invoicedToDate", Number(a.invoicedToDate)||0, 'type="number" min="0" step="1"' + (a.invoicesFromList ? ' disabled' : '')) + (a.invoicesFromList ? '<span class="helper">Calculated from the invoices raised. Add or edit them on the Invoices tab.</span>' : '<span class="helper">Or add each invoice on the Invoices tab and this fills in automatically.</span>') + '</label>' +
         '<label class="field">' + fieldLabel("Next invoice due") + fieldInput("nextInvoiceDue", a.nextInvoiceDue||"", 'type="date"') + '</label>' +
         '<label class="field">' + fieldLabel("Engagement start date") + fieldInput("engagementStartDate", a.engagementStartDate||"", 'type="date"') + '</label>' +
         '<label class="field">' + fieldLabel("Engagement end date") + fieldInput("engagementEndDate", a.engagementEndDate||"", 'type="date"') + '</label>' +
@@ -2569,6 +2574,29 @@ a{color:var(--primary);}
     );
   }
 
+  function renderInvoicesTab(a){
+    if (!draftInvoices) draftInvoices = a.invoices.map(function(i){ return Object.assign({}, i); });
+    var raised = draftInvoices.reduce(function(sum, i){ return sum + (Number(i.amount) || 0); }, 0);
+    var revenue = Number(a.revenue) || 0;
+    var pct = revenue ? Math.round((raised / revenue) * 100) : 0;
+    var rows = draftInvoices.map(function(i, idx){
+      return '<tr>' +
+        '<td><div class="field-wrap"><input data-invoice-field="number" data-invoice-index="' + idx + '" value="' + esc(i.number) + '" placeholder="Invoice no."></div></td>' +
+        '<td><div class="field-wrap"><input type="date" data-invoice-field="date" data-invoice-index="' + idx + '" value="' + esc(i.date) + '"></div></td>' +
+        '<td class="pct-cell"><div class="field-wrap"><input type="number" min="0" step="1" data-invoice-field="amount" data-invoice-index="' + idx + '" value="' + esc(i.amount || "") + '" placeholder="Amount"></div></td>' +
+        '<td><button type="button" class="btn btn-icon btn-sm btn-text ring-focus" data-action="remove-invoice" data-invoice-index="' + idx + '" aria-label="Remove invoice" title="Remove invoice">' + ICON_CLOSE + '</button></td>' +
+      '</tr>';
+    }).join("");
+    return (
+      '<div class="carry-note">' + (draftInvoices.length
+        ? 'Raised <b>' + money(raised) + '</b> of ' + money(revenue) + ' total revenue (' + pct + '%) &middot; outstanding ' + money(Math.max(revenue - raised, 0)) + '. This is the invoiced and recognized revenue shown across the tracker.'
+        : 'No invoices raised yet. Add each invoice as it is raised &mdash; invoiced and recognized revenue are calculated from this list.') + '</div>' +
+      (draftInvoices.length ? '<table class="roles-table invoices-table"><thead><tr><th>Invoice no.</th><th>Date</th><th>Amount (USD)</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>' : '') +
+      '<button type="button" class="btn btn-sm btn-outlined ring-focus" data-action="add-invoice">' + ICON_ADD + ' Add invoice</button>' +
+      '<div class="form-actions"><button type="button" class="btn btn-md btn-filled ring-focus" data-action="save-invoices">Save invoices</button></div>'
+    );
+  }
+
   function renderTeamTab(a){
     if (!draftRoles) draftRoles = (a.roles && a.roles.length ? a.roles : DEFAULT_ROLES.map(function(r){ return {role: r, name: "", pct: ""}; })).map(function(r){ return Object.assign({}, r); });
     var rows = draftRoles.map(function(r, i){
@@ -2601,6 +2629,7 @@ a{color:var(--primary);}
     else if (activeTab === "status") body.innerHTML = renderStatusTab(a);
     else if (activeTab === "risks") body.innerHTML = renderRisksTab(a);
     else if (activeTab === "changes") body.innerHTML = renderChangesTab(a);
+    else if (activeTab === "invoices") body.innerHTML = renderInvoicesTab(a);
     else if (activeTab === "team") body.innerHTML = renderTeamTab(a);
   }
 
@@ -2718,7 +2747,7 @@ a{color:var(--primary);}
     if (closeDetailBtn) { closeDetail(); return; }
 
     var tabBtn = e.target.closest && e.target.closest("[data-tab]");
-    if (tabBtn) { activeTab = tabBtn.getAttribute("data-tab"); if (activeTab !== "team") draftRoles = null; renderDetail(); return; }
+    if (tabBtn) { activeTab = tabBtn.getAttribute("data-tab"); if (activeTab !== "team") draftRoles = null; if (activeTab !== "invoices") draftInvoices = null; renderDetail(); return; }
 
     var deleteAcctBtn = e.target.closest && e.target.closest('[data-action="delete-account"]');
     if (deleteAcctBtn) {
@@ -2753,6 +2782,33 @@ a{color:var(--primary);}
     var weekSubtabBtn = e.target.closest && e.target.closest("[data-week-subtab]");
     if (weekSubtabBtn) { weekSubTab = weekSubtabBtn.getAttribute("data-week-subtab"); renderDetail(); return; }
 
+    var addInvoiceBtn = e.target.closest && e.target.closest('[data-action="add-invoice"]');
+    if (addInvoiceBtn) {
+      draftInvoices.push({id: "inv-" + Date.now().toString(36), number: "INV-" + (draftInvoices.length + 1), date: todayIso(), amount: ""});
+      renderDetail();
+      return;
+    }
+
+    var removeInvoiceBtn = e.target.closest && e.target.closest('[data-action="remove-invoice"]');
+    if (removeInvoiceBtn) { draftInvoices.splice(Number(removeInvoiceBtn.getAttribute("data-invoice-index")), 1); renderDetail(); return; }
+
+    var saveInvoicesBtn = e.target.closest && e.target.closest('[data-action="save-invoices"]');
+    if (saveInvoicesBtn) {
+      var cleanInvoices = draftInvoices.filter(function(i){ return Number(i.amount) > 0; }).map(function(i){
+        return {id: i.id, number: String(i.number || "").trim(), date: i.date || "", amount: Number(i.amount)};
+      });
+      var total = cleanInvoices.reduce(function(sum, i){ return sum + i.amount; }, 0);
+      var acct = getAccount(currentDetailId);
+      var patchInv = {invoices: cleanInvoices};
+      if (!cleanInvoices.length) patchInv.invoicedToDate = 0;
+      updateAccount(currentDetailId, patchInv).then(function(){
+        draftInvoices = null;
+        if (acct && Number(acct.revenue) > 0 && total > Number(acct.revenue)) showToast("Invoices raised exceed total revenue", "error");
+        renderDetail();
+      });
+      return;
+    }
+
     var addRoleBtn = e.target.closest && e.target.closest('[data-action="add-role"]');
     if (addRoleBtn) { draftRoles.push({role:"", name:"", pct:""}); renderDetail(); return; }
 
@@ -2784,6 +2840,11 @@ a{color:var(--primary);}
   });
 
   document.addEventListener("input", function(e){
+    if (e.target.matches && e.target.matches("[data-invoice-field]")) {
+      var ii = Number(e.target.getAttribute("data-invoice-index"));
+      if (draftInvoices && draftInvoices[ii]) draftInvoices[ii][e.target.getAttribute("data-invoice-field")] = e.target.value;
+      return;
+    }
     if (e.target.matches && e.target.matches("[data-role-field]")) {
       var idx = Number(e.target.getAttribute("data-role-index"));
       var field = e.target.getAttribute("data-role-field");
@@ -2832,8 +2893,6 @@ a{color:var(--primary);}
         ownerOnshore: fd.get("ownerOnshore").trim(),
         ownerOffshore: fd.get("ownerOffshore").trim(),
         revenue: Number(fd.get("revenue")) || 0,
-        invoicedToDate: Number(fd.get("invoicedToDate")) || 0,
-        revenueRecognized: Number(fd.get("revenueRecognized")) || 0,
         nextInvoiceDue: fd.get("nextInvoiceDue") || null,
         engagementStartDate: fd.get("engagementStartDate") || null,
         engagementEndDate: fd.get("engagementEndDate") || null,
@@ -2842,7 +2901,7 @@ a{color:var(--primary);}
         notes: fd.get("notes").trim()
       };
       if (patch.invoiceMode === "manual" && fd.get("invoiceStatus")) patch.invoiceStatus = fd.get("invoiceStatus");
-      if (patch.revenueRecognized > patch.revenue) showToast("Revenue recognized is higher than total revenue", "error");
+      if (fd.has("invoicedToDate")) patch.invoicedToDate = Number(fd.get("invoicedToDate")) || 0;
       updateAccount(currentDetailId, patch).then(renderDetail);
       return;
     }
@@ -2900,7 +2959,6 @@ a{color:var(--primary);}
         ownerOffshore: fd3.get("ownerOffshore").trim(),
         revenue: Number(fd3.get("revenue")) || 0,
         invoicedToDate: Number(fd3.get("invoicedToDate")) || 0,
-        revenueRecognized: Number(fd3.get("revenueRecognized")) || 0,
         scopeText: fd3.get("scopeText").trim()
       };
       var done = addContextClientId

@@ -499,6 +499,11 @@ a{color:var(--primary);}
 
 /* ---------- weekly activity (Activity tab) ---------- */
 .week-jump{max-width:220px; margin-bottom:var(--spacing-12);}
+.period-picker{max-width:none; margin-bottom:var(--spacing-12);}
+.period-row{display:flex; align-items:center; gap:var(--spacing-8); flex-wrap:wrap;}
+.period-row .field-wrap{flex:1 1 220px; max-width:300px;}
+.period-row .week-jump-trigger{width:auto; flex:0 0 auto; padding:0 var(--spacing-12);}
+.carry-note{font:var(--label-small); letter-spacing:.3px; color:var(--neutral-600); background:var(--neutral-100); border-radius:var(--radius-sm); padding:var(--spacing-8) var(--spacing-12); margin-bottom:var(--spacing-12);}
 .week-chips{display:flex; gap:var(--spacing-6); flex-wrap:wrap;}
 .quick-weeks{margin-bottom:var(--spacing-16);}
 
@@ -513,7 +518,7 @@ a{color:var(--primary);}
 @media print{
   @page{margin:14mm;}
   html,body{background:#fff !important;}
-  .rail, .app-header, .alert-banner, .no-print, .week-jump, .week-chips, .toast, .calendar-popup, .overlay, .modal-overlay{display:none !important;}
+  .rail, .app-header, .alert-banner, .no-print, .week-jump, .period-picker, .week-chips, .toast, .calendar-popup, .overlay, .modal-overlay{display:none !important;}
   .shell{display:block; padding:0; min-height:0;}
   .page-content{border:0; padding:0; border-radius:0; display:block;}
   .print-only{display:block;}
@@ -995,6 +1000,28 @@ a{color:var(--primary);}
     if (b.from === b.to) return fmt(start);
     return fmt(start) + " – " + fmt(end);
   }
+  // Only Current Status (completed / in progress / next steps) is per period.
+  // Risk fields and scope-creep/change-request fields carry forward from the
+  // most recent period where they were saved, and can be edited at any time.
+  var RISK_FIELDS = ["risk", "mitigationActions", "mitigationDeadline"];
+  var CHANGE_FIELDS = ["scopeCreep", "changeRequests"];
+  function groupTouched(entry, group){
+    if (!entry) return false;
+    if (entry[group === "risk" ? "riskSaved" : "changesSaved"]) return true;
+    return (group === "risk" ? RISK_FIELDS : CHANGE_FIELDS).some(function(f){ return entry[f] && String(entry[f]).trim(); });
+  }
+  function resolvedWeek(a, key){
+    var out = Object.assign({}, weekData(a, key));
+    var asOf = periodBoundsFromKey(key).from;
+    var keys = Object.keys(a.weeks || {}).filter(function(k){ return periodBoundsFromKey(k).from <= asOf; }).sort(compareWeekKeysDesc);
+    [["risk", RISK_FIELDS], ["changes", CHANGE_FIELDS]].forEach(function(g){
+      var src = null;
+      for (var i = 0; i < keys.length; i++) { if (groupTouched(a.weeks[keys[i]], g[0])) { src = keys[i]; break; } }
+      g[1].forEach(function(f){ out[f] = src ? (a.weeks[src][f] === undefined ? (f === "mitigationDeadline" ? null : "") : a.weeks[src][f]) : (f === "mitigationDeadline" ? null : ""); });
+      out["_" + g[0] + "From"] = src;
+    });
+    return out;
+  }
   function weekData(a, key){
     return (a.weeks && a.weeks[key]) || {completed:"", inProgress:"", nextSteps:"", risk:"", mitigationActions:"", mitigationDeadline:null, scopeCreep:""};
   }
@@ -1103,15 +1130,11 @@ a{color:var(--primary);}
   }
 
   function latestNonEmptyWeek(a, field){
-    var weeks = a.weeks || {};
-    var keys = Object.keys(weeks).sort(compareWeekKeysDesc);
-    for (var i = 0; i < keys.length; i++) {
-      var w = weeks[keys[i]];
-      if (w && w[field] && String(w[field]).trim()) return {weekKey: keys[i], value: w[field]};
-    }
-    return null;
+    var group = RISK_FIELDS.indexOf(field) > -1 ? "risk" : "changes";
+    var rw = resolvedWeek(a, currentWeekKey());
+    var v = rw[field], src = rw["_" + group + "From"];
+    return (src && v && String(v).trim()) ? {weekKey: src, value: v} : null;
   }
-
   function ragClass(rag){
     var r = String(rag || "Amber");
     return (r === "Green" || r === "Red") ? r : "Amber";
@@ -1708,6 +1731,7 @@ a{color:var(--primary);}
         if (e.isNew) {
           var weeks = {};
           weeks[e.weekKey] = Object.assign({}, weekEntryBase, e.weekPatch);
+          if ("risk" in e.weekPatch || "mitigationActions" in e.weekPatch) weeks[e.weekKey].riskSaved = true;
           var projectData = Object.assign({}, e.projPatch, {weeks: weeks});
           if (e.roles && e.roles.length) projectData.roles = e.roles;
           return createAccount({clientName: e.accountName, project: projectData}, {silent: true}).then(function(){ created++; });
@@ -1718,6 +1742,7 @@ a{color:var(--primary);}
         if (Object.keys(e.weekPatch).length) {
           var existingWeek = weekData(acc, e.weekKey);
           var newWeek = Object.assign({}, existingWeek, e.weekPatch);
+          if ("risk" in e.weekPatch || "mitigationActions" in e.weekPatch) newWeek.riskSaved = true;
           var newWeeks = Object.assign({}, acc.weeks || {});
           newWeeks[e.weekKey] = newWeek;
           patch.weeks = newWeeks;
@@ -1916,24 +1941,14 @@ a{color:var(--primary);}
     var cur = currentWeekKey();
     var quickKeys = computeGlobalQuickWeeks();
 
-    var chipsHtml = quickKeys.map(function(k){
-      return '<button type="button" class="chip ring-focus' + (weeklyWeekKey === k ? " is-selected" : "") + '" data-weekly-week-key="' + k + '">' +
-        weekLabel(k) + (k === cur ? " (current)" : "") + '</button>';
-    }).join("");
-
-    var jumpHtml =
-      '<label class="field week-jump">' + fieldLabel("Jump to a period") +
-        '<button type="button" class="week-jump-trigger" id="weekly-jump-btn" aria-haspopup="dialog">' + ICON_CAL_SM + '<span>' + esc(weekLabel(weeklyWeekKey)) + '</span></button>' +
-        '<span class="helper">Pick a custom start and end date — not limited to recent weeks. Every account below updates to match.</span>' +
-      '</label>' +
-      '<div class="week-chips quick-weeks">' + chipsHtml + '</div>';
+    var jumpHtml = periodPickerHtml("weekly", "weekly-jump-btn", quickKeys, weeklyWeekKey, null, "Every project below updates to match. Risks and scope changes show what was current in that period.");
 
     var ordered = accounts.slice().sort(function(x, y){ return (Number(x.order)||0) - (Number(y.order)||0); });
     function reportSection(title, raw, extra){
       return '<div class="report-section"><div class="report-section-title">' + title + '</div><div>' + formatRichText(raw) + (extra || "") + '</div></div>';
     }
     var accountsHtml = ordered.map(function(a){
-      var wd = weekData(a, weeklyWeekKey);
+      var wd = resolvedWeek(a, weeklyWeekKey);
       var rag = ragClass(a.rag);
       return (
         '<div class="weekly-account">' +
@@ -2427,32 +2442,40 @@ a{color:var(--primary);}
     );
   }
 
+  function periodOptionsHtml(keys, selected, a){
+    var cur = currentWeekKey();
+    var list = keys.slice();
+    if (list.indexOf(selected) === -1) list.push(selected);
+    list.sort(compareWeekKeysDesc);
+    return list.map(function(k){
+      var wk = a && a.weeks ? a.weeks[k] : null;
+      var hasStatus = wk && (wk.completed || wk.inProgress || wk.nextSteps);
+      return '<option value="' + esc(k) + '"' + (k === selected ? " selected" : "") + '>' + esc(weekLabel(k)) + (k === cur ? " (current)" : "") + (hasStatus ? " \u2022" : "") + '</option>';
+    }).join("");
+  }
+  function periodPickerHtml(kind, btnId, keys, selected, a, helper){
+    return '<div class="field period-picker"><span class="label">Period</span>' +
+      '<div class="period-row">' +
+        '<div class="field-wrap"><select data-period-select="' + kind + '" aria-label="Period">' + periodOptionsHtml(keys, selected, a) + '</select>' +
+          '<span class="caret-wrap" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div>' +
+        '<button type="button" class="week-jump-trigger" id="' + btnId + '" aria-haspopup="dialog" title="Pick a custom start and end date">' + ICON_CAL_SM + '<span>Custom range</span></button>' +
+      '</div>' +
+      (helper ? '<span class="helper">' + helper + '</span>' : '') +
+    '</div>';
+  }
+
   function renderWeekJump(a){
     if (!selectedWeekKey) selectedWeekKey = currentWeekKey();
+    var keys = Object.keys(a.weeks || {});
+    if (keys.indexOf(currentWeekKey()) === -1) keys.push(currentWeekKey());
+    return periodPickerHtml("detail", "week-jump-btn", keys, selectedWeekKey, a, "Current Status is recorded per period. A \u2022 marks periods that have an update.");
+  }
+
+  function carryNoteHtml(rw, group){
+    var src = rw["_" + group + "From"];
     var cur = currentWeekKey();
-    var wd = weekData(a, selectedWeekKey);
-
-    // Quick-access chips: every week that actually has data, plus the current
-    // week — not a fixed lookback window, so history is never capped.
-    var quickKeys = Object.keys(a.weeks || {});
-    if (quickKeys.indexOf(cur) === -1) quickKeys.push(cur);
-    quickKeys.sort(compareWeekKeysDesc);
-
-    var chipsHtml = quickKeys.map(function(k){
-      var wk = (a.weeks || {})[k];
-      var hasData = wk && Object.keys(wk).some(function(f){ return wk[f] && String(wk[f]).trim(); });
-      return '<button type="button" class="chip ring-focus' + (selectedWeekKey === k ? " is-selected" : "") + '" data-week-key="' + k + '">' +
-        weekLabel(k) + (k === cur ? " (current)" : "") + (hasData ? ' <span class="week-chip-dot"></span>' : "") + '</button>';
-    }).join("");
-
-    var jumpHtml =
-      '<label class="field week-jump">' + fieldLabel("Jump to a period") +
-        '<button type="button" class="week-jump-trigger" id="week-jump-btn" aria-haspopup="dialog">' + ICON_CAL_SM + '<span>' + esc(weekLabel(selectedWeekKey)) + '</span></button>' +
-        '<span class="helper">Pick a start and end date for a custom period — not limited to recent weeks.</span>' +
-      '</label>' +
-      (chipsHtml ? '<div class="week-chips quick-weeks">' + chipsHtml + '</div>' : "");
-
-    return jumpHtml;
+    if (!src) return '<div class="carry-note">Nothing recorded yet. What you save here carries forward week after week until you change it.</div>';
+    return '<div class="carry-note">' + (src === cur ? "Last updated this week." : "Carried forward from " + esc(weekLabel(src)) + ".") + ' It stays as is each week until you edit it here.</div>';
   }
 
   var STATUS_CARDS = [
@@ -2480,27 +2503,29 @@ a{color:var(--primary);}
   }
 
   function renderRisksTab(a){
-    var wd = weekData(a, selectedWeekKey || currentWeekKey());
+    var wk = currentWeekKey();
+    var rw = resolvedWeek(a, wk);
     return (
-      renderWeekJump(a) +
       '<form data-form="week" class="week-fields">' +
-        '<input type="hidden" name="weekKey" value="' + esc(selectedWeekKey) + '">' +
-        '<label class="field">' + fieldLabel("Risk") + '<div class="field-wrap"><textarea name="risk" rows="3" placeholder="What is at risk in this period&hellip;">' + esc(wd.risk || "") + '</textarea></div></label>' +
-        '<label class="field">' + fieldLabel("Risk mitigation actions (next steps)") + '<div class="field-wrap"><textarea name="mitigationActions" rows="3" placeholder="What is being done to address the risk&hellip;">' + esc(wd.mitigationActions || "") + '</textarea></div></label>' +
-        '<label class="field" style="max-width:220px;">' + fieldLabel("Mitigation deadline") + fieldInput("mitigationDeadline", wd.mitigationDeadline || "", 'type="date"') + '</label>' +
+        '<input type="hidden" name="weekKey" value="' + esc(wk) + '">' +
+        carryNoteHtml(rw, "risk") +
+        '<label class="field">' + fieldLabel("Risk") + '<div class="field-wrap"><textarea name="risk" rows="3" placeholder="What is at risk&hellip;">' + esc(rw.risk || "") + '</textarea></div></label>' +
+        '<label class="field">' + fieldLabel("Risk mitigation actions (next steps)") + '<div class="field-wrap"><textarea name="mitigationActions" rows="3" placeholder="What is being done to address the risk&hellip;">' + esc(rw.mitigationActions || "") + '</textarea></div></label>' +
+        '<label class="field" style="max-width:220px;">' + fieldLabel("Mitigation deadline") + fieldInput("mitigationDeadline", rw.mitigationDeadline || "", 'type="date"') + '</label>' +
         '<div class="form-actions"><button type="submit" class="btn btn-md btn-filled ring-focus">Save risks</button></div>' +
       '</form>'
     );
   }
 
   function renderChangesTab(a){
-    var wd = weekData(a, selectedWeekKey || currentWeekKey());
+    var wk = currentWeekKey();
+    var rw = resolvedWeek(a, wk);
     return (
-      renderWeekJump(a) +
       '<form data-form="week" class="week-fields">' +
-        '<input type="hidden" name="weekKey" value="' + esc(selectedWeekKey) + '">' +
-        '<label class="field">' + fieldLabel("Scope creep") + '<div class="field-wrap"><textarea name="scopeCreep" rows="5" placeholder="Any work happening outside the agreed SOW&hellip;">' + esc(wd.scopeCreep || "") + '</textarea></div></label>' +
-        '<label class="field">' + fieldLabel("Change requests") + '<div class="field-wrap"><textarea name="changeRequests" rows="5" placeholder="Change requests raised, their status and impact&hellip;">' + esc(wd.changeRequests || "") + '</textarea></div></label>' +
+        '<input type="hidden" name="weekKey" value="' + esc(wk) + '">' +
+        carryNoteHtml(rw, "changes") +
+        '<label class="field">' + fieldLabel("Scope creep") + '<div class="field-wrap"><textarea name="scopeCreep" rows="5" placeholder="Any work happening outside the agreed SOW&hellip;">' + esc(rw.scopeCreep || "") + '</textarea></div></label>' +
+        '<label class="field">' + fieldLabel("Change requests") + '<div class="field-wrap"><textarea name="changeRequests" rows="5" placeholder="Change requests raised, their status and impact&hellip;">' + esc(rw.changeRequests || "") + '</textarea></div></label>' +
         '<div class="form-actions"><button type="submit" class="btn btn-md btn-filled ring-focus">Save scope &amp; changes</button></div>' +
       '</form>'
     );
@@ -2742,6 +2767,11 @@ a{color:var(--primary);}
       helper.textContent = manualOn ? "Set by you. It will not change when the invoice date changes." : "Calculated from the invoice date and amounts. Switch to Manual to override.";
       return;
     }
+    if (e.target.matches && e.target.matches("[data-period-select]")) {
+      if (e.target.getAttribute("data-period-select") === "weekly") { weeklyWeekKey = e.target.value; renderWeeklyView(); refreshHeaderSub(); }
+      else { selectedWeekKey = e.target.value; renderDetail(); }
+      return;
+    }
     if (e.target.id === "import-file-input") {
       var f = e.target.files && e.target.files[0];
       if (f) handleImportFile(f);
@@ -2787,6 +2817,8 @@ a{color:var(--primary);}
         if (fd2.has(f)) newWeek[f] = String(fd2.get(f)).trim();
       });
       if (fd2.has("mitigationDeadline")) newWeek.mitigationDeadline = fd2.get("mitigationDeadline") || null;
+      if (fd2.has("risk")) newWeek.riskSaved = true;
+      if (fd2.has("scopeCreep")) newWeek.changesSaved = true;
       var newWeeks = Object.assign({}, acc.weeks || {});
       newWeeks[wk] = newWeek;
       updateAccount(currentDetailId, {weeks: newWeeks}).then(renderDetail);

@@ -2116,11 +2116,10 @@ a{color:var(--primary);}
       '<div class="legend-row"><span class="legend-dot" style="background:color-mix(in srgb, var(--primary) 22%, var(--base-white))"></span><span class="legend-label">Yet to recognize</span><span class="legend-pct mono">' + money(remaining) + '</span></div>' +
       '<div class="legend-row rev-total-row"><span class="legend-label"><b>Total revenue</b></span><span class="legend-pct mono">' + money(totalRevenue) + '</span></div>';
 
-    var maxRev = Math.max.apply(null, accounts.map(function(a){ return Number(a.revenue) || 0; }).concat([1]));
     var sorted = accounts.slice().sort(function(x, y){ return (Number(y.revenue)||0) - (Number(x.revenue)||0); });
     var bars = sorted.map(function(a){
       var rev = Number(a.revenue) || 0, rec = Number(a.revenueRecognized) || 0;
-      var totalW = Math.round((rev / maxRev) * 100);
+      var totalW = 100;
       var recW = rev ? Math.min(100, Math.round((rec / rev) * 100)) : 0;
       var over = rev > 0 ? rec > rev : rec > 0;
       return (

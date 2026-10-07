@@ -1802,13 +1802,22 @@ a{color:var(--primary);}
 
   function computeUtilization(){
     var byPerson = {};
+    // One entry per person, matched ignoring case and extra spaces, with one
+    // slice per project (a person listed twice in a project is summed).
     accounts.forEach(function(a){
       (a.roles || []).forEach(function(r){
-        var pname = (r.name || "").trim(), ppct = (Number(r.pct) || 0) / 100;
+        var pname = (r.name || "").trim().replace(/\s+/g, " "), ppct = (Number(r.pct) || 0) / 100;
         if (!pname || ppct <= 0) return;
-        if (!byPerson[pname]) byPerson[pname] = {name: pname, totalPct: 0, accounts: []};
-        byPerson[pname].totalPct += ppct;
-        byPerson[pname].accounts.push({id: a.id, account: a.name, role: r.role, pct: ppct});
+        var key = pname.toLowerCase();
+        if (!byPerson[key]) byPerson[key] = {name: pname, totalPct: 0, accounts: []};
+        byPerson[key].totalPct += ppct;
+        var slice = byPerson[key].accounts.find(function(x){ return x.id === a.id; });
+        if (slice) {
+          slice.pct += ppct;
+          if (slice.role.split(" / ").indexOf(r.role) === -1) slice.role += " / " + r.role;
+        } else {
+          byPerson[key].accounts.push({id: a.id, account: a.name, role: r.role, pct: ppct});
+        }
       });
     });
     var list = Object.keys(byPerson).map(function(k){ return byPerson[k]; });

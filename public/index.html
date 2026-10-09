@@ -186,6 +186,10 @@ a{color:var(--primary);}
 .donut-center-value{font:var(--title-large); letter-spacing:0; color:var(--neutral-900);}
 .donut-center-label{font:var(--label-small); letter-spacing:.5px; color:var(--neutral-600); text-transform:uppercase;}
 .legend{display:flex; flex-direction:column; gap:var(--spacing-6);}
+.legend-role{color:var(--neutral-600); font-size:11px; letter-spacing:.3px; margin-left:var(--spacing-4);}
+.util-tabs{margin-bottom:var(--spacing-16);}
+.util-card.is-clickable{cursor:pointer;}
+.util-card.is-clickable:hover{box-shadow:var(--elevation-04);}
 .legend-row{display:flex; align-items:center; gap:var(--spacing-8); font:var(--body-small); letter-spacing:.4px; color:var(--neutral-700);}
 .legend-dot{width:9px; height:9px; border-radius:var(--radius-full); flex-shrink:0;}
 .legend-label{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
@@ -2019,17 +2023,62 @@ a{color:var(--primary);}
     window.print();
   }
 
+  var utilMode = "person";
+  var UTIL_COLORS = DONUT_COLORS.concat(["#8E6BD8", "#2E8B8B", "#C77D2B", "#5B7FBF", "#B5527A", "#6B8E23"]);
+
+  function utilTabsHtml(){
+    return '<div class="tabs util-tabs" role="tablist">' + [["person", "By person"], ["project", "By project"]].map(function(t){
+      return '<button type="button" role="tab" aria-selected="' + (utilMode === t[0]) + '" class="tab' + (utilMode === t[0] ? " is-active" : "") + '" data-util-mode="' + t[0] + '">' + t[1] + '</button>';
+    }).join("") + '</div>';
+  }
+
+  // One entry per project, one slice per person+role allocated to it.
+  function computeProjectUtilization(){
+    var out = [];
+    accounts.forEach(function(a){
+      var rows = (a.roles || []).filter(function(r){ return (r.name || "").trim() && (Number(r.pct) || 0) > 0; })
+        .map(function(r){ return {name: r.name.trim().replace(/\s+/g, " "), role: r.role || "", pct: (Number(r.pct) || 0) / 100}; });
+      if (!rows.length) return;
+      out.push({a: a, rows: rows, total: rows.reduce(function(sum, r){ return sum + r.pct; }, 0)});
+    });
+    out.sort(function(x, y){ return y.total - x.total; });
+    return out;
+  }
+
   function renderUtilizationView(){
-    var util = computeUtilization();
     var body = $("#view-utilization-body");
-    if (!util.length) { body.innerHTML = '<div class="empty-note">No team allocations logged yet. Add them from an account&#39;s Team tab.</div>'; return; }
-    body.innerHTML = '<div class="util-card-grid">' + util.map(function(p){
+    if (utilMode === "project") {
+      var projs = computeProjectUtilization();
+      if (!projs.length) { body.innerHTML = utilTabsHtml() + '<div class="empty-note">No team allocations logged yet. Add them from a project&#39;s Team tab.</div>'; return; }
+      body.innerHTML = utilTabsHtml() + '<div class="util-card-grid">' + projs.map(function(p){
+        var segments = p.rows.map(function(r, i){ return {value: r.pct, color: UTIL_COLORS[i % UTIL_COLORS.length], label: r.name + (r.role ? " (" + r.role + ")" : "")}; });
+        var fte = (Math.round(p.total * 10) / 10).toFixed(1);
+        var centerHtml = '<div class="donut-center-value mono">' + fte + '</div><div class="donut-center-label">FTE</div>';
+        var legend = p.rows.map(function(r, i){
+          return '<div class="legend-row"><span class="legend-dot" style="background:' + UTIL_COLORS[i % UTIL_COLORS.length] + '"></span>' +
+            '<span class="legend-label">' + esc(r.name) + (r.role ? '<span class="legend-role">' + esc(r.role) + '</span>' : '') + '</span>' +
+            '<span class="legend-pct mono">' + Math.round(r.pct * 100) + '%</span></div>';
+        }).join("");
+        return (
+          '<div class="util-card is-clickable" data-open-id="' + esc(p.a.id) + '" data-open-tab="team" title="Open ' + esc(p.a.name) + ' team">' +
+            '<div class="util-card-top"><span class="util-card-name">' + esc(p.a.name) + '</span><span class="tag tag-neutral">' + p.rows.length + ' allocation' + (p.rows.length === 1 ? "" : "s") + '</span></div>' +
+            donutSvg(segments, {size:112, stroke:14, centerHtml:centerHtml, ariaLabel: p.a.name + " team allocation"}) +
+            '<div class="legend">' + legend + '</div>' +
+          '</div>'
+        );
+      }).join("") + '</div>';
+      return;
+    }
+
+    var util = computeUtilization();
+    if (!util.length) { body.innerHTML = utilTabsHtml() + '<div class="empty-note">No team allocations logged yet. Add them from an account&#39;s Team tab.</div>'; return; }
+    body.innerHTML = utilTabsHtml() + '<div class="util-card-grid">' + util.map(function(p){
       var st = utilStatus(p.totalPct);
-      var segments = p.accounts.map(function(x, i){ return {value: x.pct, color: DONUT_COLORS[i % DONUT_COLORS.length], label: x.account}; });
+      var segments = p.accounts.map(function(x, i){ return {value: x.pct, color: UTIL_COLORS[i % UTIL_COLORS.length], label: x.account + (x.role ? " (" + x.role + ")" : "")}; });
       var centerHtml = '<div class="donut-center-value mono">' + Math.round(p.totalPct * 100) + '%</div><div class="donut-center-label">allocated</div>';
       var legend = p.accounts.map(function(x, i){
-        return '<div class="legend-row"><span class="legend-dot" style="background:' + DONUT_COLORS[i % DONUT_COLORS.length] + '"></span>' +
-          '<span class="legend-label">' + esc(x.account) + '</span><span class="legend-pct mono">' + Math.round(x.pct * 100) + '%</span></div>';
+        return '<div class="legend-row"><span class="legend-dot" style="background:' + UTIL_COLORS[i % UTIL_COLORS.length] + '"></span>' +
+          '<span class="legend-label">' + esc(x.account) + (x.role ? '<span class="legend-role">' + esc(x.role) + '</span>' : '') + '</span><span class="legend-pct mono">' + Math.round(x.pct * 100) + '%</span></div>';
       }).join("");
       return (
         '<div class="util-card">' +
@@ -2102,18 +2151,18 @@ a{color:var(--primary);}
     var summary =
       '<section class="kpi-row rev-summary">' +
         '<div class="kpi-tile"><div class="kpi-label">Total revenue</div><div class="kpi-value mono">' + money(totalRevenue) + '</div><div class="kpi-sub">contracted across ' + accounts.length + ' project' + (accounts.length === 1 ? "" : "s") + '</div></div>' +
-        '<div class="kpi-tile"><div class="kpi-label">Revenue recognized</div><div class="kpi-value mono">' + money(totalRecognized) + '</div><div class="kpi-sub">' + pctRec + '% of total &middot; from invoices raised</div></div>' +
-        '<div class="kpi-tile"><div class="kpi-label">Yet to recognize</div><div class="kpi-value mono">' + money(remaining) + '</div><div class="kpi-sub">' + (100 - Math.min(pctRec, 100)) + '% remaining</div></div>' +
+        '<div class="kpi-tile"><div class="kpi-label">Invoiced</div><div class="kpi-value mono">' + money(totalRecognized) + '</div><div class="kpi-sub">' + pctRec + '% of total revenue</div></div>' +
+        '<div class="kpi-tile"><div class="kpi-label">Yet to invoice</div><div class="kpi-value mono">' + money(remaining) + '</div><div class="kpi-sub">' + (100 - Math.min(pctRec, 100)) + '% remaining</div></div>' +
       '</section>';
 
     var segments = [
-      {value: totalRecognized, color: "var(--primary)", label: "Revenue recognized"},
-      {value: remaining, color: "color-mix(in srgb, var(--primary) 22%, var(--base-white))", label: "Yet to recognize"}
+      {value: totalRecognized, color: "var(--primary)", label: "Invoiced"},
+      {value: remaining, color: "color-mix(in srgb, var(--primary) 22%, var(--base-white))", label: "Yet to invoice"}
     ];
-    var centerHtml = '<div class="donut-center-value mono">' + pctRec + '%</div><div class="donut-center-label">recognized</div>';
+    var centerHtml = '<div class="donut-center-value mono">' + pctRec + '%</div><div class="donut-center-label">invoiced</div>';
     var legend =
-      '<div class="legend-row"><span class="legend-dot" style="background:var(--primary)"></span><span class="legend-label">Revenue recognized</span><span class="legend-pct mono">' + money(totalRecognized) + '</span></div>' +
-      '<div class="legend-row"><span class="legend-dot" style="background:color-mix(in srgb, var(--primary) 22%, var(--base-white))"></span><span class="legend-label">Yet to recognize</span><span class="legend-pct mono">' + money(remaining) + '</span></div>' +
+      '<div class="legend-row"><span class="legend-dot" style="background:var(--primary)"></span><span class="legend-label">Invoiced</span><span class="legend-pct mono">' + money(totalRecognized) + '</span></div>' +
+      '<div class="legend-row"><span class="legend-dot" style="background:color-mix(in srgb, var(--primary) 22%, var(--base-white))"></span><span class="legend-label">Yet to invoice</span><span class="legend-pct mono">' + money(remaining) + '</span></div>' +
       '<div class="legend-row rev-total-row"><span class="legend-label"><b>Total revenue</b></span><span class="legend-pct mono">' + money(totalRevenue) + '</span></div>';
 
     var sorted = accounts.slice().sort(function(x, y){ return (Number(y.revenue)||0) - (Number(x.revenue)||0); });
@@ -2124,20 +2173,20 @@ a{color:var(--primary);}
       var over = rev > 0 ? rec > rev : rec > 0;
       return (
         '<div class="bar-row" data-open-id="' + esc(a.id) + '" title="Open ' + esc(a.name) + '">' +
-          '<div class="bar-row-top"><span class="bar-row-name">' + esc(a.name) + '</span><span class="bar-row-value mono">' + (rec > 0 ? (rev ? Math.round((Math.min(rec, rev) / rev) * 100) : 0) + '% recognized' : 'No invoices raised yet') + '</span></div>' +
+          '<div class="bar-row-top"><span class="bar-row-name">' + esc(a.name) + '</span><span class="bar-row-value mono">' + (rec > 0 ? (rev ? Math.round((Math.min(rec, rev) / rev) * 100) : 0) + '% invoiced' : 'No invoices raised yet') + '</span></div>' +
           '<div class="rev-bar-track"><div class="rev-bar-total" style="width:' + totalW + '%;"><div class="rev-bar-recognized" style="width:' + recW + '%;"></div></div></div>' +
-          '<div class="rev-bar-figures"><span>Revenue recognized <b class="mono' + (over ? " rev-over" : "") + '">' + money(rec) + '</b>' + (over ? ' <span class="rev-over">exceeds total</span>' : '') + '</span><span>Total revenue <b class="mono">' + money(rev) + '</b></span></div>' +
+          '<div class="rev-bar-figures"><span>Invoiced <b class="mono' + (over ? " rev-over" : "") + '">' + money(rec) + '</b>' + (over ? ' <span class="rev-over">exceeds total</span>' : '') + '</span><span>Total revenue <b class="mono">' + money(rev) + '</b></span></div>' +
         '</div>'
       );
     }).join("");
 
     $("#view-revenue-body").innerHTML = summary +
       '<div class="revenue-grid">' +
-        '<div class="donut-panel">' + donutSvg(segments, {size:176, stroke:22, centerHtml:centerHtml, ariaLabel:"Revenue recognized versus total revenue"}) +
+        '<div class="donut-panel">' + donutSvg(segments, {size:176, stroke:22, centerHtml:centerHtml, ariaLabel:"Invoiced versus total revenue"}) +
           '<div class="legend">' + legend + '</div>' +
-          '<div class="rev-donut-note">Revenue recognized = invoices raised on each project, as a share of total revenue</div></div>' +
+          '<div class="rev-donut-note">Invoiced = invoices raised on each project, as a share of total revenue</div></div>' +
         '<div class="bar-panel"><div class="group-title">By account</div>' +
-          '<div class="rev-legend"><span class="rev-legend-item"><span class="rev-swatch total"></span>Total revenue</span><span class="rev-legend-item"><span class="rev-swatch recognized"></span>Revenue recognized</span></div>' +
+          '<div class="rev-legend"><span class="rev-legend-item"><span class="rev-swatch total"></span>Total revenue</span><span class="rev-legend-item"><span class="rev-swatch recognized"></span>Invoiced</span></div>' +
           bars + '</div>' +
       '</div>';
   }
@@ -2588,8 +2637,8 @@ a{color:var(--primary);}
     }).join("");
     return (
       '<div class="carry-note">' + (draftInvoices.length
-        ? 'Raised <b>' + money(raised) + '</b> of ' + money(revenue) + ' total revenue (' + pct + '%) &middot; outstanding ' + money(Math.max(revenue - raised, 0)) + '. This is the invoiced and recognized revenue shown across the tracker.'
-        : 'No invoices raised yet. Add each invoice as it is raised &mdash; invoiced and recognized revenue are calculated from this list.') + '</div>' +
+        ? 'Raised <b>' + money(raised) + '</b> of ' + money(revenue) + ' total revenue (' + pct + '%) &middot; outstanding ' + money(Math.max(revenue - raised, 0)) + '. This is the invoiced amount shown across the tracker.'
+        : 'No invoices raised yet. Add each invoice as it is raised &mdash; the invoiced amount is calculated from this list.') + '</div>' +
       (draftInvoices.length ? '<table class="roles-table invoices-table"><thead><tr><th>Invoice no.</th><th>Date</th><th>Amount (USD)</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>' : '') +
       '<button type="button" class="btn btn-sm btn-outlined ring-focus" data-action="add-invoice">' + ICON_ADD + ' Add invoice</button>' +
       '<div class="form-actions"><button type="button" class="btn btn-md btn-filled ring-focus" data-action="save-invoices">Save invoices</button></div>'
@@ -2731,9 +2780,14 @@ a{color:var(--primary);}
     var pdfBtn = e.target.closest && e.target.closest('[data-action="download-weekly-pdf"]');
     if (pdfBtn) { downloadWeeklyPdf(); return; }
 
+    var utilModeBtn = e.target.closest && e.target.closest("[data-util-mode]");
+    if (utilModeBtn) { utilMode = utilModeBtn.getAttribute("data-util-mode"); renderUtilizationView(); return; }
+
     var card = e.target.closest && e.target.closest("[data-open-id]");
     if (card) {
       openDetail(card.getAttribute("data-open-id"));
+      var openTab = card.getAttribute("data-open-tab");
+      if (openTab) { activeTab = openTab; renderDetail(); }
       var openWeek = card.getAttribute("data-open-week");
       if (openWeek) { selectedWeekKey = openWeek; renderDetail(); }
       return;

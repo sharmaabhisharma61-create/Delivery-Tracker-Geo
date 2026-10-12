@@ -633,26 +633,83 @@ a.brand-row:hover{background:var(--neutral-100);}
 /* ---------- home: choose a tracker ---------- */
 .shell[hidden]{display:none;}
 a.nav-item{text-decoration:none;}
-#home{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:var(--spacing-24);}
-#home[hidden]{display:none;}
-.home-wrap{width:min(900px,100%); display:flex; flex-direction:column; gap:var(--spacing-32);}
-.home-head{display:flex; flex-direction:column; align-items:center; gap:var(--spacing-8); text-align:center;}
-.home-head .ai-mark svg{width:40px; height:40px;}
-.home-head h1{font:var(--headline-small); letter-spacing:0; color:var(--neutral-900);}
-.home-head p{font:var(--body-large); letter-spacing:.25px; color:var(--neutral-600);}
-.home-tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:var(--spacing-24);}
-a.home-tile{
-  display:flex; flex-direction:column; gap:var(--spacing-12); text-decoration:none; color:inherit;
-  background:var(--base-white); border:1px solid var(--neutral-200); border-top:4px solid var(--primary);
-  border-radius:var(--radius-md); box-shadow:var(--elevation-02); padding:var(--spacing-24);
-  transition:box-shadow 150ms ease-out, border-color 150ms ease-out;
+@property --lc-angle{syntax:"<angle>"; inherits:false; initial-value:0deg;}
+:root{
+  --lc-violet:#5D2CC9;
+  --lc-lilac:#A98DE6;
+  --lc-aqua:#7FD6E8;
+  --lc-rose:#F2A7D8;
+  --lc-ice:#C9E9FF;
+  --lc-sheen:conic-gradient(from var(--lc-angle), var(--lc-violet), var(--lc-lilac), var(--lc-aqua), var(--lc-rose), var(--lc-ice), var(--lc-violet));
 }
-a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
-.home-tile-icon{width:48px; height:48px; border-radius:var(--radius-sm); background:var(--primary-light-background); color:var(--primary); display:flex; align-items:center; justify-content:center;}
-.home-tile h2{font:var(--title-large); letter-spacing:0; color:var(--neutral-900);}
+#home{
+  position:relative; isolation:isolate; overflow:hidden;
+  min-height:100vh; display:flex; align-items:center; justify-content:center; padding:var(--spacing-32) var(--spacing-24);
+  background:
+    radial-gradient(900px 560px at 8% -6%, rgba(93,44,201,.26), transparent 62%),
+    radial-gradient(760px 520px at 104% 8%, rgba(127,214,232,.34), transparent 60%),
+    radial-gradient(820px 600px at 70% 112%, rgba(242,167,216,.30), transparent 62%),
+    radial-gradient(600px 420px at -6% 100%, rgba(201,233,255,.55), transparent 60%),
+    linear-gradient(160deg, #F8F6FF 0%, #F2F6FF 55%, #FBF5FC 100%);
+}
+#home[hidden]{display:none;}
+/* slow-drifting crystal blooms behind the content */
+#home::before, #home::after{
+  content:""; position:absolute; z-index:-1; border-radius:50%; filter:blur(70px); opacity:.55; pointer-events:none;
+}
+#home::before{width:520px; height:520px; left:-120px; top:12%; background:radial-gradient(circle, rgba(169,141,230,.75), rgba(127,214,232,.35) 60%, transparent 70%); animation:lc-drift-a 18s ease-in-out infinite alternate;}
+#home::after{width:460px; height:460px; right:-100px; bottom:6%; background:radial-gradient(circle, rgba(242,167,216,.7), rgba(93,44,201,.28) 60%, transparent 70%); animation:lc-drift-b 22s ease-in-out infinite alternate;}
+@keyframes lc-drift-a{to{transform:translate(90px, 60px) scale(1.12);}}
+@keyframes lc-drift-b{to{transform:translate(-80px, -70px) scale(1.1);}}
+@keyframes lc-spin{to{--lc-angle:360deg;}}
+
+.home-wrap{width:min(960px,100%); display:flex; flex-direction:column; gap:var(--spacing-40, 40px);}
+.home-head{display:flex; flex-direction:column; align-items:center; gap:var(--spacing-12); text-align:center;}
+.home-mark{width:64px; height:64px; display:flex; align-items:center; justify-content:center; border-radius:20px;
+  background:rgba(255,255,255,.7); box-shadow:0 10px 30px rgba(93,44,201,.22), inset 0 0 0 1px rgba(255,255,255,.9); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);}
+.home-mark svg{width:38px; height:38px;}
+.home-eyebrow{font:var(--label-medium); letter-spacing:2.4px; text-transform:uppercase; color:var(--primary);}
+.home-head h1{font:600 44px/52px var(--font-family); letter-spacing:-.5px;
+  background:linear-gradient(100deg, #271254 0%, #5D2CC9 45%, #8E6BD8 70%, #4FB3CC 100%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;}
+.home-head p{font:var(--body-large); letter-spacing:.25px; color:var(--neutral-700); max-width:52ch;}
+
+.home-tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:var(--spacing-24);}
+a.home-tile{
+  --lc-angle:0deg;
+  position:relative; display:flex; flex-direction:column; gap:var(--spacing-12); text-decoration:none; color:inherit;
+  padding:var(--spacing-32) var(--spacing-24) var(--spacing-24);
+  border-radius:22px; border:1.5px solid transparent;
+  background:linear-gradient(165deg, #FFFFFF 0%, #FDFCFF 55%, #F7F3FF 100%) padding-box, var(--lc-sheen) border-box;
+  box-shadow:0 18px 40px -18px rgba(39,18,84,.35), 0 2px 6px rgba(39,18,84,.06);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  transition:transform 220ms cubic-bezier(.2,.7,.2,1), box-shadow 220ms ease-out;
+  animation:lc-spin 14s linear infinite;
+}
+a.home-tile:hover{transform:translateY(-4px); box-shadow:0 26px 50px -18px rgba(93,44,201,.45), 0 4px 10px rgba(39,18,84,.08);}
+a.home-tile:focus-visible{outline:none; box-shadow:0 0 0 3px var(--base-white), 0 0 0 5px var(--primary);}
+.home-tile-icon{width:60px; height:60px; border-radius:18px; display:flex; align-items:center; justify-content:center; color:var(--base-white);
+  background:linear-gradient(135deg, #271254 0%, #5D2CC9 45%, #A98DE6 78%, #7FD6E8 100%);
+  box-shadow:0 10px 22px -6px rgba(93,44,201,.55), inset 0 1px 0 rgba(255,255,255,.35);}
+.home-tile-icon.is-delivery{background:linear-gradient(135deg, #271254 0%, #5D2CC9 40%, #C77FD0 75%, #F2A7D8 100%);}
+.home-tile-icon svg{width:30px; height:30px;}
+.home-tile-kicker{font:var(--label-small); letter-spacing:1.6px; text-transform:uppercase; color:var(--primary); margin-top:var(--spacing-4);}
+.home-tile h2{font:600 24px/32px var(--font-family); letter-spacing:-.2px; color:var(--neutral-900);}
 .home-tile p{font:var(--body-medium); letter-spacing:.25px; color:var(--neutral-600);}
-.home-tile-stat{font:var(--label-large); letter-spacing:.1px; color:var(--neutral-900); margin-top:auto; padding-top:var(--spacing-12); border-top:1px solid var(--neutral-200);}
-.home-tile-cta{font:var(--label-large); color:var(--primary);}
+.home-tile-stat{font:var(--label-large); letter-spacing:.1px; color:var(--primary-background-pressed); margin-top:auto; padding:var(--spacing-8) var(--spacing-12);
+  border-radius:var(--radius-sm); background:linear-gradient(90deg, rgba(93,44,201,.08), rgba(127,214,232,.14), rgba(242,167,216,.12));}
+.home-tile-cta{display:inline-flex; align-items:center; gap:var(--spacing-8); align-self:flex-start; height:40px; padding:0 var(--spacing-16); border-radius:var(--radius-full);
+  font:var(--label-large); color:var(--base-white); background:var(--primary); box-shadow:0 6px 16px -6px rgba(93,44,201,.6); transition:background 150ms ease-out;}
+.home-tile-cta svg{transition:transform 200ms ease-out;}
+a.home-tile:hover .home-tile-cta{background:var(--primary-background-hover);}
+a.home-tile:hover .home-tile-cta svg{transform:translateX(4px);}
+.home-foot{text-align:center; font:var(--label-small); letter-spacing:.6px; color:var(--neutral-500);}
+@media (max-width:600px){ .home-head h1{font-size:34px; line-height:42px;} a.home-tile{padding:var(--spacing-24) var(--spacing-20) var(--spacing-20);} }
+@media (prefers-reduced-motion: reduce){
+  #home::before, #home::after, a.home-tile{animation:none;}
+  a.home-tile, a.home-tile .home-tile-cta svg{transition:none;}
+  a.home-tile:hover{transform:none;}
+}
 
 /* ---------- capability tracker ---------- */
 :root{
@@ -775,24 +832,36 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
 <div id="home" hidden>
   <div class="home-wrap">
     <div class="home-head">
-      <span class="ai-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 1 L22 6.5 L22 17.5 L12 23 L2 17.5 L2 6.5 Z"/></svg></span>
+      <span class="home-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <defs><linearGradient id="home-hex-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#271254"/><stop offset=".45" stop-color="#5D2CC9"/><stop offset=".8" stop-color="#A98DE6"/><stop offset="1" stop-color="#7FD6E8"/></linearGradient></defs>
+          <path fill="url(#home-hex-grad)" d="M12 1 L22 6.5 L22 17.5 L12 23 L2 17.5 L2 6.5 Z"/>
+        </svg>
+      </span>
+      <span class="home-eyebrow">Generative Engine Optimization</span>
       <h1>GEO Tracker</h1>
-      <p>Choose a tracker to open</p>
+      <p>One place to follow what we are building and what we are delivering.</p>
     </div>
     <div class="home-tiles">
-      <a class="home-tile ring-focus" href="#capability">
-        <span class="home-tile-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5z"/><path d="m3 13 9 5 9-5"/><path d="m3 17.5 9 5 9-5"/></svg></span>
+      <a class="home-tile" href="#capability">
+        <span class="home-tile-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/><path d="M20.5 3.5 21 2l.5 1.5L23 4l-1.5.5L21 6l-.5-1.5L19 4z" fill="currentColor" stroke-width="1"/></svg>
+        </span>
+        <span class="home-tile-kicker">Build</span>
         <h2>GEO Capability Tracker</h2>
-        <p>Every GEO capability, agent, methodology and playbook, with owners, priority, ETC and status.</p>
+        <p>Agents, methodologies and playbooks across the 7-step GEO framework, with owners, priority, ETC and status.</p>
         <div class="home-tile-stat" id="home-cap-stat">Loading&hellip;</div>
-        <span class="home-tile-cta">Open capability tracker &rarr;</span>
+        <span class="home-tile-cta">Open capability tracker <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
       </a>
-      <a class="home-tile ring-focus" href="#delivery">
-        <span class="home-tile-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+      <a class="home-tile" href="#delivery">
+        <span class="home-tile-icon is-delivery" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+        </span>
+        <span class="home-tile-kicker">Deliver</span>
         <h2>GEO Delivery Tracker</h2>
-        <p>Active client engagements: status, risks, invoices, revenue and team utilization.</p>
+        <p>Active client engagements: weekly status, risks, invoices, revenue and team utilization.</p>
         <div class="home-tile-stat" id="home-del-stat">Loading&hellip;</div>
-        <span class="home-tile-cta">Open delivery tracker &rarr;</span>
+        <span class="home-tile-cta">Open delivery tracker <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
       </a>
     </div>
   </div>

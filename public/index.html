@@ -825,6 +825,41 @@ a.home-tile:hover .home-tile-cta svg{transform:translateX(4px);}
 .btn-danger-text{background:transparent; color:var(--error-foreground); padding-left:var(--spacing-12); padding-right:var(--spacing-12);}
 .btn-danger-text:hover{background:var(--error-light-background);}
 
+/* ---------- liquid-crystal accent theme: both trackers ---------- */
+.shell{
+  background:
+    radial-gradient(820px 480px at 0% -10%, rgba(93,44,201,.16), transparent 60%),
+    radial-gradient(720px 460px at 100% 0%, rgba(127,214,232,.22), transparent 60%),
+    radial-gradient(760px 520px at 85% 110%, rgba(242,167,216,.18), transparent 62%),
+    linear-gradient(160deg, #F8F6FF 0%, #F3F7FF 55%, #FBF6FC 100%);
+  background-attachment:fixed;
+}
+.rail{background:rgba(255,255,255,.66); border:1px solid rgba(255,255,255,.9); box-shadow:0 12px 32px -20px rgba(39,18,84,.4);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);}
+.page-content{background:rgba(255,255,255,.9); border:1px solid rgba(255,255,255,.95); box-shadow:0 20px 44px -28px rgba(39,18,84,.4);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);}
+.app-header{background:linear-gradient(100deg, rgba(93,44,201,.10), rgba(127,214,232,.13) 55%, rgba(242,167,216,.10)); border:1px solid rgba(255,255,255,.95);}
+.app-header .title{background:linear-gradient(100deg, #271254, #5D2CC9 45%, #8E6BD8 72%, #4FB3CC); -webkit-background-clip:text; background-clip:text; color:transparent; font-weight:600;}
+.new-btn{background:linear-gradient(135deg, #271254 0%, #5D2CC9 50%, #8E6BD8 100%); box-shadow:0 8px 18px -8px rgba(93,44,201,.65);}
+.new-btn:hover{background:linear-gradient(135deg, #1B0C3A 0%, #421F8F 50%, #6B3FD6 100%);}
+.nav-item.is-active{background:linear-gradient(90deg, rgba(93,44,201,.14), rgba(127,214,232,.18)); color:var(--primary-background-hover); box-shadow:inset 3px 0 0 var(--primary);}
+.kpi-tile{position:relative; overflow:hidden;}
+.kpi-tile::before{content:""; position:absolute; left:0; right:0; top:0; height:3px; background:linear-gradient(90deg, #5D2CC9, #A98DE6, #7FD6E8, #F2A7D8);}
+.tab.is-active::after{background:linear-gradient(90deg, #5D2CC9, #A98DE6 60%, #7FD6E8);}
+.btn-filled{background:linear-gradient(135deg, #421F8F 0%, #5D2CC9 55%, #7A4FE0 100%);}
+.btn-filled:hover{background:linear-gradient(135deg, #271254 0%, #421F8F 55%, #5D2CC9 100%);}
+
+/* delivery tracker: each client's own logo colour carries through its projects */
+.client-bar[data-accent-client]{border-left:4px solid var(--accent, var(--primary)); padding:var(--spacing-8) var(--spacing-12); border-radius:var(--radius-sm);
+  background:linear-gradient(90deg, color-mix(in srgb, var(--accent, var(--primary)) 9%, var(--base-white)), var(--base-white) 70%);}
+.detail-panel[data-accent-client] .detail-header{border-top:5px solid var(--accent, var(--primary));
+  background:linear-gradient(180deg, color-mix(in srgb, var(--accent, var(--primary)) 8%, var(--base-white)) 0%, var(--base-white) 75%);}
+.detail-panel[data-accent-client] .detail-header .tab.is-active::after{background:var(--accent, var(--primary));}
+.detail-panel[data-accent-client] .detail-kpis .progress-fill{background:var(--accent, var(--primary));}
+.weekly-account[data-accent-client]{border-left:4px solid var(--accent, var(--neutral-200));}
+.util-card[data-accent-client]{border-top:4px solid var(--accent, var(--primary));}
+@media print{ .shell{background:none;} .weekly-account[data-accent-client]{border-left:1px solid var(--neutral-300);} }
+
 </style>
 </head>
 <body>
@@ -2370,7 +2405,7 @@ a.home-tile:hover .home-tile-cta svg{transform:translateX(4px);}
       var wd = resolvedWeek(a, weeklyWeekKey);
       var rag = ragClass(a.rag);
       return (
-        '<div class="weekly-account">' +
+        '<div class="weekly-account" data-accent-client="' + esc(a.clientId) + '">' +
           '<div class="weekly-account-head">' +
             '<div class="head-left">' +
               logoHtml(a, "card-logo") +
@@ -2397,6 +2432,7 @@ a.home-tile:hover .home-tile-cta svg{transform:translateX(4px);}
       '<button type="button" class="btn btn-md btn-filled ring-focus" data-action="download-weekly-pdf">Download PDF</button></div>';
 
     $("#view-weekly-body").innerHTML = printHead + toolbar + '<div class="weekly-account-list">' + accountsHtml + '</div>';
+    applyAccents();
   }
 
   // PDF = the browser's print dialog with a print-only layout (choose "Save as PDF").
@@ -2445,13 +2481,14 @@ a.home-tile:hover .home-tile-cta svg{transform:translateX(4px);}
             '<span class="legend-pct mono">' + Math.round(r.pct * 100) + '%</span></div>';
         }).join("");
         return (
-          '<div class="util-card is-clickable" data-open-id="' + esc(p.a.id) + '" data-open-tab="team" title="Open ' + esc(p.a.name) + ' team">' +
+          '<div class="util-card is-clickable" data-accent-client="' + esc(p.a.clientId) + '" data-open-id="' + esc(p.a.id) + '" data-open-tab="team" title="Open ' + esc(p.a.name) + ' team">' +
             '<div class="util-card-top"><span class="util-card-name">' + esc(p.a.name) + '</span><span class="tag tag-neutral">' + p.rows.length + ' allocation' + (p.rows.length === 1 ? "" : "s") + '</span></div>' +
             donutSvg(segments, {size:112, stroke:14, centerHtml:centerHtml, ariaLabel: p.a.name + " team allocation"}) +
             '<div class="legend">' + legend + '</div>' +
           '</div>'
         );
       }).join("") + '</div>';
+      applyAccents();
       return;
     }
 
@@ -2757,9 +2794,10 @@ a.home-tile:hover .home-tile-cta svg{transform:translateX(4px);}
 
   function renderClientBar(c){
     var bar = $("#client-bar");
-    if (!c) { bar.hidden = true; bar.innerHTML = ""; return; }
+    if (!c) { bar.hidden = true; bar.innerHTML = ""; bar.removeAttribute("data-accent-client"); bar.style.removeProperty("--accent"); return; }
     var logoSrc = {id: c.id, name: c.name, logoSvg: c.logoSvg, logoImg: c.logoImg};
     var n = (c.projects || []).length;
+    if (bar.getAttribute("data-accent-client") !== c.id) { bar.style.removeProperty("--accent"); bar.setAttribute("data-accent-client", c.id); }
     bar.hidden = false;
     bar.innerHTML =
       '<button type="button" class="btn btn-sm btn-outlined ring-focus" data-action="client-back">&larr; All accounts</button>' +
@@ -3055,6 +3093,9 @@ a.home-tile:hover .home-tile-cta svg{transform:translateX(4px);}
   function renderDetail(){
     var a = getAccount(currentDetailId);
     if (!a) { closeDetail(); return; }
+    var panel = $(".detail-panel");
+    if (panel.getAttribute("data-accent-client") !== a.clientId) { panel.style.removeProperty("--accent"); panel.setAttribute("data-accent-client", a.clientId); }
+    applyAccents();
     renderDetailHeader(a);
     var body = $("#detail-body");
     if (activeTab === "overview") body.innerHTML = renderOverviewTab(a);

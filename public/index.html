@@ -653,17 +653,114 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
 .home-tile-cta{font:var(--label-large); color:var(--primary);}
 
 /* ---------- capability tracker ---------- */
-.cap-card{border-top:4px solid var(--cap-accent, var(--neutral-200));}
+:root{
+  --cap-backlog:#BDB6CC;
+  --cap-investigate:#A98DE6;
+  --cap-progress:var(--primary);
+  --cap-done:var(--primary-background-pressed);
+}
+.cap-summary{display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:var(--spacing-32); align-items:center; padding:var(--spacing-20) var(--spacing-24);}
+.cap-big .num{font:var(--headline-medium); letter-spacing:0; color:var(--neutral-900);}
+.cap-big .num small{font:var(--title-medium); color:var(--neutral-600);}
+.cap-big .sub{font:var(--body-small); letter-spacing:.4px; color:var(--neutral-600); margin-top:var(--spacing-2);}
+.cap-pipe-title{font:var(--label-medium); letter-spacing:.5px; color:var(--neutral-600); text-transform:uppercase; margin-bottom:var(--spacing-8);}
+.cap-pipe{display:flex; height:16px; border-radius:var(--radius-full); overflow:hidden; background:var(--neutral-100); gap:2px;}
+.cap-pipe span{display:block; height:100%;}
+.cap-pipe-legend{display:flex; flex-wrap:wrap; gap:var(--spacing-4) var(--spacing-12); margin-top:var(--spacing-10);}
+.cap-legend-btn{display:flex; align-items:center; gap:var(--spacing-6); border:0; background:transparent; cursor:pointer;
+  font:var(--label-large); letter-spacing:.1px; color:var(--neutral-700); padding:var(--spacing-4) var(--spacing-8); border-radius:var(--radius-full);}
+.cap-legend-btn b{color:var(--neutral-900);}
+.cap-legend-btn:hover{background:var(--neutral-100);}
+.cap-legend-btn.is-selected{background:var(--primary-light-background); color:var(--primary);}
+.cap-dot{width:10px; height:10px; border-radius:var(--radius-full); flex-shrink:0; display:inline-block;}
+.cap-mini{display:flex; gap:var(--spacing-8);}
+.cap-mini-btn{display:flex; flex-direction:column; align-items:flex-start; gap:var(--spacing-2); border:1px solid var(--neutral-200); background:var(--base-white);
+  border-radius:var(--radius-sm); padding:var(--spacing-8) var(--spacing-16); cursor:pointer; text-align:left; min-width:110px;}
+.cap-mini-btn:hover{border-color:var(--primary);}
+.cap-mini-btn.is-selected{border-color:var(--primary); background:var(--primary-light-background);}
+.cap-mini-btn .v{font:var(--title-large); color:var(--neutral-900);}
+.cap-mini-btn .k{font:var(--label-small); letter-spacing:.5px; color:var(--neutral-600); text-transform:uppercase;}
+.cap-mini-btn.is-alert .v{color:var(--error-foreground);}
+@media (max-width:1000px){ .cap-summary{grid-template-columns:1fr; gap:var(--spacing-16);} }
+
+.cap-viewbar{display:flex; align-items:flex-end; justify-content:space-between; gap:var(--spacing-16); flex-wrap:wrap;}
+.cap-viewbar .tabs{flex:1;}
+.cap-toggle{display:flex; align-items:center; gap:var(--spacing-6); font:var(--label-large); color:var(--neutral-700); cursor:pointer;}
+
+/* status pill, priority tag, avatars, etc */
+.cap-status{display:inline-flex; align-items:center; gap:var(--spacing-6); height:22px; padding:0 var(--spacing-10); border-radius:var(--radius-full);
+  font:600 12px/16px var(--font-family); letter-spacing:.2px; color:var(--primary-background-pressed); background:color-mix(in srgb, var(--st) 14%, var(--base-white)); white-space:nowrap;}
+.cap-status::before{content:""; width:8px; height:8px; border-radius:var(--radius-full); background:var(--st);}
+.ptag{display:inline-flex; align-items:center; height:20px; padding:0 var(--spacing-8); border-radius:var(--radius-full); font:600 11px/16px var(--font-family); letter-spacing:.3px; white-space:nowrap;}
+.ptag.p0{background:var(--primary); color:var(--base-white);}
+.ptag.p1{background:color-mix(in srgb, var(--primary) 18%, var(--base-white)); color:var(--primary-background-hover);}
+.ptag.p2{background:var(--base-white); color:var(--primary); box-shadow:inset 0 0 0 1px color-mix(in srgb, var(--primary) 45%, var(--base-white));}
+.ptag.p3{background:var(--neutral-100); color:var(--neutral-700);}
+.cap-overdue{display:inline-flex; align-items:center; height:20px; padding:0 var(--spacing-8); border-radius:var(--radius-full); font:600 11px/16px var(--font-family); color:var(--error-foreground); background:var(--error-light-background);}
+.cap-avatars{display:flex;}
+.cap-avatars span{width:24px; height:24px; border-radius:var(--radius-full); border:2px solid var(--base-white); margin-left:-6px; display:flex; align-items:center; justify-content:center;
+  font:600 10px/1 var(--font-family); color:var(--base-white);}
+.cap-avatars span:first-child{margin-left:0;}
+.cap-etc{display:inline-flex; align-items:center; gap:var(--spacing-4); font:var(--label-small); letter-spacing:.3px; color:var(--neutral-600); white-space:nowrap;}
+.cap-etc.is-overdue{color:var(--error-foreground); font-weight:600;}
+
+/* board */
+.cap-board{display:grid; grid-template-columns:repeat(var(--cols,4), minmax(250px,1fr)); gap:var(--spacing-16); overflow-x:auto; align-items:start; padding-bottom:var(--spacing-4);}
+.cap-col{background:var(--neutral-50); border:1px solid var(--neutral-200); border-top:3px solid var(--st); border-radius:var(--radius-md); display:flex; flex-direction:column; min-height:220px; transition:background 120ms ease-out, border-color 120ms ease-out;}
+.cap-col.is-drop{background:var(--primary-light-background); border-color:var(--primary);}
+.cap-col-head{display:flex; align-items:center; gap:var(--spacing-8); padding:var(--spacing-12) var(--spacing-14, 14px); font:var(--label-large); color:var(--neutral-900);}
+.cap-col-head .count{margin-left:auto; font:var(--label-medium); color:var(--neutral-700); background:var(--base-white); border:1px solid var(--neutral-200); border-radius:var(--radius-full); padding:0 var(--spacing-8); line-height:20px;}
+.cap-col-body{display:flex; flex-direction:column; gap:var(--spacing-10); padding:0 var(--spacing-10) var(--spacing-12); flex:1;}
+.cap-col-empty{border:1px dashed var(--neutral-300); border-radius:var(--radius-sm); padding:var(--spacing-16); text-align:center; font:var(--body-small); color:var(--neutral-500);}
+.cap-bcard{background:var(--base-white); border-radius:var(--radius-sm); box-shadow:var(--elevation-02); padding:var(--spacing-12); display:flex; flex-direction:column; gap:var(--spacing-6);
+  cursor:pointer; border-left:3px solid var(--st); transition:box-shadow 120ms ease-out;}
+.cap-bcard:hover{box-shadow:var(--elevation-04);}
+.cap-bcard.is-dragging{opacity:.45;}
+.cap-bcard-top{display:flex; align-items:center; gap:var(--spacing-6); min-width:0;}
+.cap-bcard-type{font:var(--label-small); letter-spacing:.5px; color:var(--neutral-600); text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.cap-bcard-name{font:var(--label-large); letter-spacing:.1px; color:var(--neutral-900);}
+.cap-bcard-step{font:var(--body-small); letter-spacing:.3px; color:var(--neutral-600);}
+.cap-bcard-foot{display:flex; align-items:center; justify-content:space-between; gap:var(--spacing-8); margin-top:var(--spacing-4);}
+.cap-board-hint{font:var(--label-small); letter-spacing:.3px; color:var(--neutral-500);}
+
+/* framework */
+.cap-fw{display:grid; grid-template-columns:repeat(8, minmax(200px,1fr)); gap:var(--spacing-12); overflow-x:auto; align-items:stretch; padding-bottom:var(--spacing-4);}
+.cap-fw-col{background:var(--base-white); border:1px solid var(--neutral-200); border-radius:var(--radius-md); display:flex; flex-direction:column; overflow:hidden;}
+.cap-fw-head{padding:var(--spacing-12); background:var(--primary-light-background); border-bottom:1px solid var(--neutral-200);}
+.cap-fw-col.is-unaligned .cap-fw-head{background:var(--neutral-100);}
+.cap-fw-num{font:var(--label-small); letter-spacing:.5px; color:var(--primary); text-transform:uppercase;}
+.cap-fw-col.is-unaligned .cap-fw-num{color:var(--neutral-600);}
+.cap-fw-name{font:var(--label-large); color:var(--neutral-900); min-height:40px; margin-top:var(--spacing-2);}
+.cap-fw-meter{height:6px; background:var(--base-white); border-radius:var(--radius-full); overflow:hidden; margin-top:var(--spacing-8); display:flex;}
+.cap-fw-meter span{display:block; height:100%;}
+.cap-fw-count{font:var(--label-small); letter-spacing:.3px; color:var(--neutral-600); margin-top:var(--spacing-6);}
+.cap-fw-body{padding:var(--spacing-10); display:flex; flex-direction:column; gap:var(--spacing-8); flex:1;}
+.cap-chip{display:flex; align-items:flex-start; gap:var(--spacing-8); padding:var(--spacing-8) var(--spacing-10); border-radius:var(--radius-sm); background:var(--neutral-50);
+  border:1px solid var(--neutral-200); cursor:pointer; text-align:left; width:100%; font:600 12px/16px var(--font-family); color:var(--neutral-900);}
+.cap-chip:hover{border-color:var(--primary); background:var(--base-white);}
+.cap-chip .cap-dot{margin-top:3px;}
+.cap-chip .txt{flex:1; min-width:0;}
+.cap-chip .meta{display:flex; align-items:center; gap:var(--spacing-6); margin-top:var(--spacing-4); font-weight:500;}
+.cap-gap{border:1px dashed var(--neutral-300); border-radius:var(--radius-sm); padding:var(--spacing-12); font:var(--body-small); color:var(--neutral-500); text-align:center;}
+
+/* roadmap */
+.cap-lanes{display:flex; flex-direction:column; gap:var(--spacing-12);}
+.cap-lane{display:grid; grid-template-columns:200px minmax(0,1fr); gap:var(--spacing-16); background:var(--base-white); border:1px solid var(--neutral-200); border-left:4px solid var(--lane, var(--primary)); border-radius:var(--radius-md); padding:var(--spacing-14, 14px) var(--spacing-16);}
+.cap-lane-t{font:var(--label-large); color:var(--neutral-900);}
+.cap-lane-d{font:var(--body-small); letter-spacing:.3px; color:var(--neutral-600); margin-top:var(--spacing-2);}
+.cap-lane-items{display:grid; grid-template-columns:repeat(auto-fill, minmax(230px,1fr)); gap:var(--spacing-10);}
+@media (max-width:900px){ .cap-lane{grid-template-columns:1fr;} }
+
+/* list */
+.cap-card{border-top:4px solid var(--st, var(--neutral-200));}
 .cap-card-top{display:flex; flex-direction:column; gap:var(--spacing-4);}
 .cap-num{font:var(--label-small); letter-spacing:.5px; color:var(--neutral-600); text-transform:uppercase;}
 .cap-name{font:var(--title-medium); letter-spacing:.15px; color:var(--neutral-900);}
-.cap-tags{display:flex; flex-wrap:wrap; gap:var(--spacing-6);}
+.cap-tags{display:flex; flex-wrap:wrap; gap:var(--spacing-6); align-items:center;}
 .cap-desc{font:var(--body-small); letter-spacing:.3px; color:var(--neutral-700); white-space:pre-line;
   display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;}
 .cap-card .meta-row .v{white-space:normal; overflow:visible;}
-.cap-group-title{font:var(--label-medium); letter-spacing:.5px; color:var(--neutral-700); text-transform:uppercase; margin:var(--spacing-8) 0;}
-.cap-group-title span{color:var(--neutral-500); font-weight:500;}
-.cap-select{max-width:210px;}
+.cap-select{max-width:200px;}
 .cap-modal-actions{display:flex; align-items:center; gap:var(--spacing-8); grid-column:1 / -1;}
 .cap-modal-actions .spacer{flex:1;}
 .btn-danger-text{background:transparent; color:var(--error-foreground); padding-left:var(--spacing-12); padding-right:var(--spacing-12);}
@@ -847,7 +944,12 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
       <div class="zone-r"></div>
     </header>
 
-    <section class="kpi-row" id="cap-kpis"></section>
+    <section class="card cap-summary" id="cap-summary"></section>
+
+    <div class="cap-viewbar">
+      <div class="tabs" role="tablist" id="cap-view-tabs"></div>
+      <div id="cap-view-extra"></div>
+    </div>
 
     <section class="toolbar">
       <div class="field">
@@ -856,11 +958,10 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
           <input id="cap-search" type="search" placeholder="Search capabilities&hellip;" aria-label="Search capabilities">
         </div>
       </div>
-      <div class="chip-filter-group" id="cap-decision-chips" role="group" aria-label="Filter by decision"></div>
+      <div id="cap-selects" style="display:contents;"></div>
     </section>
-    <section class="toolbar" id="cap-selects"></section>
 
-    <main id="cap-grid"></main>
+    <main id="cap-main"></main>
     <div class="empty-state" id="cap-empty" hidden>
       <h3>No capabilities match your filters</h3>
       <p>Try clearing the search or the filters.</p>
@@ -3281,18 +3382,35 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
 (function(){
   "use strict";
 
-  var STEPS = ["1. Understand Brand Priorities", "2. Define Narrative Battles", "3. Build Prompt Library", "4. GEO Baseline Assessment", "5. Recommendations & Action Plan", "6. Measure GEO KPIs", "7. Track Business Impact"];
-  var DECISIONS = ["In progress", "Backlog", "Investigate", "Done"];
+  var STEPS = [
+    {n: 1, name: "Understand Brand Priorities", keys: ["brand priorit"]},
+    {n: 2, name: "Define Narrative Battles", keys: ["narrative battle"]},
+    {n: 3, name: "Build Prompt Library", keys: ["prompt library"]},
+    {n: 4, name: "GEO Baseline Assessment", keys: ["baseline"]},
+    {n: 5, name: "Recommendations & Action Plan", keys: ["recommendation", "action plan"]},
+    {n: 6, name: "Measure GEO KPIs", keys: ["kpi"]},
+    {n: 7, name: "Track Business Impact", keys: ["business impact"]}
+  ];
+  var STEP_LABELS = STEPS.map(function(s){ return s.n + ". " + s.name; });
+  // Pipeline order, left to right.
+  var STATUSES = [
+    {key: "Backlog", color: "var(--cap-backlog)", hint: "waiting to start"},
+    {key: "Investigate", color: "var(--cap-investigate)", hint: "being scoped"},
+    {key: "In progress", color: "var(--cap-progress)", hint: "being built"},
+    {key: "Done", color: "var(--cap-done)", hint: "available to use"}
+  ];
+  var STATUS_COLOR = {}; STATUSES.forEach(function(s){ STATUS_COLOR[s.key] = s.color; });
   var PRIORITIES = ["P0", "P1", "P2", "P3"];
   var LEVELS = ["High", "Medium", "Low"];
-  var DECISION_TAG = {"Done": "tag-success", "In progress": "tag-primary", "Backlog": "tag-neutral", "Investigate": "tag-warning"};
-  var DECISION_ACCENT = {"Done": "var(--success-foreground)", "In progress": "var(--primary)", "Backlog": "var(--neutral-400)", "Investigate": "var(--warning-foreground)"};
-  var PRIORITY_TAG = {P0: "tag-error", P1: "tag-warning", P2: "tag-info", P3: "tag-neutral"};
+  var AVATAR_SHADES = ["var(--primary)", "var(--primary-background-hover)", "#8E6BD8", "var(--primary-background-pressed)", "#7A5AC9"];
+  var VIEWS = [["board", "Board"], ["framework", "Framework"], ["roadmap", "Roadmap"], ["list", "List"]];
 
   var caps = [];
-  var f = {search: "", decision: "All", priority: "", step: "", owner: "", group: "none"};
+  var f = {search: "", decision: "", priority: "", owner: "", type: ""};
+  var view = "board";
+  var showDoneOnRoadmap = false;
   var editingId = null;
-  var capLoaded = false;
+  try { var v = localStorage.getItem("geo-cap-view"); if (v && VIEWS.some(function(x){ return x[0] === v; })) view = v; } catch (e) {}
 
   function $(sel){ return document.querySelector(sel); }
   function esc(s){
@@ -3300,13 +3418,17 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
   }
   function norm(s){ return String(s == null ? "" : s).toLowerCase().replace(/[–—]/g, "-").replace(/\s+/g, " ").trim(); }
   function pad(n){ return String(n).padStart(2, "0"); }
-  function todayIso(){ var d = new Date(); return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
-  function isoDate(re, s){ return re.test(s || ""); }
+  function isoOf(d){ return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function todayIso(){ return isoOf(new Date()); }
+  function addDays(iso, n){ var d = new Date(iso + "T00:00:00"); d.setDate(d.getDate() + n); return isoOf(d); }
   var ISO_RE = /^\d{4}-\d{2}-\d{2}$/;
-  function fmtEtc(v){
+  function fmtEtc(v, short){
     if (!v) return "—";
-    if (ISO_RE.test(v)) return new Date(v + "T00:00:00").toLocaleDateString("en-US", {day: "numeric", month: "short", year: "numeric"});
-    return v;
+    if (!ISO_RE.test(v)) return v;
+    var d = new Date(v + "T00:00:00");
+    var opts = {day: "numeric", month: "short"};
+    if (!short || d.getFullYear() !== new Date().getFullYear()) opts.year = "numeric";
+    return d.toLocaleDateString("en-US", opts);
   }
   function showToast(msg, variant){
     var t = $("#toast");
@@ -3332,6 +3454,44 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
   }
   function isOverdue(c){ return ISO_RE.test(c.etc || "") && c.etc < todayIso() && c.decision !== "Done"; }
   function parseOwners(s){ return String(s || "").split(/,|\/|\n/).map(function(x){ return x.trim(); }).filter(Boolean); }
+  function capById(id){ return caps.filter(function(c){ return c.id === id; })[0] || null; }
+
+  // Which framework steps a capability covers: "4-5. ..." -> [4, 5]; otherwise matched by step name.
+  function stepsOf(c){
+    var t = String(c.step || "");
+    var m = t.match(/^\s*(\d)\s*(?:-\s*(\d))?/);
+    if (m) {
+      var a = Number(m[1]), b = m[2] ? Number(m[2]) : a, out = [];
+      for (var i = Math.min(a, b); i <= Math.max(a, b); i++) if (i >= 1 && i <= 7) out.push(i);
+      return out;
+    }
+    var lower = t.toLowerCase();
+    return STEPS.filter(function(s){ return s.keys.some(function(k){ return lower.indexOf(k) > -1; }); }).map(function(s){ return s.n; });
+  }
+
+  // ---------------- small render helpers ----------------
+  function statusPill(d){ return d ? '<span class="cap-status" style="--st:' + (STATUS_COLOR[d] || "var(--neutral-400)") + '">' + esc(d) + '</span>' : ""; }
+  function ptag(p){ return p ? '<span class="ptag ' + esc(String(p).toLowerCase()) + '">' + esc(p) + '</span>' : ""; }
+  function initials(n){ var parts = String(n).trim().split(/\s+/); return ((parts[0] || "")[0] || "") + ((parts[1] || "")[0] || ""); }
+  function avatars(owners){
+    owners = owners || [];
+    if (!owners.length) return '<span class="cap-etc">No owner</span>';
+    return '<span class="cap-avatars" title="' + esc(owners.join(", ")) + '">' + owners.slice(0, 4).map(function(o, i){
+      return '<span style="background:' + AVATAR_SHADES[i % AVATAR_SHADES.length] + '">' + esc(initials(o).toUpperCase()) + '</span>';
+    }).join("") + (owners.length > 4 ? '<span style="background:var(--neutral-500)">+' + (owners.length - 4) + '</span>' : "") + '</span>';
+  }
+  function etcHtml(c){
+    var od = isOverdue(c);
+    return '<span class="cap-etc' + (od ? " is-overdue" : "") + '" title="ETC">' +
+      '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>' +
+      esc(fmtEtc(c.etc, true)) + (od ? " · overdue" : "") + '</span>';
+  }
+  function chipHtml(c){
+    return '<button type="button" class="cap-chip" data-cap-id="' + esc(c.id) + '" title="' + esc(c.name) + '">' +
+      '<span class="cap-dot" style="background:' + (STATUS_COLOR[c.decision] || "var(--neutral-400)") + '" title="' + esc(c.decision || "") + '"></span>' +
+      '<span class="txt">' + esc(c.name) + '<span class="meta">' + ptag(c.priority) + etcHtml(c) + '</span></span>' +
+    '</button>';
+  }
 
   // ---------------- routing ----------------
   function hideDeliveryOverlays(){
@@ -3363,145 +3523,216 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
     }).catch(function(){ $("#home-del-stat").textContent = "Client engagements"; });
   }
 
-  // ---------------- capability data ----------------
+  // ---------------- data ----------------
   function loadCaps(){
     return api("/api/capabilities").then(function(list){
       caps = list.sort(function(a, b){ return (Number(a.order) || 0) - (Number(b.order) || 0); });
-      capLoaded = true;
       render();
-    }).catch(function(err){
-      showToast("Load failed: " + err.message, "error");
-    });
+    }).catch(function(err){ showToast("Load failed: " + err.message, "error"); });
   }
 
   function visible(){
     var term = f.search.trim().toLowerCase();
     return caps.filter(function(c){
       if (f.decision === "Overdue") { if (!isOverdue(c)) return false; }
-      else if (f.decision !== "All" && c.decision !== f.decision) return false;
+      else if (f.decision === "P0 open") { if (c.priority !== "P0" || c.decision === "Done") return false; }
+      else if (f.decision && c.decision !== f.decision) return false;
       if (f.priority && c.priority !== f.priority) return false;
-      if (f.step && c.step !== f.step) return false;
       if (f.owner && (c.owners || []).indexOf(f.owner) === -1) return false;
+      if (f.type && c.type !== f.type) return false;
       if (!term) return true;
       var hay = [c.name, c.type, c.description, c.step, (c.owners || []).join(" "), c.remarks, c.notes, c.priority, c.decision].join(" ").toLowerCase();
       return hay.indexOf(term) > -1;
     });
   }
-
   function distinct(fn){
     var seen = {}, out = [];
-    caps.forEach(function(c){ [].concat(fn(c)).forEach(function(v){ if (v && !seen[v]) { seen[v] = true; out.push(v); } }); });
+    caps.forEach(function(c){ [].concat(fn(c)).forEach(function(x){ if (x && !seen[x]) { seen[x] = true; out.push(x); } }); });
     return out;
   }
 
-  function renderKpis(){
-    var counts = {}; DECISIONS.forEach(function(d){ counts[d] = 0; });
+  // ---------------- summary ----------------
+  function renderSummary(){
+    var total = caps.length, counts = {};
+    STATUSES.forEach(function(s){ counts[s.key] = 0; });
     caps.forEach(function(c){ if (counts[c.decision] !== undefined) counts[c.decision]++; });
+    var done = counts["Done"], pct = total ? Math.round(done / total * 100) : 0;
     var overdue = caps.filter(isOverdue).length;
     var p0open = caps.filter(function(c){ return c.priority === "P0" && c.decision !== "Done"; }).length;
-    function tile(label, value, sub){ return '<div class="kpi-tile"><div class="kpi-label">' + label + '</div><div class="kpi-value mono">' + value + '</div><div class="kpi-sub">' + sub + '</div></div>'; }
-    $("#cap-kpis").innerHTML =
-      tile("Total capabilities", caps.length, "across " + distinct(function(c){ return c.type; }).length + " types") +
-      tile("Done", counts["Done"], caps.length ? Math.round(counts["Done"] / caps.length * 100) + "% of all" : "—") +
-      tile("In progress", counts["In progress"], "being built now") +
-      tile("Backlog", counts["Backlog"], "waiting to start") +
-      tile("Investigate", counts["Investigate"], "being scoped") +
-      tile("Overdue", overdue, p0open + " P0 still open");
-    $("#cap-sub").textContent = caps.length + " capabilities · " + counts["Done"] + " done · " + counts["In progress"] + " in progress";
+    var pipe = STATUSES.map(function(s){
+      return counts[s.key] ? '<span style="width:' + (counts[s.key] / total * 100) + '%; background:' + s.color + '" title="' + esc(s.key) + ': ' + counts[s.key] + '"></span>' : "";
+    }).join("");
+    var legend = STATUSES.map(function(s){
+      return '<button type="button" class="cap-legend-btn' + (f.decision === s.key ? " is-selected" : "") + '" data-cap-filter="' + esc(s.key) + '" title="Show only ' + esc(s.key) + '">' +
+        '<span class="cap-dot" style="background:' + s.color + '"></span>' + esc(s.key) + ' <b class="mono">' + counts[s.key] + '</b></button>';
+    }).join("");
+    $("#cap-summary").innerHTML =
+      '<div class="cap-big"><div class="num mono">' + done + '<small> / ' + total + '</small></div><div class="sub">capabilities done · ' + pct + '% complete</div></div>' +
+      '<div><div class="cap-pipe-title">Pipeline</div><div class="cap-pipe" role="img" aria-label="Capabilities by status">' + pipe + '</div><div class="cap-pipe-legend">' + legend + '</div></div>' +
+      '<div class="cap-mini">' +
+        '<button type="button" class="cap-mini-btn' + (overdue ? " is-alert" : "") + (f.decision === "Overdue" ? " is-selected" : "") + '" data-cap-filter="Overdue" title="Past their ETC and not done"><span class="v mono">' + overdue + '</span><span class="k">Overdue</span></button>' +
+        '<button type="button" class="cap-mini-btn' + (f.decision === "P0 open" ? " is-selected" : "") + '" data-cap-filter="P0 open" title="Top priority, not done yet"><span class="v mono">' + p0open + '</span><span class="k">P0 open</span></button>' +
+      '</div>';
+    var prog = counts["In progress"];
+    $("#cap-sub").textContent = total + " capabilities · " + done + " done · " + prog + " in progress" + (overdue ? " · " + overdue + " overdue" : "");
   }
 
-  function renderToolbar(){
-    var chips = ["All"].concat(DECISIONS).concat(["Overdue"]);
-    $("#cap-decision-chips").innerHTML = chips.map(function(o){
-      return '<button type="button" class="chip ring-focus' + (f.decision === o ? " is-selected" : "") + '" data-cap-chip="' + esc(o) + '">' + esc(o) + '</button>';
+  function renderViewBar(){
+    $("#cap-view-tabs").innerHTML = VIEWS.map(function(x){
+      return '<button type="button" role="tab" aria-selected="' + (view === x[0]) + '" class="tab' + (view === x[0] ? " is-active" : "") + '" data-cap-view="' + x[0] + '">' + x[1] + '</button>';
     }).join("");
+    var extra = "";
+    if (view === "board") extra = '<span class="cap-board-hint">Drag a card to another column to change its status</span>';
+    if (view === "roadmap") extra = '<label class="cap-toggle"><input type="checkbox" id="cap-show-done"' + (showDoneOnRoadmap ? " checked" : "") + '> Include completed</label>';
+    $("#cap-view-extra").innerHTML = extra;
+  }
 
-    var steps = STEPS.slice();
-    distinct(function(c){ return c.step; }).forEach(function(s){ if (steps.indexOf(s) === -1) steps.push(s); });
-    var owners = distinct(function(c){ return c.owners || []; }).sort(function(a, b){ return a.localeCompare(b); });
+  function renderSelects(){
     function sel(id, label, options, value){
-      var opts = '<option value="">' + label + '</option>' + options.map(function(o){ return '<option value="' + esc(o[0]) + '"' + (o[0] === value ? " selected" : "") + '>' + esc(o[1]) + '</option>'; }).join("");
+      var opts = '<option value="">' + label + '</option>' + options.map(function(o){ return '<option value="' + esc(o) + '"' + (o === value ? " selected" : "") + '>' + esc(o) + '</option>'; }).join("");
       return '<div class="field cap-select"><div class="field-wrap"><select id="' + id + '" aria-label="' + esc(label) + '">' + opts + '</select><span class="caret-wrap" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div></div>';
     }
-    var groupOptions = [["step", "Group by framework step"], ["type", "Group by type"], ["decision", "Group by decision"], ["priority", "Group by priority"]];
-    var groupSel = sel("cap-f-group", "No grouping", groupOptions, f.group === "none" ? "" : f.group);
+    var decisionOpts = STATUSES.map(function(s){ return s.key; }).concat(["Overdue", "P0 open"]);
     $("#cap-selects").innerHTML =
-      sel("cap-f-priority", "All priorities", PRIORITIES.map(function(p){ return [p, p]; }), f.priority) +
-      sel("cap-f-step", "All framework steps", steps.map(function(s){ return [s, s]; }), f.step) +
-      sel("cap-f-owner", "All owners", owners.map(function(o){ return [o, o]; }), f.owner) +
-      groupSel;
-
+      sel("cap-f-decision", "All statuses", decisionOpts, f.decision) +
+      sel("cap-f-priority", "All priorities", PRIORITIES, f.priority) +
+      sel("cap-f-type", "All types", distinct(function(c){ return c.type; }).sort(), f.type) +
+      sel("cap-f-owner", "All owners", distinct(function(c){ return c.owners || []; }).sort(function(a, b){ return a.localeCompare(b); }), f.owner);
     $("#cap-type-list").innerHTML = distinct(function(c){ return c.type; }).map(function(t){ return '<option value="' + esc(t) + '">'; }).join("");
-    $("#cap-step-list").innerHTML = steps.map(function(s){ return '<option value="' + esc(s) + '">'; }).join("");
+    var stepOpts = STEP_LABELS.slice();
+    distinct(function(c){ return c.step; }).forEach(function(s){ if (stepOpts.indexOf(s) === -1) stepOpts.push(s); });
+    $("#cap-step-list").innerHTML = stepOpts.map(function(s){ return '<option value="' + esc(s) + '">'; }).join("");
   }
 
-  function cardHtml(c){
-    var accent = DECISION_ACCENT[c.decision] || "var(--neutral-300)";
-    var tags = (c.priority ? '<span class="tag ' + (PRIORITY_TAG[c.priority] || "tag-neutral") + '">' + esc(c.priority) + '</span>' : "") +
-      (c.decision ? '<span class="tag ' + (DECISION_TAG[c.decision] || "tag-neutral") + '">' + esc(c.decision) + '</span>' : "") +
-      (isOverdue(c) ? '<span class="tag tag-error">Overdue</span>' : "");
-    return '<article class="card pcard cap-card ring-focus" data-cap-id="' + esc(c.id) + '" tabindex="0" role="button" style="--cap-accent:' + accent + '" aria-label="Open ' + esc(c.name) + '">' +
-      '<div class="cap-card-top"><div class="cap-num">#' + esc(c.order) + ' · ' + esc(c.type || "Capability") + '</div><div class="cap-name">' + esc(c.name) + '</div></div>' +
-      '<div class="cap-tags">' + tags + '</div>' +
-      '<div class="cap-desc">' + esc(c.description || "No description yet.") + '</div>' +
-      '<hr>' +
-      '<div class="meta">' +
-        '<div class="meta-row"><span class="k">Framework</span><span class="v">' + esc(c.step || "—") + '</span></div>' +
-        '<div class="meta-row"><span class="k">Owner</span><span class="v">' + esc((c.owners || []).join(", ") || "—") + '</span></div>' +
-        '<div class="meta-row"><span class="k">ETC</span><span class="v">' + esc(fmtEtc(c.etc)) + '</span></div>' +
-      '</div>' +
-      (c.remarks ? '<div class="cap-desc" style="-webkit-line-clamp:2; color:var(--neutral-600);">' + esc(c.remarks) + '</div>' : "") +
-    '</article>';
+  // ---------------- views ----------------
+  function boardHtml(list){
+    var cols = f.decision && STATUS_COLOR[f.decision] ? STATUSES.filter(function(s){ return s.key === f.decision; }) : STATUSES;
+    if (f.decision === "Overdue") cols = STATUSES.filter(function(s){ return s.key !== "Done"; });
+    return '<div class="cap-board" style="--cols:' + cols.length + '">' + cols.map(function(s){
+      var items = list.filter(function(c){ return c.decision === s.key; });
+      return '<section class="cap-col" data-cap-drop="' + esc(s.key) + '" style="--st:' + s.color + '">' +
+        '<header class="cap-col-head"><span class="cap-dot" style="background:' + s.color + '"></span>' + esc(s.key) + '<span class="count mono">' + items.length + '</span></header>' +
+        '<div class="cap-col-body">' + (items.length ? items.map(function(c){
+          return '<article class="cap-bcard" draggable="true" data-cap-id="' + esc(c.id) + '" tabindex="0" role="button" style="--st:' + s.color + '" aria-label="Open ' + esc(c.name) + '">' +
+            '<div class="cap-bcard-top">' + ptag(c.priority) + '<span class="cap-bcard-type">' + esc(c.type || "Capability") + '</span></div>' +
+            '<div class="cap-bcard-name">' + esc(c.name) + '</div>' +
+            (c.step ? '<div class="cap-bcard-step">' + esc(c.step) + '</div>' : "") +
+            '<div class="cap-bcard-foot">' + avatars(c.owners) + etcHtml(c) + '</div>' +
+          '</article>';
+        }).join("") : '<div class="cap-col-empty">Nothing ' + esc(s.hint) + '</div>') + '</div>' +
+      '</section>';
+    }).join("") + '</div>';
   }
 
-  function groupKey(c){
-    if (f.group === "step") return c.step || "Not aligned to a step";
-    if (f.group === "type") return c.type || "No type";
-    if (f.group === "decision") return c.decision || "No decision";
-    if (f.group === "priority") return c.priority || "No priority";
-    return "";
-  }
-  function groupRank(key){
-    if (f.group === "decision") { var i = DECISIONS.indexOf(key); return i === -1 ? 99 : i; }
-    if (f.group === "priority") { var j = PRIORITIES.indexOf(key); return j === -1 ? 99 : j; }
-    if (f.group === "step") { var m = String(key).match(/^(\d+)/); return m ? Number(m[1]) : 99; }
-    return 0;
+  function frameworkHtml(list){
+    var cols = STEPS.map(function(s){ return {num: "Step " + s.n, name: s.name, n: s.n, items: []}; });
+    var unaligned = {num: "Cross-cutting", name: "Not tied to one step", n: 0, items: [], unaligned: true};
+    list.forEach(function(c){
+      var ns = stepsOf(c);
+      if (!ns.length) unaligned.items.push(c);
+      ns.forEach(function(n){ cols[n - 1].items.push(c); });
+    });
+    cols.push(unaligned);
+    return '<div class="cap-fw">' + cols.map(function(col){
+      var total = col.items.length;
+      var meter = STATUSES.map(function(s){
+        var k = col.items.filter(function(c){ return c.decision === s.key; }).length;
+        return k ? '<span style="width:' + (k / total * 100) + '%; background:' + s.color + '"></span>' : "";
+      }).join("");
+      var done = col.items.filter(function(c){ return c.decision === "Done"; }).length;
+      var order = STATUSES.map(function(s){ return s.key; }).reverse();
+      var items = col.items.slice().sort(function(a, b){ return order.indexOf(a.decision) - order.indexOf(b.decision) || PRIORITIES.indexOf(a.priority) - PRIORITIES.indexOf(b.priority); });
+      return '<section class="cap-fw-col' + (col.unaligned ? " is-unaligned" : "") + '">' +
+        '<header class="cap-fw-head"><div class="cap-fw-num">' + esc(col.num) + '</div><div class="cap-fw-name">' + esc(col.name) + '</div>' +
+          '<div class="cap-fw-meter">' + meter + '</div>' +
+          '<div class="cap-fw-count">' + (total ? total + " capabilit" + (total === 1 ? "y" : "ies") + " · " + done + " done" : "No coverage yet") + '</div></header>' +
+        '<div class="cap-fw-body">' + (total ? items.map(chipHtml).join("") : '<div class="cap-gap">Gap — no capability supports this step yet</div>') + '</div>' +
+      '</section>';
+    }).join("") + '</div>';
   }
 
-  function renderGrid(){
+  function roadmapHtml(list){
+    var today = todayIso();
+    var dow = (new Date(today + "T00:00:00").getDay() + 6) % 7;
+    var weekEnd = addDays(today, 6 - dow), nextWeekEnd = addDays(weekEnd, 7);
+    var items = list.filter(function(c){ return showDoneOnRoadmap || f.decision === "Done" || c.decision !== "Done"; });
+    var lanes = {}, order = [];
+    function lane(key, title, desc, color, rank){ if (!lanes[key]) { lanes[key] = {title: title, desc: desc, color: color, rank: rank, items: []}; order.push(key); } return lanes[key]; }
+    items.forEach(function(c){
+      var e = c.etc || "";
+      if (!ISO_RE.test(e)) { lane("none", "No date set", "ETC is NA or TBD", "var(--neutral-400)", Number.MAX_SAFE_INTEGER).items.push(c); return; }
+      if (c.decision !== "Done" && e < today) { lane("over", "Overdue", "ETC has passed", "var(--error-foreground)", 0).items.push(c); return; }
+      if (e <= weekEnd) { lane("week", "This week", "Due by " + fmtEtc(weekEnd, true), "var(--primary-background-pressed)", 1).items.push(c); return; }
+      if (e <= nextWeekEnd) { lane("next", "Next week", fmtEtc(addDays(weekEnd, 1), true) + " – " + fmtEtc(nextWeekEnd, true), "var(--primary)", 2).items.push(c); return; }
+      var d = new Date(e + "T00:00:00");
+      var key = "m" + e.slice(0, 7);
+      lane(key, d.toLocaleDateString("en-US", {month: "long", year: "numeric"}), "Later", "var(--cap-investigate)", 10 + Number(e.slice(0, 4)) * 12 + d.getMonth()).items.push(c);
+    });
+    order.sort(function(a, b){ return lanes[a].rank - lanes[b].rank; });
+    if (!order.length) return "";
+    return '<div class="cap-lanes">' + order.map(function(k){
+      var l = lanes[k];
+      l.items.sort(function(a, b){ return (a.etc || "").localeCompare(b.etc || "") || PRIORITIES.indexOf(a.priority) - PRIORITIES.indexOf(b.priority); });
+      return '<section class="cap-lane" style="--lane:' + l.color + '">' +
+        '<div><div class="cap-lane-t">' + esc(l.title) + ' <span class="mono" style="color:var(--neutral-500)">· ' + l.items.length + '</span></div><div class="cap-lane-d">' + esc(l.desc) + '</div></div>' +
+        '<div class="cap-lane-items">' + l.items.map(chipHtml).join("") + '</div>' +
+      '</section>';
+    }).join("") + '</div>';
+  }
+
+  function listHtml(list){
+    return '<div class="card-grid">' + list.map(function(c){
+      return '<article class="card pcard cap-card ring-focus" data-cap-id="' + esc(c.id) + '" tabindex="0" role="button" style="--st:' + (STATUS_COLOR[c.decision] || "var(--neutral-300)") + '" aria-label="Open ' + esc(c.name) + '">' +
+        '<div class="cap-card-top"><div class="cap-num">#' + esc(c.order) + ' · ' + esc(c.type || "Capability") + '</div><div class="cap-name">' + esc(c.name) + '</div></div>' +
+        '<div class="cap-tags">' + ptag(c.priority) + statusPill(c.decision) + (isOverdue(c) ? '<span class="cap-overdue">Overdue</span>' : "") + '</div>' +
+        '<div class="cap-desc">' + esc(c.description || "No description yet.") + '</div>' +
+        '<hr>' +
+        '<div class="meta">' +
+          '<div class="meta-row"><span class="k">Framework</span><span class="v">' + esc(c.step || "—") + '</span></div>' +
+          '<div class="meta-row"><span class="k">Owner</span><span class="v">' + esc((c.owners || []).join(", ") || "—") + '</span></div>' +
+          '<div class="meta-row"><span class="k">ETC</span><span class="v">' + esc(fmtEtc(c.etc)) + '</span></div>' +
+        '</div>' +
+        (c.remarks ? '<div class="cap-desc" style="-webkit-line-clamp:2; color:var(--neutral-600);">' + esc(c.remarks) + '</div>' : "") +
+      '</article>';
+    }).join("") + '</div>';
+  }
+
+  function renderMain(){
     var list = visible();
-    var grid = $("#cap-grid");
-    $("#cap-empty").hidden = list.length > 0;
-    if (f.group === "none") {
-      grid.className = "card-grid";
-      grid.innerHTML = list.map(cardHtml).join("");
-      return;
-    }
-    grid.className = "";
-    var groups = {}, order = [];
-    list.forEach(function(c){ var k = groupKey(c); if (!groups[k]) { groups[k] = []; order.push(k); } groups[k].push(c); });
-    order.sort(function(a, b){ return groupRank(a) - groupRank(b) || a.localeCompare(b); });
-    grid.innerHTML = order.map(function(k){
-      return '<div class="cap-group-title">' + esc(k) + ' <span>· ' + groups[k].length + '</span></div><div class="card-grid" style="margin-bottom:var(--spacing-24);">' + groups[k].map(cardHtml).join("") + '</div>';
-    }).join("");
+    var html = view === "board" ? boardHtml(list) : view === "framework" ? frameworkHtml(list) : view === "roadmap" ? roadmapHtml(list) : listHtml(list);
+    var empty = !list.length || (view === "roadmap" && !html);
+    $("#cap-empty").hidden = !empty;
+    $("#cap-main").innerHTML = empty ? "" : html;
   }
 
   function render(){
-    renderKpis(); renderToolbar(); renderGrid();
+    renderSummary(); renderViewBar(); renderSelects(); renderMain();
     var s = $("#cap-search"); if (s.value !== f.search) s.value = f.search;
+  }
+
+  // ---------------- status change (drag on the board) ----------------
+  function setStatus(id, decision){
+    var c = capById(id);
+    if (!c || c.decision === decision) return;
+    var prev = c.decision;
+    c.decision = decision;
+    render();
+    api("/api/capabilities/" + encodeURIComponent(id), req("PATCH", {decision: decision})).then(function(){
+      showToast("“" + c.name + "” moved to " + decision, "success");
+    }).catch(function(err){
+      c.decision = prev; render();
+      showToast("Could not move: " + err.message, "error");
+    });
   }
 
   // ---------------- add / edit ----------------
   function fillSelect(sel, values, current, blankLabel){
-    sel.innerHTML = (blankLabel !== undefined ? '<option value="">' + blankLabel + '</option>' : "") + values.map(function(v){ return '<option value="' + esc(v) + '"' + (v === current ? " selected" : "") + '>' + esc(v) + '</option>'; }).join("");
+    sel.innerHTML = (blankLabel !== undefined ? '<option value="">' + blankLabel + '</option>' : "") + values.map(function(x){ return '<option value="' + esc(x) + '"' + (x === current ? " selected" : "") + '>' + esc(x) + '</option>'; }).join("");
   }
-  function syncEtcField(){
-    var form = $("#cap-form");
-    $("#cap-etc-date-field").hidden = form.etcMode.value !== "date";
-  }
+  function syncEtcField(){ $("#cap-etc-date-field").hidden = $("#cap-form").etcMode.value !== "date"; }
   function openCap(id){
     editingId = id;
-    var c = id ? caps.filter(function(x){ return x.id === id; })[0] : null;
+    var c = id ? capById(id) : null;
     var form = $("#cap-form");
     $("#cap-modal-title").textContent = c ? "Edit capability" : "New capability";
     $("#cap-delete-btn").hidden = !c;
@@ -3510,7 +3741,7 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
     form.type.value = d.type || "";
     form.step.value = d.step || "";
     fillSelect(form.priority, PRIORITIES, d.priority || "P2");
-    fillSelect(form.decision, DECISIONS.slice().sort(function(a, b){ return ["Backlog", "Investigate", "In progress", "Done"].indexOf(a) - ["Backlog", "Investigate", "In progress", "Done"].indexOf(b); }), d.decision || "Backlog");
+    fillSelect(form.decision, STATUSES.map(function(s){ return s.key; }), d.decision || "Backlog");
     fillSelect(form.value, LEVELS, d.value || "", "Not set");
     fillSelect(form.complexity, LEVELS, d.complexity || "", "Not set");
     form.owners.value = (d.owners || []).join(", ");
@@ -3533,36 +3764,29 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
     if (!name) return;
     var mode = form.etcMode.value;
     var data = {
-      name: name,
-      type: form.type.value.trim(),
-      step: form.step.value.trim(),
-      priority: form.priority.value,
-      decision: form.decision.value,
+      name: name, type: form.type.value.trim(), step: form.step.value.trim(),
+      priority: form.priority.value, decision: form.decision.value,
       owners: parseOwners(form.owners.value),
       etc: mode === "date" ? form.etcDate.value : mode,
-      value: form.value.value,
-      complexity: form.complexity.value,
-      description: form.description.value.trim(),
-      remarks: form.remarks.value.trim(),
-      notes: form.notes.value.trim()
+      value: form.value.value, complexity: form.complexity.value,
+      description: form.description.value.trim(), remarks: form.remarks.value.trim(), notes: form.notes.value.trim()
     };
-    var p;
-    if (editingId) {
+    var wasEditing = !!editingId, p;
+    if (wasEditing) {
       p = api("/api/capabilities/" + encodeURIComponent(editingId), req("PATCH", data));
     } else {
-      var maxOrder = caps.reduce(function(m, c){ return Math.max(m, Number(c.order) || 0); }, 0);
-      data.order = maxOrder + 1;
+      data.order = caps.reduce(function(m, c){ return Math.max(m, Number(c.order) || 0); }, 0) + 1;
       p = api("/api/capabilities/" + encodeURIComponent(uniqueId(name)), req("PUT", data));
     }
     p.then(function(){
-      showToast(editingId ? "Capability saved" : "Capability added", "success");
+      showToast(wasEditing ? "Capability saved" : "Capability added", "success");
       closeCap();
       return loadCaps();
     }).catch(function(err){ showToast("Save failed: " + err.message, "error"); });
   }
 
   function deleteCap(){
-    var c = caps.filter(function(x){ return x.id === editingId; })[0];
+    var c = capById(editingId);
     if (!c || !confirm('Delete "' + c.name + '" permanently? This cannot be undone.')) return;
     api("/api/capabilities/" + encodeURIComponent(c.id), {method: "DELETE"}).then(function(){
       showToast("Capability deleted", "success");
@@ -3586,7 +3810,6 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
     }
     return xlsxPromise;
   }
-
   var COL_MAP = {
     "capability name": "name", "capability type": "type", "description": "description",
     "7-step framework alignment": "step", "owner": "owners", "value": "value", "complexity": "complexity",
@@ -3594,39 +3817,28 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
   };
   var DECISION_NORM = {"backlog": "Backlog", "investigate": "Investigate", "in progress": "In progress", "done": "Done"};
   var importState = null;
-
-  function cellText(v){ return String(v == null ? "" : v).replace(/\r\n/g, "\n").replace(/[ \t]+\n/g, "\n").trim(); }
-  function cellDate(d){
-    var x = new Date(d.getTime() + 12 * 3600 * 1000);
-    return x.getFullYear() + "-" + pad(x.getMonth() + 1) + "-" + pad(x.getDate());
-  }
-
+  function cellText(x){ return String(x == null ? "" : x).replace(/\r\n/g, "\n").replace(/[ \t]+\n/g, "\n").trim(); }
+  function cellDate(d){ return isoOf(new Date(d.getTime() + 12 * 3600 * 1000)); }
+  function sheetRows(wb, name){ return window.XLSX.utils.sheet_to_json(wb.Sheets[name], {header: 1, defval: ""}); }
   function findHeaderRow(rows){
-    for (var i = 0; i < rows.length; i++) {
-      for (var c = 0; c < rows[i].length; c++) { if (norm(rows[i][c]) === "capability name") return i; }
-    }
+    for (var i = 0; i < rows.length; i++) for (var c = 0; c < rows[i].length; c++) if (norm(rows[i][c]) === "capability name") return i;
     return -1;
   }
-
   function guessSheet(wb){
-    var names = wb.SheetNames;
-    for (var i = 0; i < names.length; i++) { if (/final/i.test(names[i]) && findHeaderRow(window.XLSX.utils.sheet_to_json(wb.Sheets[names[i]], {header: 1, defval: ""})) > -1) return names[i]; }
-    for (var j = 0; j < names.length; j++) { if (findHeaderRow(window.XLSX.utils.sheet_to_json(wb.Sheets[names[j]], {header: 1, defval: ""})) > -1) return names[j]; }
+    var names = wb.SheetNames, i;
+    for (i = 0; i < names.length; i++) if (/final/i.test(names[i]) && findHeaderRow(sheetRows(wb, names[i])) > -1) return names[i];
+    for (i = 0; i < names.length; i++) if (findHeaderRow(sheetRows(wb, names[i])) > -1) return names[i];
     return names[0];
   }
-
   function parseCapSheet(wb, sheetName){
-    var rows = window.XLSX.utils.sheet_to_json(wb.Sheets[sheetName], {header: 1, defval: ""});
+    var rows = sheetRows(wb, sheetName);
     var h = findHeaderRow(rows);
     if (h === -1) throw new Error('No "Capability Name" column found on this sheet.');
-    var header = rows[h], colMap = {}, lastMapped = -1;
-    header.forEach(function(cell, idx){
-      var key = COL_MAP[norm(cell)];
-      if (key) { colMap[idx] = key; lastMapped = Math.max(lastMapped, idx); }
-    });
+    var colMap = {}, lastMapped = -1;
+    rows[h].forEach(function(cell, idx){ var key = COL_MAP[norm(cell)]; if (key) { colMap[idx] = key; lastMapped = Math.max(lastMapped, idx); } });
     var entries = [];
     for (var r = h + 1; r < rows.length; r++) {
-      var row = rows[r], rec = {}, name = "";
+      var row = rows[r], rec = {};
       Object.keys(colMap).forEach(function(ci){
         var key = colMap[ci], raw = row[ci];
         if (raw === "" || raw == null) return;
@@ -3638,18 +3850,15 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
         else if (key === "value" || key === "complexity") { var lv = LEVELS.filter(function(x){ return norm(x) === norm(val); })[0]; if (lv) rec[key] = lv; }
         else rec[key] = val;
       });
-      name = rec.name || "";
-      if (!name) continue;
+      if (!rec.name) continue;
       var extra = row.slice(lastMapped + 1).map(function(x){ return x instanceof Date ? cellDate(x) : cellText(x); }).filter(Boolean).join("\n");
       if (extra) rec.notes = extra;
-      var existing = caps.filter(function(c){ return norm(c.name) === norm(name); })[0] || null;
-      entries.push({name: name, rec: rec, existingId: existing ? existing.id : null});
+      var existing = caps.filter(function(c){ return norm(c.name) === norm(rec.name); })[0] || null;
+      entries.push({name: rec.name, rec: rec, existingId: existing ? existing.id : null});
     }
     return entries;
   }
-
-  var FIELD_LABELS = {type: "Type", description: "Description", step: "Framework step", owners: "Owner", value: "Value", complexity: "Complexity", priority: "Priority", etc: "ETC", decision: "Decision", remarks: "Remarks", notes: "Notes"};
-
+  var FIELD_LABELS = {type: "Type", description: "Description", step: "Framework step", owners: "Owner", value: "Value", complexity: "Complexity", priority: "Priority", etc: "ETC", decision: "Status", remarks: "Remarks", notes: "Notes"};
   function openImport(){
     importState = {wb: null, entries: []};
     $("#cap-import-file").value = "";
@@ -3662,7 +3871,6 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
     $("#cap-import-overlay").hidden = false;
   }
   function closeImport(){ $("#cap-import-overlay").hidden = true; importState = null; }
-
   function handleFile(file){
     $("#cap-import-status").textContent = "Reading workbook…";
     $("#cap-import-parse").disabled = true;
@@ -3677,7 +3885,6 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
       $("#cap-import-parse").disabled = false;
     }).catch(function(err){ $("#cap-import-status").textContent = "Could not read that file: " + err.message; });
   }
-
   function renderImportPreview(){
     var entries = importState.entries;
     var created = entries.filter(function(e){ return !e.existingId; }).length;
@@ -3689,7 +3896,6 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
         '<div class="import-row-changes">' + (fields.length ? "Will set: " + fields.map(esc).join(", ") : "Name only — nothing else to set.") + '</div></div>';
     }).join("");
   }
-
   function applyImport(){
     var picked = importState.entries.filter(function(e, i){ var cb = $('[data-cap-import-toggle="' + i + '"]'); return !cb || cb.checked; });
     var btn = $("#cap-import-apply"); btn.disabled = true; btn.textContent = "Importing…";
@@ -3698,9 +3904,7 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
     var chain = Promise.resolve();
     picked.forEach(function(e){
       chain = chain.then(function(){
-        if (e.existingId) {
-          return api("/api/capabilities/" + encodeURIComponent(e.existingId), req("PATCH", e.rec)).then(function(){ updated++; }).catch(function(){ failed.push(e.name); });
-        }
+        if (e.existingId) return api("/api/capabilities/" + encodeURIComponent(e.existingId), req("PATCH", e.rec)).then(function(){ updated++; }).catch(function(){ failed.push(e.name); });
         var data = Object.assign({type: "", description: "", step: "", owners: [], value: "", complexity: "", priority: "P2", etc: "TBD", decision: "Backlog", remarks: "", notes: ""}, e.rec, {order: ++maxOrder});
         var id = uniqueId(e.name);
         caps.push({id: id, name: e.name});
@@ -3721,14 +3925,16 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
   document.addEventListener("click", function(e){
     var t = e.target;
     if (!t.closest) return;
-    var card = t.closest("[data-cap-id]");
-    if (card) { openCap(card.getAttribute("data-cap-id")); return; }
+    var item = t.closest("[data-cap-id]");
+    if (item) { openCap(item.getAttribute("data-cap-id")); return; }
+    var tab = t.closest("[data-cap-view]");
+    if (tab) { view = tab.getAttribute("data-cap-view"); try { localStorage.setItem("geo-cap-view", view); } catch (err) {} render(); return; }
+    var flt = t.closest("[data-cap-filter]");
+    if (flt) { var k = flt.getAttribute("data-cap-filter"); f.decision = f.decision === k ? "" : k; render(); return; }
     if (t.closest("#cap-btn-new")) { openCap(null); return; }
     if (t.closest("#cap-btn-import")) { openImport(); return; }
     if (t.closest("[data-cap-close]")) { closeCap(); closeImport(); return; }
     if (t.closest("[data-cap-delete]")) { deleteCap(); return; }
-    var chip = t.closest("[data-cap-chip]");
-    if (chip) { f.decision = chip.getAttribute("data-cap-chip"); render(); return; }
     if (t.closest("#cap-import-parse")) {
       try {
         importState.entries = parseCapSheet(importState.wb, $("#cap-import-sheet").value);
@@ -3743,26 +3949,59 @@ a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
   });
 
   document.addEventListener("keydown", function(e){
-    if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches("[data-cap-id]")) { e.preventDefault(); openCap(e.target.getAttribute("data-cap-id")); }
+    if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches("article[data-cap-id]")) { e.preventDefault(); openCap(e.target.getAttribute("data-cap-id")); }
     if (e.key === "Escape") { if (!$("#cap-overlay").hidden) closeCap(); if (!$("#cap-import-overlay").hidden) closeImport(); }
   });
 
   document.addEventListener("input", function(e){
-    if (e.target.id === "cap-search") { f.search = e.target.value; renderGrid(); }
+    if (e.target.id === "cap-search") { f.search = e.target.value; renderMain(); }
   });
 
   document.addEventListener("change", function(e){
     var id = e.target.id;
-    if (id === "cap-f-priority") { f.priority = e.target.value; renderGrid(); }
-    else if (id === "cap-f-step") { f.step = e.target.value; renderGrid(); }
-    else if (id === "cap-f-owner") { f.owner = e.target.value; renderGrid(); }
-    else if (id === "cap-f-group") { f.group = e.target.value || "none"; renderGrid(); }
+    if (id === "cap-f-decision") { f.decision = e.target.value; render(); }
+    else if (id === "cap-f-priority") { f.priority = e.target.value; renderMain(); }
+    else if (id === "cap-f-type") { f.type = e.target.value; renderMain(); }
+    else if (id === "cap-f-owner") { f.owner = e.target.value; renderMain(); }
+    else if (id === "cap-show-done") { showDoneOnRoadmap = e.target.checked; renderMain(); }
     else if (id === "cap-import-file") { var file = e.target.files && e.target.files[0]; if (file) handleFile(file); }
     else if (e.target.name === "etcMode" && e.target.form && e.target.form.id === "cap-form") syncEtcField();
   });
 
   document.addEventListener("submit", function(e){
     if (e.target.id === "cap-form") { e.preventDefault(); saveCap(); }
+  });
+
+  // drag a board card to another column to change its status
+  var dragId = null;
+  document.addEventListener("dragstart", function(e){
+    var card = e.target.closest && e.target.closest(".cap-bcard");
+    if (!card) return;
+    dragId = card.getAttribute("data-cap-id");
+    card.classList.add("is-dragging");
+    e.dataTransfer.effectAllowed = "move";
+    try { e.dataTransfer.setData("text/plain", dragId); } catch (err) {}
+  });
+  document.addEventListener("dragend", function(e){
+    var card = e.target.closest && e.target.closest(".cap-bcard");
+    if (card) card.classList.remove("is-dragging");
+    document.querySelectorAll(".cap-col.is-drop").forEach(function(c){ c.classList.remove("is-drop"); });
+    dragId = null;
+  });
+  document.addEventListener("dragover", function(e){
+    var col = dragId && e.target.closest && e.target.closest("[data-cap-drop]");
+    if (!col) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    document.querySelectorAll(".cap-col.is-drop").forEach(function(c){ if (c !== col) c.classList.remove("is-drop"); });
+    col.classList.add("is-drop");
+  });
+  document.addEventListener("drop", function(e){
+    var col = dragId && e.target.closest && e.target.closest("[data-cap-drop]");
+    if (!col) return;
+    e.preventDefault();
+    var id = dragId; dragId = null;
+    setStatus(id, col.getAttribute("data-cap-drop"));
   });
 
   window.addEventListener("hashchange", route);

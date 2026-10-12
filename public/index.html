@@ -857,6 +857,22 @@ a.home-tile:hover .home-tile-cta svg{transform:translateX(4px);}
 .util-card[data-accent-client]{border-top:4px solid var(--accent, var(--primary));}
 @media print{ .shell{background:none;} .weekly-account[data-accent-client]{border-left:1px solid var(--neutral-300);} }
 
+/* each project card: its own shade of the client colour, used inside the card */
+.pcard[data-accent-client]{--pa:var(--accent, var(--primary));
+  border-top:4px solid var(--pa); background:linear-gradient(180deg, color-mix(in srgb, var(--pa) 10%, var(--base-white)) 0%, var(--base-white) 62%);}
+.pcard[data-accent-client][data-proj-idx="1"]{--pa:color-mix(in srgb, var(--accent, var(--primary)) 58%, #2FA7C4);}
+.pcard[data-accent-client][data-proj-idx="2"]{--pa:color-mix(in srgb, var(--accent, var(--primary)) 55%, var(--primary));}
+.pcard[data-accent-client][data-proj-idx="3"]{--pa:color-mix(in srgb, var(--accent, var(--primary)) 55%, #D46FB0);}
+.pcard[data-accent-client][data-proj-idx="4"]{--pa:color-mix(in srgb, var(--accent, var(--primary)) 70%, #000);}
+.pcard[data-accent-client] .project-name{color:color-mix(in srgb, var(--pa) 82%, #000);}
+.pcard[data-accent-client] hr{border-top-color:color-mix(in srgb, var(--pa) 28%, var(--neutral-200));}
+.pcard[data-accent-client] .progress-track{background:color-mix(in srgb, var(--pa) 14%, var(--base-white));}
+.pcard[data-accent-client] .progress-fill{background:var(--pa);}
+.pcard[data-accent-client] .avatars span:nth-child(1){background:var(--pa) !important;}
+.pcard[data-accent-client] .avatars span:nth-child(2){background:color-mix(in srgb, var(--pa) 58%, #000) !important;}
+.pcard[data-accent-client] .ts svg{color:var(--pa);}
+.pcard[data-accent-client] .meta-row .k{color:color-mix(in srgb, var(--pa) 45%, var(--neutral-600));}
+
 </style>
 </head>
 <body>
@@ -2634,6 +2650,13 @@ a.home-tile:hover .home-tile-cta svg{transform:translateX(4px);}
     return {pct: Math.max(0, Math.min(100, pct)), raw: pct};
   }
 
+  // Position of a project within its client, so sibling projects get different shades.
+  function projectShadeIndex(a){
+    var c = clients.find(function(x){ return x.id === a.clientId; });
+    var i = c ? (c.projects || []).findIndex(function(p){ return p.id === a.id; }) : 0;
+    return Math.max(i, 0) % 5;
+  }
+
   function cardHtml(a){
     var rag = ragClass(a.rag);
     var risk = latestNonEmptyWeek(a, "risk");
@@ -2642,7 +2665,7 @@ a.home-tile:hover .home-tile-cta svg{transform:translateX(4px);}
     var lastActivity = lastWeekKeys.length ? weekLabel(lastWeekKeys[0]) : "No weekly update yet";
     var progress = engagementProgress(a);
     return (
-      '<article class="card pcard ring-focus" data-accent-client="' + esc(a.clientId) + '" data-open-id="' + esc(a.id) + '" tabindex="0" role="button" aria-label="Open ' + esc(a.name) + '">' +
+      '<article class="card pcard ring-focus" data-accent-client="' + esc(a.clientId) + '" data-proj-idx="' + projectShadeIndex(a) + '" data-open-id="' + esc(a.id) + '" tabindex="0" role="button" aria-label="Open ' + esc(a.name) + '">' +
         '<div class="project-name">' + esc(a.projectName) + '</div>' +
         '<hr>' +
         '<div class="status-row">' +

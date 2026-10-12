@@ -1,0 +1,438 @@
+[
+  {
+    "id": "promptverse",
+    "order": 1,
+    "name": "Promptverse",
+    "type": "Methodology",
+    "description": "1. Synthesizes brand intelligence from plans and supporting documents to create a dynamic battle narrative,\n2. Then processed through the Prompt Mix Engine to generate context-aware, brand-specific prompt mixes\n3. Using the prompt mix numbers as a base to generate actual prompts for the defined audience",
+    "step": "2-3. Narrative Battles / Build Prompt Library",
+    "owners": [
+      "Abhishek",
+      "Mohit"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P0",
+    "etc": "NA",
+    "decision": "Done",
+    "remarks": "Demo Completed with Sharan and Feedback Incorporated",
+    "notes": ""
+  },
+  {
+    "id": "misinformation-agent",
+    "order": 2,
+    "name": "Misinformation Agent",
+    "type": "Agent",
+    "description": "Checks every AI answer against the narrative the brand wants to own and flags where it is stated wrongly, weakly or left out, with a risk score and source.",
+    "step": "4. GEO Baseline Assessment",
+    "owners": [
+      "Gaurav",
+      "Avirup",
+      "Abhishek"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P0",
+    "etc": "2026-10-09",
+    "decision": "In progress",
+    "remarks": "Under Development",
+    "notes": ""
+  },
+  {
+    "id": "web-audit-intelligence-agent",
+    "order": 3,
+    "name": "Web Audit Intelligence Agent",
+    "type": "Agent + Material / Checklist",
+    "description": "1. Scores any digital property against a standard technical readiness checklist (crawlability, robots.txt, llms.txt, schema, metadata, canonical) before build,\n2. Inspects how owned sites are actually configured for AI (robots.txt, llms.txt, schema, metadata, headings, canonical structure) and returns a pass or fail fix list,\n3. Reads server and CDN logs to show which AI crawlers actually arrived, how often they returned, and whether the visit was to cite, index or train.",
+    "step": "4. GEO Baseline Assessment",
+    "owners": [
+      "Muni",
+      "Mohit"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P1",
+    "etc": "2026-10-23",
+    "decision": "Backlog",
+    "remarks": "Dependency on Technical GEO",
+    "notes": ""
+  },
+  {
+    "id": "open-evidence-analysis",
+    "order": 4,
+    "name": "Open Evidence Analysis",
+    "type": "Methodology + Agent",
+    "description": "Analyzes how Open Evidence represents the brand, competitors and category to expose accuracy and citation gaps in AI-cited clinical evidence.",
+    "step": "4. GEO Baseline Assessment",
+    "owners": [
+      "Anshul",
+      "Mohit"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P3",
+    "etc": "NA",
+    "decision": "Done",
+    "remarks": "",
+    "notes": ""
+  },
+  {
+    "id": "roi-agent",
+    "order": 5,
+    "name": "ROI Agent",
+    "type": "Agent",
+    "description": "Quantifies the ROI of investing in GEO across all stages of a brand's lifecycle. Helps pharma brands measure incremental visibility, engagement, and business impact while identifying opportunities to sustain relevance and drive growth.",
+    "step": "4. GEO Baseline Assessment",
+    "owners": [
+      "Abhishek",
+      "Ashruti"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P0",
+    "etc": "2026-10-30",
+    "decision": "Backlog",
+    "remarks": "",
+    "notes": ""
+  },
+  {
+    "id": "geo-in-media",
+    "order": 6,
+    "name": "GEO in Media",
+    "type": "Strategic PoV",
+    "description": "Defines how paid/media planning and placements are structured so AI engines pick up and cite brand messaging, not just human impressions.",
+    "step": "4-5. Baseline / Action Plan",
+    "owners": [
+      "Arunima"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P2",
+    "etc": "2026-10-23",
+    "decision": "Backlog",
+    "remarks": "New pure-play PoV, to be conceptualized",
+    "notes": ""
+  },
+  {
+    "id": "geo-in-medical",
+    "order": 7,
+    "name": "GEO in Medical",
+    "type": "Strategic PoV",
+    "description": "Optimizes scientific publications, journal articles and congress abstracts so AI engines retrieve and cite them as evidence.",
+    "step": "4-5. Baseline / Action Plan",
+    "owners": [
+      "Vijay",
+      "Ayushi"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P2",
+    "etc": "2026-11-06",
+    "decision": "In progress",
+    "remarks": "Have been divided into multiple smaller chunks by Ayushi and Vijay, they will not work one by one on each component",
+    "notes": ""
+  },
+  {
+    "id": "geo-in-email",
+    "order": 8,
+    "name": "GEO in Email",
+    "type": "Strategic PoV",
+    "description": "Structures owned email/CRM content and approved claims so they reinforce the narrative AI surfaces elsewhere.",
+    "step": "4-5. Baseline / Action Plan",
+    "owners": [
+      "Arunima"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P2",
+    "etc": "2026-11-06",
+    "decision": "Backlog",
+    "remarks": "New pure-play PoV, preliminary idea",
+    "notes": ""
+  },
+  {
+    "id": "geo-for-eu5",
+    "order": 9,
+    "name": "GEO for EU5",
+    "type": "Strategic PoV",
+    "description": "Adapts GEO for France, Germany, Italy, Spain and UK — accounting for local-language AI answers, market-specific engines/sources, and regulatory/claim differences per market.",
+    "step": "4-5. Baseline / Action Plan",
+    "owners": [
+      "Anshul",
+      "Akshita"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P2",
+    "etc": "2026-10-23",
+    "decision": "Backlog",
+    "remarks": "",
+    "notes": ""
+  },
+  {
+    "id": "geo-for-pre-commercial",
+    "order": 10,
+    "name": "GEO for Pre-Commercial",
+    "type": "Strategic PoV",
+    "description": "Adapts GEO for the pre-commercial phase, shaping disease-state and scientific narratives so AI engines surface accurate category and evidence context ahead of brand launch.",
+    "step": "4-5. Baseline / Action Plan",
+    "owners": [
+      "Vijay",
+      "Ayushi"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P2",
+    "etc": "2026-11-13",
+    "decision": "Backlog",
+    "remarks": "Will be made when GEO in Publication will be completed, That will provide us in depth POV",
+    "notes": ""
+  },
+  {
+    "id": "citation-outreach-agent",
+    "order": 11,
+    "name": "Citation Outreach Agent",
+    "type": "Agent",
+    "description": "Traces which sources each engine cites, ranks fixes by medical risk, and builds the outreach list of publications where evidence must land.",
+    "step": "5. Recommendations & Action Plan",
+    "owners": [
+      "Gaurav",
+      "Avirup",
+      "Abhishek"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P1",
+    "etc": "2026-10-23",
+    "decision": "Backlog",
+    "remarks": "Sprint 2 of Misinformation Agent",
+    "notes": ""
+  },
+  {
+    "id": "geo-owned-site-on-page-optimization-playbook",
+    "order": 12,
+    "name": "GEO Owned-Site & On-Page Optimization Playbook",
+    "type": "Material",
+    "description": "Playbook to optimize brand-owned properties (site, docs, schema) so AI engines can find, read and cite them.",
+    "step": "5. Recommendations & Action Plan",
+    "owners": [
+      "Mohit",
+      "Ambika"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P0",
+    "etc": "NA",
+    "decision": "Done",
+    "remarks": "",
+    "notes": ""
+  },
+  {
+    "id": "geo-citation-third-party-authority-playbook",
+    "order": 13,
+    "name": "GEO Citation & Third-Party Authority Playbook",
+    "type": "Material",
+    "description": "Playbook to influence third-party and earned sources AI engines cite most, so the brand shows up where it does not own the page.",
+    "step": "5. Recommendations & Action Plan",
+    "owners": [
+      "Mohit",
+      "Ambika"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P0",
+    "etc": "NA",
+    "decision": "Done",
+    "remarks": "",
+    "notes": ""
+  },
+  {
+    "id": "geo-clinical-evidence-playbook",
+    "order": 14,
+    "name": "GEO Clinical Evidence Playbook",
+    "type": "Material",
+    "description": "Playbook to strengthen the clinical and scientific evidence AI relies on for medical answers.",
+    "step": "5. Recommendations & Action Plan",
+    "owners": [
+      "Vijay",
+      "Ayushi"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P3",
+    "etc": "2026-11-13",
+    "decision": "Backlog",
+    "remarks": "Require to be created",
+    "notes": ""
+  },
+  {
+    "id": "geo-paid-sponsored-visibility-playbook",
+    "order": 15,
+    "name": "GEO Paid & Sponsored Visibility Playbook",
+    "type": "Material",
+    "description": "Playbook to be created for optimizing paid channels for AI visibility.",
+    "step": "5. Recommendations & Action Plan",
+    "owners": [
+      "Zeek"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P3",
+    "etc": "2026-11-13",
+    "decision": "Backlog",
+    "remarks": "Require to be created",
+    "notes": ""
+  },
+  {
+    "id": "technical-geo",
+    "order": 16,
+    "name": "Technical GEO",
+    "type": "Material",
+    "description": "Technical GEO ensures digital properties are structured for AI crawlability, retrieval, interpretation, and citation across AI-powered search experiences.",
+    "step": "5. Recommendations & Action Plan",
+    "owners": [
+      "Mohit",
+      "Muni"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P1",
+    "etc": "2026-10-09",
+    "decision": "In progress",
+    "remarks": "Will work with Mohit to finalize and send across next week",
+    "notes": "Uplift, templatize and publish as GEO checklist, what level of access required to validate this checklist."
+  },
+  {
+    "id": "draft-outreach-email-agent",
+    "order": 17,
+    "name": "Draft Outreach Email Agent",
+    "type": "Agent",
+    "description": "Turns each citation-outreach target into a ready-to-send, personalized email pitch to the publication or author, with the brand's proof points built in.",
+    "step": "5. Recommendations & Action Plan",
+    "owners": [
+      "Ambika",
+      "Gaurav"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P2",
+    "etc": "2026-10-30",
+    "decision": "Investigate",
+    "remarks": "Preliminary Idea",
+    "notes": ""
+  },
+  {
+    "id": "executive-kpi-agent",
+    "order": 18,
+    "name": "Executive KPI Agent",
+    "type": "Agent",
+    "description": "Pulls visibility, share of answer, citation share and accuracy into one view, explains what moved, and recommends the next actions.",
+    "step": "6. Measure GEO KPIs",
+    "owners": [
+      "Abhishek",
+      "Anshul"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P3",
+    "etc": "2026-11-13",
+    "decision": "Backlog",
+    "remarks": "Will be picked post completion of Misinformation Agent",
+    "notes": ""
+  },
+  {
+    "id": "knowledge-graph",
+    "order": 19,
+    "name": "Knowledge Graph",
+    "type": "Material + Methodology",
+    "description": "Build a therapy-area-first knowledge graph that connects diseases, patient populations, brands, evidence, claims, safety, content, and AI visibility into a unified intelligence layer. Enable GraphRAG-powered retrieval, narrative mapping, citation tracking, and GEO visibility measurement across AI platforms for scalable brand intelligence and decision support.",
+    "step": "",
+    "owners": [
+      "Abhishek",
+      "Avirup"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P0",
+    "etc": "NA",
+    "decision": "Done",
+    "remarks": "Wegovy Completed",
+    "notes": ""
+  },
+  {
+    "id": "geo-os-bluesky-thinking-workshop",
+    "order": 20,
+    "name": "GEO OS Bluesky Thinking Workshop",
+    "type": "Workshop",
+    "description": "Workshop to gather ideas from team for product development and create a product backlog",
+    "step": "",
+    "owners": [
+      "Abhishek",
+      "Ashruti"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P0",
+    "etc": "2026-10-29",
+    "decision": "Done",
+    "remarks": "",
+    "notes": ""
+  },
+  {
+    "id": "prompt-tagging-taxonomy",
+    "order": 21,
+    "name": "Prompt Tagging Taxonomy",
+    "type": "Material",
+    "description": "Description on how to tag prompts under right bucket of Visibility, Sentiment and Factcheck",
+    "step": "",
+    "owners": [
+      "Muni",
+      "Anshul"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P0",
+    "etc": "2026-10-23",
+    "decision": "In progress",
+    "remarks": "",
+    "notes": ""
+  },
+  {
+    "id": "geo-best-practices-for-web",
+    "order": 22,
+    "name": "GEO Best Practices for Web",
+    "type": "Material",
+    "description": "Describes what GEO Good practices should be followed for Web",
+    "step": "",
+    "owners": [
+      "Muni",
+      "Anshul"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P0",
+    "etc": "2026-10-30",
+    "decision": "Backlog",
+    "remarks": "",
+    "notes": ""
+  },
+  {
+    "id": "geo-best-practices-for-video",
+    "order": 23,
+    "name": "GEO Best Practices for Video",
+    "type": "Material",
+    "description": "Describes what GEO Good practices should be followed for Web",
+    "step": "",
+    "owners": [
+      "Muni",
+      "Anshul"
+    ],
+    "value": "",
+    "complexity": "",
+    "priority": "P0",
+    "etc": "2026-10-16",
+    "decision": "Backlog",
+    "remarks": "",
+    "notes": ""
+  }
+]

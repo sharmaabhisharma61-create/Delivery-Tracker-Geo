@@ -627,11 +627,79 @@ a{color:var(--primary);}
     scroll-behavior:auto !important;
   }
 }
+
+/* ---------- home: choose a tracker ---------- */
+.shell[hidden]{display:none;}
+a.nav-item{text-decoration:none;}
+#home{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:var(--spacing-24);}
+#home[hidden]{display:none;}
+.home-wrap{width:min(900px,100%); display:flex; flex-direction:column; gap:var(--spacing-32);}
+.home-head{display:flex; flex-direction:column; align-items:center; gap:var(--spacing-8); text-align:center;}
+.home-head .ai-mark svg{width:40px; height:40px;}
+.home-head h1{font:var(--headline-small); letter-spacing:0; color:var(--neutral-900);}
+.home-head p{font:var(--body-large); letter-spacing:.25px; color:var(--neutral-600);}
+.home-tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:var(--spacing-24);}
+a.home-tile{
+  display:flex; flex-direction:column; gap:var(--spacing-12); text-decoration:none; color:inherit;
+  background:var(--base-white); border:1px solid var(--neutral-200); border-top:4px solid var(--primary);
+  border-radius:var(--radius-md); box-shadow:var(--elevation-02); padding:var(--spacing-24);
+  transition:box-shadow 150ms ease-out, border-color 150ms ease-out;
+}
+a.home-tile:hover{box-shadow:var(--elevation-04); border-color:var(--primary);}
+.home-tile-icon{width:48px; height:48px; border-radius:var(--radius-sm); background:var(--primary-light-background); color:var(--primary); display:flex; align-items:center; justify-content:center;}
+.home-tile h2{font:var(--title-large); letter-spacing:0; color:var(--neutral-900);}
+.home-tile p{font:var(--body-medium); letter-spacing:.25px; color:var(--neutral-600);}
+.home-tile-stat{font:var(--label-large); letter-spacing:.1px; color:var(--neutral-900); margin-top:auto; padding-top:var(--spacing-12); border-top:1px solid var(--neutral-200);}
+.home-tile-cta{font:var(--label-large); color:var(--primary);}
+
+/* ---------- capability tracker ---------- */
+.cap-card{border-top:4px solid var(--cap-accent, var(--neutral-200));}
+.cap-card-top{display:flex; flex-direction:column; gap:var(--spacing-4);}
+.cap-num{font:var(--label-small); letter-spacing:.5px; color:var(--neutral-600); text-transform:uppercase;}
+.cap-name{font:var(--title-medium); letter-spacing:.15px; color:var(--neutral-900);}
+.cap-tags{display:flex; flex-wrap:wrap; gap:var(--spacing-6);}
+.cap-desc{font:var(--body-small); letter-spacing:.3px; color:var(--neutral-700); white-space:pre-line;
+  display:-webkit-box; -webkit-line-clamp:4; -webkit-box-orient:vertical; overflow:hidden;}
+.cap-card .meta-row .v{white-space:normal; overflow:visible;}
+.cap-group-title{font:var(--label-medium); letter-spacing:.5px; color:var(--neutral-700); text-transform:uppercase; margin:var(--spacing-8) 0;}
+.cap-group-title span{color:var(--neutral-500); font-weight:500;}
+.cap-select{max-width:210px;}
+.cap-modal-actions{display:flex; align-items:center; gap:var(--spacing-8); grid-column:1 / -1;}
+.cap-modal-actions .spacer{flex:1;}
+.btn-danger-text{background:transparent; color:var(--error-foreground); padding-left:var(--spacing-12); padding-right:var(--spacing-12);}
+.btn-danger-text:hover{background:var(--error-light-background);}
+
 </style>
 </head>
 <body>
 
-<div class="shell">
+<div id="home" hidden>
+  <div class="home-wrap">
+    <div class="home-head">
+      <span class="ai-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 1 L22 6.5 L22 17.5 L12 23 L2 17.5 L2 6.5 Z"/></svg></span>
+      <h1>GEO Tracker</h1>
+      <p>Choose a tracker to open</p>
+    </div>
+    <div class="home-tiles">
+      <a class="home-tile ring-focus" href="#capability">
+        <span class="home-tile-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5 9-5z"/><path d="m3 13 9 5 9-5"/><path d="m3 17.5 9 5 9-5"/></svg></span>
+        <h2>GEO Capability Tracker</h2>
+        <p>Every GEO capability, agent, methodology and playbook, with owners, priority, ETC and status.</p>
+        <div class="home-tile-stat" id="home-cap-stat">Loading&hellip;</div>
+        <span class="home-tile-cta">Open capability tracker &rarr;</span>
+      </a>
+      <a class="home-tile ring-focus" href="#delivery">
+        <span class="home-tile-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+        <h2>GEO Delivery Tracker</h2>
+        <p>Active client engagements: status, risks, invoices, revenue and team utilization.</p>
+        <div class="home-tile-stat" id="home-del-stat">Loading&hellip;</div>
+        <span class="home-tile-cta">Open delivery tracker &rarr;</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="shell" id="app-delivery" hidden>
   <aside class="rail expanded" id="app-rail" aria-label="Primary">
     <div class="brand-row">
       <span class="ai-mark" aria-hidden="true">
@@ -639,6 +707,10 @@ a{color:var(--primary);}
       </span>
       <span class="name">GEO Tracker</span>
     </div>
+    <a class="nav-item ring-focus" href="#" id="btn-home" title="Home">
+      <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>
+      <span class="label">Home</span>
+    </a>
     <button type="button" class="new-btn ring-focus" id="btn-add-account">
       <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
       <span class="label">New account</span>
@@ -730,6 +802,147 @@ a{color:var(--primary);}
     </div>
   </section>
 </div>
+
+<div id="app-capability" hidden>
+<div class="shell">
+  <aside class="rail expanded" aria-label="Capability tracker">
+    <div class="brand-row">
+      <span class="ai-mark" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M12 1 L22 6.5 L22 17.5 L12 23 L2 17.5 L2 6.5 Z"/></svg>
+      </span>
+      <span class="name">GEO Tracker</span>
+    </div>
+    <button type="button" class="new-btn ring-focus" id="cap-btn-new">
+      <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+      <span class="label">New capability</span>
+    </button>
+    <button type="button" class="nav-item ring-focus" id="cap-btn-import" title="Import from Excel">
+      <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m0 0-4-4m4 4 4-4"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></span>
+      <span class="label">Import from Excel</span>
+    </button>
+    <div class="section-label">Trackers</div>
+    <a class="nav-item ring-focus" href="#" title="Home">
+      <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/></svg></span>
+      <span class="label">Home</span>
+    </a>
+    <a class="nav-item is-active ring-focus" href="#capability" title="GEO Capability Tracker">
+      <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5z"/><path d="m3 13 9 5 9-5"/></svg></span>
+      <span class="label">Capability Tracker</span>
+    </a>
+    <a class="nav-item ring-focus" href="#delivery" title="GEO Delivery Tracker">
+      <span class="icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+      <span class="label">Delivery Tracker</span>
+    </a>
+  </aside>
+
+  <section class="page-content">
+    <header class="app-header">
+      <div class="zone-l">
+        <div>
+          <div class="title">GEO Capability Tracker</div>
+          <div class="sub" id="cap-sub">Loading&hellip;</div>
+        </div>
+      </div>
+      <div class="zone-c"></div>
+      <div class="zone-r"></div>
+    </header>
+
+    <section class="kpi-row" id="cap-kpis"></section>
+
+    <section class="toolbar">
+      <div class="field">
+        <div class="field-wrap">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="cap-search" type="search" placeholder="Search capabilities&hellip;" aria-label="Search capabilities">
+        </div>
+      </div>
+      <div class="chip-filter-group" id="cap-decision-chips" role="group" aria-label="Filter by decision"></div>
+    </section>
+    <section class="toolbar" id="cap-selects"></section>
+
+    <main id="cap-grid"></main>
+    <div class="empty-state" id="cap-empty" hidden>
+      <h3>No capabilities match your filters</h3>
+      <p>Try clearing the search or the filters.</p>
+    </div>
+  </section>
+</div>
+</div>
+
+<div class="modal-overlay" id="cap-overlay" hidden>
+  <div class="modal modal-wide" role="dialog" aria-modal="true" aria-label="Capability">
+    <h2 id="cap-modal-title">New capability</h2>
+    <form id="cap-form" class="form-grid">
+      <label class="field form-wide"><span class="label">Capability name</span>
+        <div class="field-wrap"><input name="name" required placeholder="e.g. Misinformation Agent"></div></label>
+      <label class="field"><span class="label">Capability type</span>
+        <div class="field-wrap"><input name="type" list="cap-type-list" placeholder="Agent, Material, Strategic PoV&hellip;"></div></label>
+      <label class="field"><span class="label">7-step framework alignment</span>
+        <div class="field-wrap"><input name="step" list="cap-step-list" placeholder="e.g. 4. GEO Baseline Assessment"></div></label>
+      <label class="field"><span class="label">Priority</span>
+        <div class="field-wrap"><select name="priority"></select></div></label>
+      <label class="field"><span class="label">Decision</span>
+        <div class="field-wrap"><select name="decision"></select></div></label>
+      <label class="field form-wide"><span class="label">Owner(s), separated by commas</span>
+        <div class="field-wrap"><input name="owners" placeholder="e.g. Abhishek, Mohit"></div></label>
+      <label class="field"><span class="label">ETC</span>
+        <div class="field-wrap"><select name="etcMode"><option value="date">A date</option><option value="NA">NA</option><option value="TBD">TBD</option></select></div></label>
+      <label class="field" id="cap-etc-date-field"><span class="label">ETC date</span>
+        <div class="field-wrap"><input type="date" name="etcDate"></div></label>
+      <label class="field"><span class="label">Value</span>
+        <div class="field-wrap"><select name="value"></select></div></label>
+      <label class="field"><span class="label">Complexity</span>
+        <div class="field-wrap"><select name="complexity"></select></div></label>
+      <label class="field form-wide"><span class="label">Description</span>
+        <div class="field-wrap"><textarea name="description" rows="5" placeholder="What this capability does&hellip;"></textarea></div></label>
+      <label class="field form-wide"><span class="label">Remarks</span>
+        <div class="field-wrap"><textarea name="remarks" rows="3" placeholder="Status notes, dependencies&hellip;"></textarea></div></label>
+      <label class="field form-wide"><span class="label">Notes</span>
+        <div class="field-wrap"><textarea name="notes" rows="2" placeholder="Anything else&hellip;"></textarea></div></label>
+      <div class="cap-modal-actions">
+        <button type="button" class="btn btn-md btn-danger-text ring-focus" id="cap-delete-btn" data-cap-delete>Delete</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-md btn-text ring-focus" data-cap-close>Cancel</button>
+        <button type="submit" class="btn btn-md btn-filled ring-focus">Save capability</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-overlay" id="cap-import-overlay" hidden>
+  <div class="modal modal-wide" role="dialog" aria-modal="true" aria-label="Import capabilities from Excel">
+    <h2>Import capabilities from Excel</h2>
+    <div id="cap-import-step-pick">
+      <p class="import-hint">Upload the capability workbook. The file is read in your browser only. Capabilities are matched by name: existing ones are updated, new ones are added.</p>
+      <label class="field form-wide"><span class="label">Excel file (.xlsx)</span>
+        <div class="field-wrap"><input type="file" id="cap-import-file" accept=".xlsx,.xls"></div></label>
+      <label class="field form-wide" id="cap-import-sheet-field" hidden><span class="label">Which sheet has the capabilities?</span>
+        <div class="field-wrap"><select id="cap-import-sheet"></select></div></label>
+      <div id="cap-import-status" class="import-hint"></div>
+      <div class="form-actions form-wide">
+        <button type="button" class="btn btn-md btn-text ring-focus" data-cap-close>Cancel</button>
+        <button type="button" class="btn btn-md btn-filled ring-focus" id="cap-import-parse" disabled>Preview changes</button>
+      </div>
+    </div>
+    <div id="cap-import-step-preview" hidden>
+      <p class="import-hint" id="cap-import-summary"></p>
+      <div class="import-preview-list" id="cap-import-list"></div>
+      <div class="form-actions form-wide">
+        <button type="button" class="btn btn-md btn-text ring-focus" id="cap-import-back">Back</button>
+        <button type="button" class="btn btn-md btn-filled ring-focus" id="cap-import-apply">Apply import</button>
+      </div>
+    </div>
+    <div id="cap-import-step-done" hidden>
+      <p class="import-hint" id="cap-import-done"></p>
+      <div class="form-actions form-wide">
+        <button type="button" class="btn btn-md btn-filled ring-focus" data-cap-close>Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<datalist id="cap-type-list"></datalist>
+<datalist id="cap-step-list"></datalist>
 
 <div class="overlay" id="detail-overlay" hidden>
   <div class="detail-panel" role="dialog" aria-modal="true" aria-label="Account details">
@@ -1571,7 +1784,7 @@ a{color:var(--primary);}
 
   function parseDateCell(v){
     if (!v && v !== 0) return null;
-    if (v instanceof Date) return isNaN(v.getTime()) ? null : isoFromDate(v);
+    if (v instanceof Date) return isNaN(v.getTime()) ? null : isoFromDate(new Date(v.getTime() + 12 * 3600 * 1000));
     var d = new Date(v);
     return isNaN(d.getTime()) ? null : isoFromDate(d);
   }
@@ -3060,6 +3273,500 @@ a{color:var(--primary);}
   }
 
   init();
+})();
+</script>
+
+<script>
+// Home screen, routing and the GEO Capability Tracker.
+(function(){
+  "use strict";
+
+  var STEPS = ["1. Understand Brand Priorities", "2. Define Narrative Battles", "3. Build Prompt Library", "4. GEO Baseline Assessment", "5. Recommendations & Action Plan", "6. Measure GEO KPIs", "7. Track Business Impact"];
+  var DECISIONS = ["In progress", "Backlog", "Investigate", "Done"];
+  var PRIORITIES = ["P0", "P1", "P2", "P3"];
+  var LEVELS = ["High", "Medium", "Low"];
+  var DECISION_TAG = {"Done": "tag-success", "In progress": "tag-primary", "Backlog": "tag-neutral", "Investigate": "tag-warning"};
+  var DECISION_ACCENT = {"Done": "var(--success-foreground)", "In progress": "var(--primary)", "Backlog": "var(--neutral-400)", "Investigate": "var(--warning-foreground)"};
+  var PRIORITY_TAG = {P0: "tag-error", P1: "tag-warning", P2: "tag-info", P3: "tag-neutral"};
+
+  var caps = [];
+  var f = {search: "", decision: "All", priority: "", step: "", owner: "", group: "none"};
+  var editingId = null;
+  var capLoaded = false;
+
+  function $(sel){ return document.querySelector(sel); }
+  function esc(s){
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function(c){ return {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;"}[c]; });
+  }
+  function norm(s){ return String(s == null ? "" : s).toLowerCase().replace(/[–—]/g, "-").replace(/\s+/g, " ").trim(); }
+  function pad(n){ return String(n).padStart(2, "0"); }
+  function todayIso(){ var d = new Date(); return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()); }
+  function isoDate(re, s){ return re.test(s || ""); }
+  var ISO_RE = /^\d{4}-\d{2}-\d{2}$/;
+  function fmtEtc(v){
+    if (!v) return "—";
+    if (ISO_RE.test(v)) return new Date(v + "T00:00:00").toLocaleDateString("en-US", {day: "numeric", month: "short", year: "numeric"});
+    return v;
+  }
+  function showToast(msg, variant){
+    var t = $("#toast");
+    t.className = "toast is-visible t-" + (variant || "success");
+    t.textContent = msg;
+    clearTimeout(showToast._h);
+    showToast._h = setTimeout(function(){ t.classList.remove("is-visible"); }, 2600);
+  }
+  function api(url, opts){
+    return fetch(url, opts).then(function(r){
+      if (!r.ok) return r.json().catch(function(){ return {}; }).then(function(b){ throw new Error(b.error || (r.status + " " + r.statusText)); });
+      return r.json();
+    });
+  }
+  function req(method, body){ return {method: method, headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)}; }
+  function slug(s){ return String(s || "capability").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "capability"; }
+  function uniqueId(name){
+    var base = slug(name), ids = {};
+    caps.forEach(function(c){ ids[c.id] = true; });
+    if (!ids[base]) return base;
+    var n = 2; while (ids[base + "-" + n]) n++;
+    return base + "-" + n;
+  }
+  function isOverdue(c){ return ISO_RE.test(c.etc || "") && c.etc < todayIso() && c.decision !== "Done"; }
+  function parseOwners(s){ return String(s || "").split(/,|\/|\n/).map(function(x){ return x.trim(); }).filter(Boolean); }
+
+  // ---------------- routing ----------------
+  function hideDeliveryOverlays(){
+    ["detail-overlay", "add-overlay", "import-overlay"].forEach(function(id){ var el = document.getElementById(id); if (el) el.hidden = true; });
+  }
+  function route(){
+    var h = (location.hash || "").replace(/^#\/?/, "");
+    var mode = (h === "delivery" || h === "capability") ? h : "home";
+    $("#home").hidden = mode !== "home";
+    $("#app-delivery").hidden = mode !== "delivery";
+    $("#app-capability").hidden = mode !== "capability";
+    if (mode !== "delivery") hideDeliveryOverlays();
+    if (mode !== "capability") { $("#cap-overlay").hidden = true; $("#cap-import-overlay").hidden = true; }
+    document.title = mode === "capability" ? "GEO Capability Tracker" : mode === "delivery" ? "GEO Delivery Tracker" : "GEO Tracker";
+    window.scrollTo(0, 0);
+    if (mode === "capability") loadCaps();
+    if (mode === "home") loadHomeStats();
+  }
+
+  function loadHomeStats(){
+    api("/api/capabilities").then(function(list){
+      var done = list.filter(function(c){ return c.decision === "Done"; }).length;
+      var prog = list.filter(function(c){ return c.decision === "In progress"; }).length;
+      $("#home-cap-stat").textContent = list.length + " capabilities · " + done + " done · " + prog + " in progress";
+    }).catch(function(){ $("#home-cap-stat").textContent = "Capabilities"; });
+    api("/api/accounts").then(function(list){
+      var projects = list.reduce(function(n, c){ return n + (c.projects || []).length; }, 0);
+      $("#home-del-stat").textContent = list.length + " clients · " + projects + " projects";
+    }).catch(function(){ $("#home-del-stat").textContent = "Client engagements"; });
+  }
+
+  // ---------------- capability data ----------------
+  function loadCaps(){
+    return api("/api/capabilities").then(function(list){
+      caps = list.sort(function(a, b){ return (Number(a.order) || 0) - (Number(b.order) || 0); });
+      capLoaded = true;
+      render();
+    }).catch(function(err){
+      showToast("Load failed: " + err.message, "error");
+    });
+  }
+
+  function visible(){
+    var term = f.search.trim().toLowerCase();
+    return caps.filter(function(c){
+      if (f.decision === "Overdue") { if (!isOverdue(c)) return false; }
+      else if (f.decision !== "All" && c.decision !== f.decision) return false;
+      if (f.priority && c.priority !== f.priority) return false;
+      if (f.step && c.step !== f.step) return false;
+      if (f.owner && (c.owners || []).indexOf(f.owner) === -1) return false;
+      if (!term) return true;
+      var hay = [c.name, c.type, c.description, c.step, (c.owners || []).join(" "), c.remarks, c.notes, c.priority, c.decision].join(" ").toLowerCase();
+      return hay.indexOf(term) > -1;
+    });
+  }
+
+  function distinct(fn){
+    var seen = {}, out = [];
+    caps.forEach(function(c){ [].concat(fn(c)).forEach(function(v){ if (v && !seen[v]) { seen[v] = true; out.push(v); } }); });
+    return out;
+  }
+
+  function renderKpis(){
+    var counts = {}; DECISIONS.forEach(function(d){ counts[d] = 0; });
+    caps.forEach(function(c){ if (counts[c.decision] !== undefined) counts[c.decision]++; });
+    var overdue = caps.filter(isOverdue).length;
+    var p0open = caps.filter(function(c){ return c.priority === "P0" && c.decision !== "Done"; }).length;
+    function tile(label, value, sub){ return '<div class="kpi-tile"><div class="kpi-label">' + label + '</div><div class="kpi-value mono">' + value + '</div><div class="kpi-sub">' + sub + '</div></div>'; }
+    $("#cap-kpis").innerHTML =
+      tile("Total capabilities", caps.length, "across " + distinct(function(c){ return c.type; }).length + " types") +
+      tile("Done", counts["Done"], caps.length ? Math.round(counts["Done"] / caps.length * 100) + "% of all" : "—") +
+      tile("In progress", counts["In progress"], "being built now") +
+      tile("Backlog", counts["Backlog"], "waiting to start") +
+      tile("Investigate", counts["Investigate"], "being scoped") +
+      tile("Overdue", overdue, p0open + " P0 still open");
+    $("#cap-sub").textContent = caps.length + " capabilities · " + counts["Done"] + " done · " + counts["In progress"] + " in progress";
+  }
+
+  function renderToolbar(){
+    var chips = ["All"].concat(DECISIONS).concat(["Overdue"]);
+    $("#cap-decision-chips").innerHTML = chips.map(function(o){
+      return '<button type="button" class="chip ring-focus' + (f.decision === o ? " is-selected" : "") + '" data-cap-chip="' + esc(o) + '">' + esc(o) + '</button>';
+    }).join("");
+
+    var steps = STEPS.slice();
+    distinct(function(c){ return c.step; }).forEach(function(s){ if (steps.indexOf(s) === -1) steps.push(s); });
+    var owners = distinct(function(c){ return c.owners || []; }).sort(function(a, b){ return a.localeCompare(b); });
+    function sel(id, label, options, value){
+      var opts = '<option value="">' + label + '</option>' + options.map(function(o){ return '<option value="' + esc(o[0]) + '"' + (o[0] === value ? " selected" : "") + '>' + esc(o[1]) + '</option>'; }).join("");
+      return '<div class="field cap-select"><div class="field-wrap"><select id="' + id + '" aria-label="' + esc(label) + '">' + opts + '</select><span class="caret-wrap" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span></div></div>';
+    }
+    var groupOptions = [["step", "Group by framework step"], ["type", "Group by type"], ["decision", "Group by decision"], ["priority", "Group by priority"]];
+    var groupSel = sel("cap-f-group", "No grouping", groupOptions, f.group === "none" ? "" : f.group);
+    $("#cap-selects").innerHTML =
+      sel("cap-f-priority", "All priorities", PRIORITIES.map(function(p){ return [p, p]; }), f.priority) +
+      sel("cap-f-step", "All framework steps", steps.map(function(s){ return [s, s]; }), f.step) +
+      sel("cap-f-owner", "All owners", owners.map(function(o){ return [o, o]; }), f.owner) +
+      groupSel;
+
+    $("#cap-type-list").innerHTML = distinct(function(c){ return c.type; }).map(function(t){ return '<option value="' + esc(t) + '">'; }).join("");
+    $("#cap-step-list").innerHTML = steps.map(function(s){ return '<option value="' + esc(s) + '">'; }).join("");
+  }
+
+  function cardHtml(c){
+    var accent = DECISION_ACCENT[c.decision] || "var(--neutral-300)";
+    var tags = (c.priority ? '<span class="tag ' + (PRIORITY_TAG[c.priority] || "tag-neutral") + '">' + esc(c.priority) + '</span>' : "") +
+      (c.decision ? '<span class="tag ' + (DECISION_TAG[c.decision] || "tag-neutral") + '">' + esc(c.decision) + '</span>' : "") +
+      (isOverdue(c) ? '<span class="tag tag-error">Overdue</span>' : "");
+    return '<article class="card pcard cap-card ring-focus" data-cap-id="' + esc(c.id) + '" tabindex="0" role="button" style="--cap-accent:' + accent + '" aria-label="Open ' + esc(c.name) + '">' +
+      '<div class="cap-card-top"><div class="cap-num">#' + esc(c.order) + ' · ' + esc(c.type || "Capability") + '</div><div class="cap-name">' + esc(c.name) + '</div></div>' +
+      '<div class="cap-tags">' + tags + '</div>' +
+      '<div class="cap-desc">' + esc(c.description || "No description yet.") + '</div>' +
+      '<hr>' +
+      '<div class="meta">' +
+        '<div class="meta-row"><span class="k">Framework</span><span class="v">' + esc(c.step || "—") + '</span></div>' +
+        '<div class="meta-row"><span class="k">Owner</span><span class="v">' + esc((c.owners || []).join(", ") || "—") + '</span></div>' +
+        '<div class="meta-row"><span class="k">ETC</span><span class="v">' + esc(fmtEtc(c.etc)) + '</span></div>' +
+      '</div>' +
+      (c.remarks ? '<div class="cap-desc" style="-webkit-line-clamp:2; color:var(--neutral-600);">' + esc(c.remarks) + '</div>' : "") +
+    '</article>';
+  }
+
+  function groupKey(c){
+    if (f.group === "step") return c.step || "Not aligned to a step";
+    if (f.group === "type") return c.type || "No type";
+    if (f.group === "decision") return c.decision || "No decision";
+    if (f.group === "priority") return c.priority || "No priority";
+    return "";
+  }
+  function groupRank(key){
+    if (f.group === "decision") { var i = DECISIONS.indexOf(key); return i === -1 ? 99 : i; }
+    if (f.group === "priority") { var j = PRIORITIES.indexOf(key); return j === -1 ? 99 : j; }
+    if (f.group === "step") { var m = String(key).match(/^(\d+)/); return m ? Number(m[1]) : 99; }
+    return 0;
+  }
+
+  function renderGrid(){
+    var list = visible();
+    var grid = $("#cap-grid");
+    $("#cap-empty").hidden = list.length > 0;
+    if (f.group === "none") {
+      grid.className = "card-grid";
+      grid.innerHTML = list.map(cardHtml).join("");
+      return;
+    }
+    grid.className = "";
+    var groups = {}, order = [];
+    list.forEach(function(c){ var k = groupKey(c); if (!groups[k]) { groups[k] = []; order.push(k); } groups[k].push(c); });
+    order.sort(function(a, b){ return groupRank(a) - groupRank(b) || a.localeCompare(b); });
+    grid.innerHTML = order.map(function(k){
+      return '<div class="cap-group-title">' + esc(k) + ' <span>· ' + groups[k].length + '</span></div><div class="card-grid" style="margin-bottom:var(--spacing-24);">' + groups[k].map(cardHtml).join("") + '</div>';
+    }).join("");
+  }
+
+  function render(){
+    renderKpis(); renderToolbar(); renderGrid();
+    var s = $("#cap-search"); if (s.value !== f.search) s.value = f.search;
+  }
+
+  // ---------------- add / edit ----------------
+  function fillSelect(sel, values, current, blankLabel){
+    sel.innerHTML = (blankLabel !== undefined ? '<option value="">' + blankLabel + '</option>' : "") + values.map(function(v){ return '<option value="' + esc(v) + '"' + (v === current ? " selected" : "") + '>' + esc(v) + '</option>'; }).join("");
+  }
+  function syncEtcField(){
+    var form = $("#cap-form");
+    $("#cap-etc-date-field").hidden = form.etcMode.value !== "date";
+  }
+  function openCap(id){
+    editingId = id;
+    var c = id ? caps.filter(function(x){ return x.id === id; })[0] : null;
+    var form = $("#cap-form");
+    $("#cap-modal-title").textContent = c ? "Edit capability" : "New capability";
+    $("#cap-delete-btn").hidden = !c;
+    var d = c || {};
+    form.name.value = d.name || "";
+    form.type.value = d.type || "";
+    form.step.value = d.step || "";
+    fillSelect(form.priority, PRIORITIES, d.priority || "P2");
+    fillSelect(form.decision, DECISIONS.slice().sort(function(a, b){ return ["Backlog", "Investigate", "In progress", "Done"].indexOf(a) - ["Backlog", "Investigate", "In progress", "Done"].indexOf(b); }), d.decision || "Backlog");
+    fillSelect(form.value, LEVELS, d.value || "", "Not set");
+    fillSelect(form.complexity, LEVELS, d.complexity || "", "Not set");
+    form.owners.value = (d.owners || []).join(", ");
+    form.description.value = d.description || "";
+    form.remarks.value = d.remarks || "";
+    form.notes.value = d.notes || "";
+    var etc = d.etc || "";
+    if (ISO_RE.test(etc)) { form.etcMode.value = "date"; form.etcDate.value = etc; }
+    else if (etc === "NA" || etc === "TBD") { form.etcMode.value = etc; form.etcDate.value = ""; }
+    else { form.etcMode.value = c ? "TBD" : "date"; form.etcDate.value = ""; }
+    syncEtcField();
+    $("#cap-overlay").hidden = false;
+    form.name.focus();
+  }
+  function closeCap(){ $("#cap-overlay").hidden = true; editingId = null; }
+
+  function saveCap(){
+    var form = $("#cap-form");
+    var name = form.name.value.trim();
+    if (!name) return;
+    var mode = form.etcMode.value;
+    var data = {
+      name: name,
+      type: form.type.value.trim(),
+      step: form.step.value.trim(),
+      priority: form.priority.value,
+      decision: form.decision.value,
+      owners: parseOwners(form.owners.value),
+      etc: mode === "date" ? form.etcDate.value : mode,
+      value: form.value.value,
+      complexity: form.complexity.value,
+      description: form.description.value.trim(),
+      remarks: form.remarks.value.trim(),
+      notes: form.notes.value.trim()
+    };
+    var p;
+    if (editingId) {
+      p = api("/api/capabilities/" + encodeURIComponent(editingId), req("PATCH", data));
+    } else {
+      var maxOrder = caps.reduce(function(m, c){ return Math.max(m, Number(c.order) || 0); }, 0);
+      data.order = maxOrder + 1;
+      p = api("/api/capabilities/" + encodeURIComponent(uniqueId(name)), req("PUT", data));
+    }
+    p.then(function(){
+      showToast(editingId ? "Capability saved" : "Capability added", "success");
+      closeCap();
+      return loadCaps();
+    }).catch(function(err){ showToast("Save failed: " + err.message, "error"); });
+  }
+
+  function deleteCap(){
+    var c = caps.filter(function(x){ return x.id === editingId; })[0];
+    if (!c || !confirm('Delete "' + c.name + '" permanently? This cannot be undone.')) return;
+    api("/api/capabilities/" + encodeURIComponent(c.id), {method: "DELETE"}).then(function(){
+      showToast("Capability deleted", "success");
+      closeCap();
+      return loadCaps();
+    }).catch(function(err){ showToast("Delete failed: " + err.message, "error"); });
+  }
+
+  // ---------------- Excel import ----------------
+  var xlsxPromise = null;
+  function loadXlsx(){
+    if (window.XLSX) return Promise.resolve();
+    if (!xlsxPromise) {
+      xlsxPromise = new Promise(function(resolve, reject){
+        var s = document.createElement("script");
+        s.src = "vendor/xlsx.full.min.js";
+        s.onload = function(){ resolve(); };
+        s.onerror = function(){ reject(new Error("Could not load the Excel reader library.")); };
+        document.head.appendChild(s);
+      });
+    }
+    return xlsxPromise;
+  }
+
+  var COL_MAP = {
+    "capability name": "name", "capability type": "type", "description": "description",
+    "7-step framework alignment": "step", "owner": "owners", "value": "value", "complexity": "complexity",
+    "priority": "priority", "etc": "etc", "decision": "decision", "remarks": "remarks"
+  };
+  var DECISION_NORM = {"backlog": "Backlog", "investigate": "Investigate", "in progress": "In progress", "done": "Done"};
+  var importState = null;
+
+  function cellText(v){ return String(v == null ? "" : v).replace(/\r\n/g, "\n").replace(/[ \t]+\n/g, "\n").trim(); }
+  function cellDate(d){
+    var x = new Date(d.getTime() + 12 * 3600 * 1000);
+    return x.getFullYear() + "-" + pad(x.getMonth() + 1) + "-" + pad(x.getDate());
+  }
+
+  function findHeaderRow(rows){
+    for (var i = 0; i < rows.length; i++) {
+      for (var c = 0; c < rows[i].length; c++) { if (norm(rows[i][c]) === "capability name") return i; }
+    }
+    return -1;
+  }
+
+  function guessSheet(wb){
+    var names = wb.SheetNames;
+    for (var i = 0; i < names.length; i++) { if (/final/i.test(names[i]) && findHeaderRow(window.XLSX.utils.sheet_to_json(wb.Sheets[names[i]], {header: 1, defval: ""})) > -1) return names[i]; }
+    for (var j = 0; j < names.length; j++) { if (findHeaderRow(window.XLSX.utils.sheet_to_json(wb.Sheets[names[j]], {header: 1, defval: ""})) > -1) return names[j]; }
+    return names[0];
+  }
+
+  function parseCapSheet(wb, sheetName){
+    var rows = window.XLSX.utils.sheet_to_json(wb.Sheets[sheetName], {header: 1, defval: ""});
+    var h = findHeaderRow(rows);
+    if (h === -1) throw new Error('No "Capability Name" column found on this sheet.');
+    var header = rows[h], colMap = {}, lastMapped = -1;
+    header.forEach(function(cell, idx){
+      var key = COL_MAP[norm(cell)];
+      if (key) { colMap[idx] = key; lastMapped = Math.max(lastMapped, idx); }
+    });
+    var entries = [];
+    for (var r = h + 1; r < rows.length; r++) {
+      var row = rows[r], rec = {}, name = "";
+      Object.keys(colMap).forEach(function(ci){
+        var key = colMap[ci], raw = row[ci];
+        if (raw === "" || raw == null) return;
+        var val = raw instanceof Date ? cellDate(raw) : cellText(raw);
+        if (val === "") return;
+        if (key === "owners") rec.owners = parseOwners(val);
+        else if (key === "priority") rec.priority = val.toUpperCase();
+        else if (key === "decision") rec.decision = DECISION_NORM[norm(val)] || val;
+        else if (key === "value" || key === "complexity") { var lv = LEVELS.filter(function(x){ return norm(x) === norm(val); })[0]; if (lv) rec[key] = lv; }
+        else rec[key] = val;
+      });
+      name = rec.name || "";
+      if (!name) continue;
+      var extra = row.slice(lastMapped + 1).map(function(x){ return x instanceof Date ? cellDate(x) : cellText(x); }).filter(Boolean).join("\n");
+      if (extra) rec.notes = extra;
+      var existing = caps.filter(function(c){ return norm(c.name) === norm(name); })[0] || null;
+      entries.push({name: name, rec: rec, existingId: existing ? existing.id : null});
+    }
+    return entries;
+  }
+
+  var FIELD_LABELS = {type: "Type", description: "Description", step: "Framework step", owners: "Owner", value: "Value", complexity: "Complexity", priority: "Priority", etc: "ETC", decision: "Decision", remarks: "Remarks", notes: "Notes"};
+
+  function openImport(){
+    importState = {wb: null, entries: []};
+    $("#cap-import-file").value = "";
+    $("#cap-import-sheet-field").hidden = true;
+    $("#cap-import-status").textContent = "";
+    $("#cap-import-parse").disabled = true;
+    $("#cap-import-step-pick").hidden = false;
+    $("#cap-import-step-preview").hidden = true;
+    $("#cap-import-step-done").hidden = true;
+    $("#cap-import-overlay").hidden = false;
+  }
+  function closeImport(){ $("#cap-import-overlay").hidden = true; importState = null; }
+
+  function handleFile(file){
+    $("#cap-import-status").textContent = "Reading workbook…";
+    $("#cap-import-parse").disabled = true;
+    loadXlsx().then(function(){ return file.arrayBuffer(); }).then(function(buf){
+      var wb = window.XLSX.read(buf, {type: "array", cellDates: true});
+      importState.wb = wb;
+      var sel = $("#cap-import-sheet");
+      sel.innerHTML = wb.SheetNames.map(function(n){ return '<option value="' + esc(n) + '">' + esc(n) + '</option>'; }).join("");
+      sel.value = guessSheet(wb);
+      $("#cap-import-sheet-field").hidden = false;
+      $("#cap-import-status").textContent = "Pick the sheet that holds the capabilities, then preview.";
+      $("#cap-import-parse").disabled = false;
+    }).catch(function(err){ $("#cap-import-status").textContent = "Could not read that file: " + err.message; });
+  }
+
+  function renderImportPreview(){
+    var entries = importState.entries;
+    var created = entries.filter(function(e){ return !e.existingId; }).length;
+    $("#cap-import-summary").textContent = entries.length + " capabilit" + (entries.length === 1 ? "y" : "ies") + " found — " + (entries.length - created) + " will update existing ones, " + created + " will be added as new.";
+    $("#cap-import-list").innerHTML = entries.map(function(e, i){
+      var fields = Object.keys(e.rec).filter(function(k){ return k !== "name"; }).map(function(k){ return FIELD_LABELS[k] || k; });
+      return '<div class="import-row' + (e.existingId ? "" : " is-new") + '"><div class="import-row-head"><span class="import-row-name">' + esc(e.name) + '</span>' +
+        '<label style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--neutral-600);"><input type="checkbox" data-cap-import-toggle="' + i + '" checked> ' + (e.existingId ? "Update existing" : "Add new") + '</label></div>' +
+        '<div class="import-row-changes">' + (fields.length ? "Will set: " + fields.map(esc).join(", ") : "Name only — nothing else to set.") + '</div></div>';
+    }).join("");
+  }
+
+  function applyImport(){
+    var picked = importState.entries.filter(function(e, i){ var cb = $('[data-cap-import-toggle="' + i + '"]'); return !cb || cb.checked; });
+    var btn = $("#cap-import-apply"); btn.disabled = true; btn.textContent = "Importing…";
+    var added = 0, updated = 0, failed = [];
+    var maxOrder = caps.reduce(function(m, c){ return Math.max(m, Number(c.order) || 0); }, 0);
+    var chain = Promise.resolve();
+    picked.forEach(function(e){
+      chain = chain.then(function(){
+        if (e.existingId) {
+          return api("/api/capabilities/" + encodeURIComponent(e.existingId), req("PATCH", e.rec)).then(function(){ updated++; }).catch(function(){ failed.push(e.name); });
+        }
+        var data = Object.assign({type: "", description: "", step: "", owners: [], value: "", complexity: "", priority: "P2", etc: "TBD", decision: "Backlog", remarks: "", notes: ""}, e.rec, {order: ++maxOrder});
+        var id = uniqueId(e.name);
+        caps.push({id: id, name: e.name});
+        return api("/api/capabilities/" + encodeURIComponent(id), req("PUT", data)).then(function(){ added++; }).catch(function(){ failed.push(e.name); });
+      });
+    });
+    chain.then(function(){ return loadCaps(); }).then(function(){
+      btn.disabled = false; btn.textContent = "Apply import";
+      $("#cap-import-step-preview").hidden = true;
+      $("#cap-import-step-done").hidden = false;
+      var msg = "Updated " + updated + " and added " + added + " capabilit" + (added === 1 ? "y" : "ies") + ".";
+      if (failed.length) msg += " Could not import: " + failed.join(", ") + ".";
+      $("#cap-import-done").textContent = msg;
+    });
+  }
+
+  // ---------------- events ----------------
+  document.addEventListener("click", function(e){
+    var t = e.target;
+    if (!t.closest) return;
+    var card = t.closest("[data-cap-id]");
+    if (card) { openCap(card.getAttribute("data-cap-id")); return; }
+    if (t.closest("#cap-btn-new")) { openCap(null); return; }
+    if (t.closest("#cap-btn-import")) { openImport(); return; }
+    if (t.closest("[data-cap-close]")) { closeCap(); closeImport(); return; }
+    if (t.closest("[data-cap-delete]")) { deleteCap(); return; }
+    var chip = t.closest("[data-cap-chip]");
+    if (chip) { f.decision = chip.getAttribute("data-cap-chip"); render(); return; }
+    if (t.closest("#cap-import-parse")) {
+      try {
+        importState.entries = parseCapSheet(importState.wb, $("#cap-import-sheet").value);
+        renderImportPreview();
+        $("#cap-import-step-pick").hidden = true;
+        $("#cap-import-step-preview").hidden = false;
+      } catch (err) { $("#cap-import-status").textContent = err.message; }
+      return;
+    }
+    if (t.closest("#cap-import-back")) { $("#cap-import-step-preview").hidden = true; $("#cap-import-step-pick").hidden = false; return; }
+    if (t.closest("#cap-import-apply")) { applyImport(); return; }
+  });
+
+  document.addEventListener("keydown", function(e){
+    if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches("[data-cap-id]")) { e.preventDefault(); openCap(e.target.getAttribute("data-cap-id")); }
+    if (e.key === "Escape") { if (!$("#cap-overlay").hidden) closeCap(); if (!$("#cap-import-overlay").hidden) closeImport(); }
+  });
+
+  document.addEventListener("input", function(e){
+    if (e.target.id === "cap-search") { f.search = e.target.value; renderGrid(); }
+  });
+
+  document.addEventListener("change", function(e){
+    var id = e.target.id;
+    if (id === "cap-f-priority") { f.priority = e.target.value; renderGrid(); }
+    else if (id === "cap-f-step") { f.step = e.target.value; renderGrid(); }
+    else if (id === "cap-f-owner") { f.owner = e.target.value; renderGrid(); }
+    else if (id === "cap-f-group") { f.group = e.target.value || "none"; renderGrid(); }
+    else if (id === "cap-import-file") { var file = e.target.files && e.target.files[0]; if (file) handleFile(file); }
+    else if (e.target.name === "etcMode" && e.target.form && e.target.form.id === "cap-form") syncEtcField();
+  });
+
+  document.addEventListener("submit", function(e){
+    if (e.target.id === "cap-form") { e.preventDefault(); saveCap(); }
+  });
+
+  window.addEventListener("hashchange", route);
+  route();
 })();
 </script>
 </body>

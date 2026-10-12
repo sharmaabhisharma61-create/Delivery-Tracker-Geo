@@ -33,6 +33,29 @@ async function init() {
     }
   }
   await migrateToProjects();
+  await initCapabilities();
+}
+
+// GEO Capability Tracker: one row per capability, seeded from capabilities-seed.json.
+async function initCapabilities() {
+  await pool.query(
+    "CREATE TABLE IF NOT EXISTS capabilities (id TEXT PRIMARY KEY, data JSONB NOT NULL)"
+  );
+  const { rows } = await pool.query("SELECT COUNT(*)::int AS n FROM capabilities");
+  if (rows[0].n === 0) {
+    const seedPath = path.join(__dirname, "capabilities-seed.json");
+    if (fs.existsSync(seedPath)) {
+      const seed = JSON.parse(fs.readFileSync(seedPath, "utf-8"));
+      for (const c of seed) {
+        const { id, ...data } = c;
+        await pool.query(
+          "INSERT INTO capabilities (id, data) VALUES ($1, $2) ON CONFLICT (id) DO NOTHING",
+          [id, data]
+        );
+      }
+      console.log("Seeded", seed.length, "capabilities");
+    }
+  }
 }
 
 // Each account doc is a client holding a list of projects. Older docs stored
@@ -114,6 +137,55 @@ app.patch("/api/accounts/:id", async (req, res) => {
     const merged = Object.assign({}, rows[0].data, patch);
     await pool.query("UPDATE accounts SET data = $2 WHERE id = $1", [id, merged]);
     res.json({ id, ...merged });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get("/api/capabilities", async (req, res) => {
+  try {
+    const { rows } = await pool.query("SELECT id, data FROM capabilities");
+    res.json(rows.map((r) => Object.assign({ id: r.id }, r.data)));
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put("/api/capabilities/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const data = req.body || {};
+    delete data.id;
+    await pool.query(
+      "INSERT INTO capabilities (id, data) VALUES ($1, $2) ON CONFLICT (id) DO UPDATE SET data = $2",
+      [id, data]
+    );
+    res.json({ id, ...data });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.patch("/api/capabilities/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const patch = req.body || {};
+    delete patch.id;
+    const { rows } = await pool.query(
+      "UPDATE capabilities SET data = data || $2::jsonb WHERE id = $1 RETURNING data",
+      [id, JSON.stringify(patch)]
+    );
+    if (!rows.length) return res.status(404).json({ error: "Not found" });
+    res.json({ id, ...rows[0].data });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete("/api/capabilities/:id", async (req, res) => {
+  try {
+    await pool.query("DELETE FROM capabilities WHERE id = $1", [req.params.id]);
+    res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
